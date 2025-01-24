@@ -1,32 +1,22 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RegisterComponent } from "../register/register.component";
-import { HttpClient } from '@angular/common/http';
+import { UsersOnlineComponent } from "../users-online/users-online.component";
+import { AccountService } from '../_services/account.service';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-home',
-  imports: [RegisterComponent],
+  imports: [RegisterComponent, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  
-  ngOnInit(): void {
-    this.getMedicines;
-  }
-
-
+  accountService = inject(AccountService);
+  currentUser = this.accountService.currentUser;
   registerMode = false;
-  medicines: any;
-  http = inject(HttpClient);
 
-  registerToggle(){
+  ngOnInit(): void {}
+
+  registerToggle(): void {
     this.registerMode = !this.registerMode;
-  }
-  
-  getMedicines(){
-    this.http.get('https://localhost:7215/api/Medicines').subscribe({
-      next: (response) => this.medicines = response,
-      error: (error) => console.log(error),
-      complete: () => console.log("Request completed")
-    });
   }
 }

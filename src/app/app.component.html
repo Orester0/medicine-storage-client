@@ -1,12 +1,4 @@
 <app-nav></app-nav>
-<div class="container">
-    <app-home></app-home>
-    
-    <!-- <ul>
-        @for (medicine of medicines; track medicine) {
-            <li>
-                {{medicine.name}}, {{medicine.description}}, {{medicine.category}}, {{medicine.minimumStock}}
-            </li>
-        }
-    </ul> -->
+<div class="container" style="margin-top:100px;">
+    <router-outlet></router-outlet>
 </div>

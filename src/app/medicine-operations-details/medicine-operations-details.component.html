@@ -1,0 +1,74 @@
+<div *ngIf="medicineRequest" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Medicine Request Details</h5>
+          <button type="button" class="btn-close" (click)="closeDetails()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <strong>ID:</strong> 
+              {{ medicineRequest.id || 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Medicine name:</strong> 
+              {{ medicineRequest.medicine.name || 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Quantity:</strong> 
+              {{ medicineRequest.quantity || 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Required By Date:</strong> 
+              {{ medicineRequest.requiredByDate ? (medicineRequest.requiredByDate | date: 'dd.MM.yyyy') : 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Requested By:</strong> 
+              {{ medicineRequest.requestedByUser ? 
+                (medicineRequest.requestedByUser.firstName + ' ' + medicineRequest.requestedByUser.lastName) : 
+                'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Request Date:</strong> 
+              {{ medicineRequest.requestDate ? (medicineRequest.requestDate | date: 'dd.MM.yyyy') : 'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Justification:</strong>
+              <p class="mb-0">{{ medicineRequest.justification || 'N/A' }}</p>
+            </li>
+            <li class="list-group-item">
+              <strong>Status:</strong>
+              <span class="badge px-3 py-2 {{ getStatusBadgeClass(medicineRequest.status) }}">
+                {{ getStatusText(medicineRequest.status) }}
+              </span>
+            </li>
+            <li class="list-group-item">
+              <strong>Approved By:</strong> 
+              {{ medicineRequest.approvedByUser ? 
+                (medicineRequest.approvedByUser.firstName + ' ' + medicineRequest.approvedByUser.lastName) : 
+                'N/A' }}
+            </li>
+            <li class="list-group-item">
+              <strong>Approval Date:</strong> 
+              {{ medicineRequest.approvalDate ? (medicineRequest.approvalDate | date: 'dd.MM.yyyy') : 'N/A' }}
+            </li>
+            
+          </ul>
+
+          <div class="modal-footer">
+            <div class="d-flex gap-2" *ngIf="medicineRequest.status === RequestStatus.Pending">
+              <button class="btn btn-success" (click)="performAction('approve')">
+                <i class="bi bi-check-circle"></i> Approve
+              </button>
+              <button class="btn btn-danger" (click)="performAction('reject')">
+                <i class="bi bi-x-circle"></i> Reject
+              </button>
+            </div>
+            <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

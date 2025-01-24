@@ -1,71 +1,86 @@
 <div class="container mt-5">
     <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
-        <h2 class="text-center text-primary">Sign up</h2>
-        <hr>
-        
-        <!-- First Name -->
-        <app-text-input [formControl]="$any(registerForm.controls['firstName'])"
-        [label]="'First Name'">
-        </app-text-input>
-    
-        <!-- Last Name -->
-        <app-text-input [formControl]="$any(registerForm.controls['lastName'])"
-        [label]="'Last Name'">
-        </app-text-input>
-    
-        <!-- Username -->
-        <app-text-input [formControl]="$any(registerForm.controls['username'])"
-        [label]="'Username'">
-        </app-text-input>
-    
-        <!-- Email -->
-        <app-text-input [formControl]="$any(registerForm.controls['email'])"
-        [label]="'Email'">
-        </app-text-input>
-    
-        <!-- Password -->
-        <app-text-input [formControl]="$any(registerForm.controls['password'])"
-        [label]="'Password'"
-        [type]="'password'">
-        </app-text-input>
-    
-        <!-- Confirm Password -->
-        <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])"
-        [label]="'Confirm Password'"
-        [type]="'password'">
-        </app-text-input>
-    
-        <!-- Role Selection -->
-        <div class="mb-3">
-        <label for="role">Role:</label>
-        <select id="role" class="form-select" formControlName="role">
-            <option value="" disabled>Select a role</option>
-            @for (role of roles; track role) {
+      <h2 class="text-center text-primary">Sign up</h2>
+      <hr>
+      
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['firstName'])"
+        label="First Name">  
+      </app-text-input>
+
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['lastName'])"
+        label="Last Name">
+      </app-text-input>
+
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['username'])"
+        label="Username">
+      </app-text-input>
+
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['email'])"
+        label="Email">
+      </app-text-input>
+
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['password'])"
+        label="Password"
+        type="password">
+      </app-text-input>
+
+      <app-text-input 
+        [formControl]="$any(registerForm.controls['confirmPassword'])"
+        label="Confirm Password"
+        type="password">
+      </app-text-input>
+
+      <div class="mb-3 form-floating">
+        <select 
+          id="role" 
+          class="form-select" 
+          formControlName="role"
+          [class.is-invalid]="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
+          <option value="" disabled selected>Select a role</option>
+          @for (role of roles; track role) {
             <option [value]="role">{{ role }}</option>
-            }
+          }
         </select>
-        @if (registerForm.controls['role'].invalid && registerForm.controls['role'].touched) {
-            <div class="text-danger">
-            Role is required.
-            </div>
+        <label for="role">Role</label>
+        @if (registerForm.get('role')?.invalid && registerForm.get('role')?.touched) {
+          <div class="invalid-feedback">
+            Please select a role
+          </div>
         }
-        </div>
-    
-        <!-- Validation Errors -->
-        @if (validationErrors.length) {
-        <div class="alert alert-danger text-start">
-            <ul>
+      </div>
+
+      @if (validationErrors.length > 0) {
+        <div class="alert alert-danger">
+          <ul class="mb-0">
             @for (error of validationErrors; track $index) {
-                <li>{{ error }}</li>
+              <li>{{ error }}</li>
             }
-            </ul>
+          </ul>
         </div>
-        }
-    
-        <!-- Action Buttons -->
-        <div class="form-group text-center">
-        <button [disabled]="!registerForm.valid" class="btn btn-success me-2" type="submit">Register</button>
-        <button class="btn btn-default me-2" (click)="cancel()" type="button">Cancel</button>
-        </div>
+      }
+
+      <div class="form-group text-center">
+        <button 
+          [disabled]="!registerForm.valid || isLoading" 
+          class="btn btn-success me-2" 
+          type="submit">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          Register
+        </button>
+        <button 
+          class="btn btn-secondary" 
+          (click)="cancel()" 
+          type="button"
+          [disabled]="isLoading">
+          Cancel
+        </button>
+      </div>
     </form>
-</div>
+  </div>

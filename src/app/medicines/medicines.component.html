@@ -1,0 +1,202 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Medicine List</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <button class="btn btn-success mb-3" (click)="openCreateModal()">
+    <i class="bi bi-plus-circle"></i> Add Medicine
+  </button>
+
+
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Filters</h5>
+      <button 
+        class="btn btn-link bg-primary" 
+        (click)="toggleFilters()">
+        <i class="bi" [class.bi-chevron-down]="!filtersVisible" [class.bi-chevron-up]="filtersVisible"></i>
+      </button>
+    </div>
+    <div class="card-body" *ngIf="filtersVisible">
+      <form class="row g-3 mb-4" (ngSubmit)="applyFilters()">
+        <div class="col-md-3">
+          <input type="text" class="form-control" [(ngModel)]="filterModel.name" name="name" placeholder="Name">
+        </div>
+        
+        <div class="col-md-3">
+          <input type="text" class="form-control" [(ngModel)]="filterModel.description" name="description" placeholder="Description">
+        </div>
+        
+        <div class="col-md-3">
+          <input type="text" class="form-control" [(ngModel)]="filterModel.category" name="category" placeholder="Category">
+        </div>
+        
+        <div class="col-md-3">
+          <div class="input-group">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.minStock" name="minStock" placeholder="Min Stock">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.maxStock" name="maxStock" placeholder="Max Stock">
+          </div>
+        </div>
+        
+        <div class="col-md-3">
+          <div class="input-group">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.minMinimumStock" name="minMinimumStock" placeholder="Min Minimum Stock">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.maxMinimumStock" name="maxMinimumStock" placeholder="Max Minimum Stock">
+          </div>
+        </div>
+        
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="filterModel.requiresSpecialApproval" name="requiresSpecialApproval">
+            <option [ngValue]="undefined">Special Approval (Any)</option>
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="filterModel.requiresStrictAudit" name="requiresStrictAudit">
+            <option [ngValue]="undefined">Strict Audit (Any)</option>
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <div class="input-group">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.minAuditFrequencyDays" name="minAuditFrequencyDays" placeholder="Min Audit Days">
+            <input type="number" class="form-control" [(ngModel)]="filterModel.maxAuditFrequencyDays" name="maxAuditFrequencyDays" placeholder="Max Audit Days">
+          </div>
+        </div>
+
+
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+          <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+  <div class="table-responsive">
+    <app-table
+    [columns]="medicineColumns"
+    [data]="medicines"
+    [actions]="tableActions"
+    (sort)="onSortChange($event)"
+    ></app-table>
+  </div>
+
+  <app-pagination
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>  
+    
+  
+  <app-delete-confirmation-modal
+  *ngIf="medicineToDelete"
+  [isOpen]="!!medicineToDelete"
+  [name]="medicineToDelete.name"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
+
+  <div *ngIf="isModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            {{ selectedMedicine ? 'Edit Medicine' : 'Create Medicine' }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="medicineForm" (ngSubmit)="saveMedicine()">
+            <!-- Name Field -->
+            <div class="mb-3">
+              <label for="name" class="form-label fw-bold">Name</label>
+              <input type="text" id="name" class="form-control" formControlName="name" placeholder="Enter medicine name" />
+              <div *ngIf="name.invalid && name.touched" class="text-danger">
+                <small *ngIf="name.errors?.['required']">Name is required.</small>
+                <small *ngIf="name.errors?.['minlength']">Name must be at least 5 characters long.</small>
+                <small *ngIf="name.errors?.['maxlength']">Name cannot exceed 200 characters.</small>
+              </div>
+            </div>
+  
+            <!-- Description Field -->
+            <div class="mb-3">
+              <label for="description" class="form-label fw-bold">Description</label>
+              <textarea id="description" class="form-control" formControlName="description" rows="3" placeholder="Enter description"></textarea>
+              <div *ngIf="description.invalid && description.touched" class="text-danger">
+                <small *ngIf="description.errors?.['required']">Description is required.</small>
+                <small *ngIf="description.errors?.['minlength']">Description must be at least 5 characters long.</small>
+                <small *ngIf="description.errors?.['maxlength']">Description cannot exceed 500 characters.</small>
+              </div>
+            </div>
+  
+            <!-- Category Field -->
+            <div class="mb-3">
+              <label for="category" class="form-label fw-bold">Category</label>
+              <input type="text" id="category" class="form-control" formControlName="category" placeholder="Enter category" />
+              <div *ngIf="category.invalid && category.touched" class="text-danger">
+                <small *ngIf="category.errors?.['required']">Category is required.</small>
+                <small *ngIf="category.errors?.['maxlength']">Category cannot exceed 100 characters.</small>
+              </div>
+            </div>
+  
+            <!-- Special Approval Field -->
+            <div class="mb-3 form-check">
+              <input type="checkbox" id="requiresSpecialApproval" class="form-check-input" formControlName="requiresSpecialApproval">
+              <label class="form-check-label" for="requiresSpecialApproval">Requires Special Approval</label>
+            </div>
+  
+            <!-- Minimum Stock Field -->
+            <div class="mb-3">
+              <label for="minimumStock" class="form-label fw-bold">Minimum Stock</label>
+              <input type="number" id="minimumStock" class="form-control" formControlName="minimumStock" min="0" />
+              <div *ngIf="minimumStock.invalid && minimumStock.touched" class="text-danger">
+                <small *ngIf="minimumStock.errors?.['required']">Minimum stock is required.</small>
+                <small *ngIf="minimumStock.errors?.['min']">Minimum stock cannot be negative.</small>
+              </div>
+            </div>
+  
+            <!-- Strict Audit Field -->
+            <div class="mb-3 form-check">
+              <input type="checkbox" id="requiresStrictAudit" class="form-check-input" formControlName="requiresStrictAudit">
+              <label class="form-check-label" for="requiresStrictAudit">Requires Strict Audit</label>
+            </div>
+  
+            <!-- Audit Frequency Field -->
+            <div class="mb-3">
+              <label for="auditFrequencyDays" class="form-label fw-bold">Audit Frequency (Days)</label>
+              <input type="number" id="auditFrequencyDays" class="form-control" formControlName="auditFrequencyDays" min="1" max="365" />
+              <div *ngIf="auditFrequencyDays.invalid && auditFrequencyDays.touched" class="text-danger">
+                <small *ngIf="auditFrequencyDays.errors?.['required']">Audit frequency is required.</small>
+                <small *ngIf="auditFrequencyDays.errors?.['min']">Audit frequency must be at least 1 day.</small>
+                <small *ngIf="auditFrequencyDays.errors?.['max']">Audit frequency cannot exceed 365 days.</small>
+              </div>
+            </div>
+  
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-success me-2 px-4" [disabled]="medicineForm.invalid">
+                {{ selectedMedicine ? 'Save' : 'Create' }}
+              </button>
+              <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <app-medicines-details
+    *ngIf="selectedMedicine && !isModalOpen"
+    [medicine]="selectedMedicine"
+    (onClose)="selectedMedicine = null"
+    (onEdit)="onEditFromDetails($event)"
+  ></app-medicines-details>
+</div>

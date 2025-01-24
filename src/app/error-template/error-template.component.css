@@ -1,0 +1,13 @@
+.error-container {
+    text-align: center;
+    margin: 50px;
+  }
+  
+  .text-danger {
+    color: red;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }

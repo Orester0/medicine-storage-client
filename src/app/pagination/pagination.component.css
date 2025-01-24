@@ -1,0 +1,54 @@
+
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+}
+
+@media (max-width:991.98px) {
+    .padding {
+        padding: 1.5rem
+    }
+}
+
+@media (max-width:767.98px) {
+    .padding {
+        padding: 1rem
+    }
+}
+
+.padding {
+    padding: 5rem
+}
+
+.container {
+    margin-top: 100px
+}
+
+.pagination,
+.jsgrid .jsgrid-pager {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem
+}
+
+.page-link {
+    color: black
+}
+
+.pagination.pagination-rounded-flat .page-item {
+    margin: 0 .25rem
+}
+
+.pagination-success .page-item.active .page-link,
+a {
+    background: #3437ff;
+    border-color: #002fff
+}
+
+.pagination.pagination-rounded-flat .page-item .page-link, a {
+   border: none;
+   border-radius: 50px;
+}
+

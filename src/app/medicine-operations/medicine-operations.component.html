@@ -1,0 +1,166 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Medicine Operations</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  
+
+  <button class="btn btn-success mb-3" (click)="openRequestModal()">
+    <i class="bi bi-plus-circle"></i> New Request
+  </button>
+
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Filters</h5>
+      <button 
+        class="btn btn-link bg-primary" 
+        (click)="toggleFilters()">
+        <i class="bi" [class.bi-chevron-down]="!filtersVisible" [class.bi-chevron-up]="filtersVisible"></i>
+      </button>
+    </div>
+    <div class="card-body" *ngIf="filtersVisible">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">From Date</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="filterModel.fromDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">To Date</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="filterModel.toDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Requested By</label>
+          <select class="form-select" [(ngModel)]="filterModel.requestedByUserId">
+            <option [ngValue]="null">All Users</option>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.firstName + user.lastName }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Medicine</label>
+          <select class="form-select" [(ngModel)]="filterModel.medicineId">
+            <option [ngValue]="null">All Medicines</option>
+            <option *ngFor="let medicine of medicines" [value]="medicine.id">
+              {{ medicine.name }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" [(ngModel)]="filterModel.status">
+            <option [ngValue]="null">All Statuses</option>
+            <option *ngFor="let status of statuses" [value]="status.id">
+              {{ status.name }}
+            </option>
+            
+          </select>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary" (click)="applyFilters()">
+          <i class="bi bi-search"></i> Apply Filters
+        </button>
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <i class="bi bi-x-circle"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="table-responsive">
+    <app-table
+    [columns]="requestColumns"
+    [data]="requests"
+    [actions]="tableActions"
+    (sort)="onSortChange($event)"
+    ></app-table>
+
+  </div>
+
+  <app-pagination
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>  
+    
+  
+  
+  <!-- Request Modal -->
+  <div *ngIf="isRequestModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New Medicine Request</h5>
+          <button type="button" class="btn-close" (click)="closeRequestModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveRequest()">
+            <div class="mb-3">
+              <label class="form-label">Medicine</label>
+              <select 
+                class="form-select"
+                [(ngModel)]="newRequest.medicineId"
+                name="medicineId"
+                required>
+                <option [ngValue]="0">Select Medicine</option>
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                  {{medicine.name}}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantity</label>
+              <input 
+                type="number"
+                class="form-control"
+                [(ngModel)]="newRequest.quantity"
+                name="quantity"
+                required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Required By Date</label>
+              <input 
+                type="date"
+                class="form-control"
+                [(ngModel)]="newRequest.requiredByDate"
+                name="requiredByDate"
+                required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Justification</label>
+              <textarea 
+                class="form-control"
+                [(ngModel)]="newRequest.justification"
+                name="justification"
+                rows="3"></textarea>
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary" (click)="closeRequestModal()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<app-medicine-operations-details
+  *ngIf="selectedOperation"
+  [medicineRequest]="selectedOperation"
+  (onClose)="selectedOperation = null"
+  (onAction)="handleOperationAction($event)"
+></app-medicine-operations-details>

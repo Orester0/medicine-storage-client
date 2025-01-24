@@ -1,0 +1,36 @@
+<div *ngIf="medicine" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Medicine Details</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDetails()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Name:</strong> {{ medicine.name }}</li>
+          <li class="list-group-item"><strong>Description:</strong> {{ medicine.description }}</li>
+          <li class="list-group-item"><strong>Category:</strong> {{ medicine.category }}</li>
+          <li class="list-group-item"><strong>Stock:</strong> {{ medicine.stock }}</li>
+          <li class="list-group-item"><strong>Minimum Stock:</strong> {{ medicine.minimumStock }}</li>
+          <li class="list-group-item"><strong>Audit Frequency:</strong> {{ medicine.auditFrequencyDays }} days</li>
+          <li class="list-group-item">
+            <strong>Requires Special Approval:</strong> 
+            <span class="badge bg-{{ medicine.requiresSpecialApproval ? 'success' : 'secondary' }}">
+              {{ medicine.requiresSpecialApproval ? 'Yes' : 'No' }}
+            </span>
+          </li>
+          <li class="list-group-item">
+            <strong>Requires Strict Audit:</strong> 
+            <span class="badge bg-{{ medicine.requiresStrictAudit ? 'warning' : 'secondary' }}">
+              {{ medicine.requiresStrictAudit ? 'Yes' : 'No' }}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button class="btn btn-outline-primary" (click)="editMedicine()">Edit</button>
+        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,25 +1,22 @@
 <div class="container mt-5">
-    <div style="text-align: center">
-        @if(!registerMode){
-            <h1>Welcome to medicine storage service</h1>
-            <p class="lead">Only thing you need is to sign up</p>
-            <div class="text-center">
-                <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Register</button>
-                <button class="btn btn-info btn-lg me-2">Learn more</button>
-            </div>
-        }
-        @else {
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-4">
-                        <app-register>
-                            
-                        </app-register>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-
-</div>
+    @if (!currentUser(); as user) {
+      <h2>Welcome to the Medicine Storage Service</h2>
+      <p>To get started, please sign up.</p>
+  
+      <button 
+        class="btn btn-primary me-2"
+        (click)="registerToggle()">
+        Register
+      </button>
+  
+      @if (registerMode) {
+        <app-register (cancelRegister)="registerToggle()"/>
+      }
+    } @else {
+      <p>Here is the general information about the system:</p>
+  
+      
+  
+      
+    }
+  </div>

@@ -1,0 +1,40 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="table-light">
+      <tr>
+        <th
+          *ngFor="let column of columns"
+          (click)="column.sortable && column.key !== 'actions' && handleSort(column.key)"
+          class="sortable-header text-center"
+        >
+          {{ column.label }}
+          <span *ngIf="column.sortable && sortConfig?.key === column.key">
+            <i [class]="sortConfig?.isDescending ? 'bi bi-caret-down-fill' : 'bi bi-caret-up-fill'"></i>
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data">
+        <td *ngFor="let column of columns">
+          <ng-container *ngIf="column.key !== 'actions'; else actionsTemplate">
+            {{ column.render ? column.render(row[column.key], row) : row[column.key] }}
+          </ng-container>
+          <ng-template #actionsTemplate>
+            <ng-container *ngIf="actions?.length">
+              <ng-container *ngFor="let action of actions">
+                <button
+                  *ngIf="action.visible ? action.visible(row) : true"
+                  [class]="action.class"
+                  (click)="action.onClick(row)"
+                >
+                  {{ action.label }}
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

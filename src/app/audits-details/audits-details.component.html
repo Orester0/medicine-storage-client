@@ -1,0 +1,59 @@
+<div *ngIf="audit" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Audit Details</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDetails()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>ID:</strong> {{ audit.id || 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>Planned By:</strong> 
+            {{ audit.plannedByUser ? (audit.plannedByUser.lastName + ' ' + audit.plannedByUser.firstName) : 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>Executed By:</strong> 
+            {{ audit.executedByUser ? (audit.executedByUser.lastName + ' ' + audit.executedByUser.firstName) : 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>Planned Date:</strong> 
+            {{ audit.plannedDate ? (audit.plannedDate | date: 'dd.MM.yyyy') : 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>Start Date:</strong> 
+            {{ audit.startDate ? (audit.startDate | date: 'dd.MM.yyyy') : 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>End Date:</strong> 
+            {{ audit.endDate ? (audit.endDate | date: 'dd.MM.yyyy') : 'N/A' }}
+          </li>
+          <li class="list-group-item">
+            <strong>Status:</strong>
+            <span class="badge px-3 py-2 {{ getAuditStatusBadgeClass(audit.status) }}">
+              {{ getAuditStatusText(audit.status) || 'N/A' }}
+            </span>
+          </li>
+          <li class="list-group-item">
+            <strong>Notes:</strong>
+            <p class="mb-0">{{ audit.notes || 'N/A' }}</p>
+          </li>
+        </ul>
+      </div>
+<!-- 
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" (click)="performAction('edit')">Edit</button>
+        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+      </div> -->
+
+
+      <div class="modal-footer justify-content-between">
+        <button class="btn btn-outline-primary" (click)="editAudit()">Edit</button>
+        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

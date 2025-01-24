@@ -1,21 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { User } from '../_models/user';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { UserDTO, UserToken } from '../_models/user.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = environment.apiUrl;
-  currentUser = signal<User | null>(null);
-
-
+  private baseUrlAccount = `${environment.apiUrl}account`;
+  private baseUrlUser = `${environment.apiUrl}user`;
+  currentUser = signal<UserToken | null>(null);
 
   login(model: any){
-    return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
+    return this.http.post<UserToken>(this.baseUrlAccount + '/login', model).pipe(
       map(user => {
         if(user){
           localStorage.setItem('user', JSON.stringify(user));
@@ -26,7 +25,7 @@ export class AccountService {
   }
 
   register(model: any) {
-    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+    return this.http.post<UserToken>(this.baseUrlAccount + '/register', model).pipe(
       map(user => {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
@@ -41,5 +40,17 @@ export class AccountService {
     localStorage.removeItem('user');
     this.currentUser.set(null);
   }
-  constructor() { }
+
+  getAllUsers(): Observable<UserDTO[]> {
+    return this.http.get<UserDTO[]>(`${this.baseUrlUser}`);
+  }
+
+  constructor() {
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      return;
+    }
+    const user = JSON.parse(userString);
+    this.currentUser.set(user);
+   }
 }

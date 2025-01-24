@@ -1,0 +1,29 @@
+<div *ngIf="isOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirm Deletion</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-3">
+            To confirm deletion, type the name of the item: <strong>{{ name }}</strong>
+          </p>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="deleteConfirmationName"
+            placeholder="Enter medicine name"
+          />
+          <div *ngIf="deleteError" class="text-danger mt-2">{{ deleteError }}</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="deleteConfirmationName !== name">
+            Delete
+          </button>
+          <button class="btn btn-secondary" (click)="close()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
