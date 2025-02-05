@@ -6,29 +6,110 @@ import { CommonModule } from '@angular/common';
 import { MedicinesDetailsComponent } from '../medicines-details/medicines-details.component';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
-import { FilterComponent } from '../filter/filter.component';
+import { FilterComponent, FilterConfig } from '../filter/filter.component';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-medicines',
-  imports: [FormsModule, CommonModule, PaginationComponent, MedicinesDetailsComponent, ReactiveFormsModule, TableComponent, DeleteConfirmationModalComponent],
+  imports: [FilterComponent, FormsModule, CommonModule, PaginationComponent, MedicinesDetailsComponent, ReactiveFormsModule, TableComponent, DeleteConfirmationModalComponent],
   templateUrl: './medicines.component.html',
   styleUrl: './medicines.component.css'
 })
 export class MedicinesComponent implements OnInit {
-  get minimumStock() {
-    return this.medicineForm.get('minimumStock')!;
-  }
   
-  get auditFrequencyDays() {
-    return this.medicineForm.get('auditFrequencyDays')!;
-  }
+  filterConfig: FilterConfig[] = [
+    { 
+      key: 'name', 
+      label: 'Name', 
+      type: 'text',
+      col: 3
+    },
+    { 
+      key: 'description', 
+      label: 'Description', 
+      type: 'text',
+      col: 3
+    },
+    { 
+      key: 'minStock', 
+      label: 'Min Stock', 
+      type: 'number',
+      col: 3
+    },
+    { 
+      key: 'maxStock', 
+      label: 'Max Stock', 
+      type: 'number',
+      col: 3
+    },
+    { 
+      key: 'minMinimumStock', 
+      label: 'Min Minimum Stock', 
+      type: 'number',
+      col: 3
+    },
+    { 
+      key: 'maxMinimumStock', 
+      label: 'Max Minimum Stock', 
+      type: 'number',
+      col: 3
+    },
+    { 
+      key: 'requiresSpecialApproval', 
+      label: 'Special Approval', 
+      type: 'select',
+      options: [
+        { value: true, label: 'Yes' },
+        { value: false, label: 'No' }
+      ],
+      col: 3
+    },
+    { 
+      key: 'requiresStrictAudit', 
+      label: 'Strict Audit', 
+      type: 'select',
+      options: [
+        { value: true, label: 'Yes' },
+        { value: false, label: 'No' }
+      ],
+      col: 3
+    },
+    { 
+      key: 'minAuditFrequencyDays', 
+      label: 'Min Audit Days', 
+      type: 'number',
+      col: 3
+    },
+    { 
+      key: 'maxAuditFrequencyDays', 
+      label: 'Max Audit Days', 
+      type: 'number',
+      col: 3
+    }
+  ];
+  
 
-  onSortChange(sortConfig: { key: keyof ReturnMedicineDTO; isDescending: boolean }): void {
-    this.sortColumn = sortConfig.key as string;
-    this.isDescending = sortConfig.isDescending;
-    this.loadMedicines();
-  }
+
+  filterModel: MedicineParams = {
+    name: null,
+    description: null,
+    category: null,
+    requiresSpecialApproval: null,
+    minStock: null,
+    maxStock: null,
+    minMinimumStock: null,
+    maxMinimumStock: null,
+    requiresStrictAudit: null,
+    minAuditFrequencyDays: null,
+    maxAuditFrequencyDays: null,
+    sortBy: 'name',
+    isDescending: false,
+    pageNumber: 1,
+    pageSize: 10
+  };
+  
 
   tableActions: TableAction<ReturnMedicineDTO>[] = [
     {
@@ -69,21 +150,11 @@ export class MedicinesComponent implements OnInit {
     }
   ];
 
-  private readonly defaultMedicine: CreateMedicineDTO = {
-    name: '',
-    description: '',
-    category: '',
-    requiresSpecialApproval: false,
-    minimumStock: 0,
-    requiresStrictAudit: false,
-    auditFrequencyDays: 0,
-  };
-
   medicines: ReturnMedicineDTO[] = [];
+  allMedicines: ReturnMedicineDTO[] = [];
   selectedMedicine: ReturnMedicineDTO | null = null;
-  medicineForm: FormGroup;
+  medicineForm!: FormGroup;
   serverErrors: any = null;
-  newMedicine: CreateMedicineDTO = { ...this.defaultMedicine };
   error: string | null = null;
 
   isModalOpen = false;
@@ -95,8 +166,65 @@ export class MedicinesComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
 
-  constructor(private medicineService: MedicineService, private fb: FormBuilder) {
-    this.medicineForm = this.fb.group({
+
+  constructor(private medicineService: MedicineService, private fb: FormBuilder, private route: ActivatedRoute ) {
+
+  }
+
+  
+  
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.loadMedicines();
+    this.initializeForm();
+    this.initializeFilter();
+  }
+  
+  private loadMedicines(): void {
+    const queryParams = {
+      ...this.filterModel,
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: this.sortColumn,
+      isDescending: this.isDescending
+    };
+  
+    this.medicineService.getMedicinesWithFilter(queryParams).subscribe({
+      next: (response) => {
+        this.medicines = response.items || [];
+        this.totalItems = response.totalCount || 0;
+      },
+      error: () => {
+        this.error = 'Failed to load medicines';
+      }
+    });
+  }
+
+
+  private initializeFilter(): void {
+    const uniqueCategories = Array.from(
+      new Set(this.allMedicines.map(medicine => medicine.category))
+    );
+    this.filterConfig = [
+      ...this.filterConfig.slice(0, 2),
+      {
+        key: 'category',
+        label: 'Category',
+        type: 'select',
+        col: 3,
+        options: uniqueCategories.map(category => ({
+          value: category,
+          label: category
+        }))
+      },
+      ...this.filterConfig.slice(2), 
+    ];
+    
+  }
+  
+
+  private initializeForm(): void {
+    this.medicineForm = this.fb.group({ 
       name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
       category: ['', [Validators.required, Validators.maxLength(100)]],
@@ -108,58 +236,19 @@ export class MedicinesComponent implements OnInit {
   }
 
 
-  filtersVisible: boolean = false;
-
-  toggleFilters() {
-    this.filtersVisible = !this.filtersVisible;
-  }
-
-
-  ngOnInit(): void {
+  onSortChange(sortConfig: { key: keyof ReturnMedicineDTO; isDescending: boolean }): void {
+    this.sortColumn = sortConfig.key as string;
+    this.isDescending = sortConfig.isDescending;
     this.loadMedicines();
   }
-  
-  
-  applyFilters(): void {
+
+  onFilterChange(filters: any): void {
+    this.filterModel = {
+      ...this.filterModel,
+      ...filters,
+    };
     this.currentPage = 1;
     this.loadMedicines();
-  }
-  
-  resetFilters(): void {
-    this.filterModel = {
-      pageNumber: 1,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending
-    };
-    this.loadMedicines();
-  }
-
-  filterModel: MedicineParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'name',
-    isDescending: false
-  };
-
-  private loadMedicines(): void {
-    const queryParams = {
-      ...this.filterModel,
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending
-    };
-  
-    this.medicineService.getMedicines(queryParams).subscribe({
-      next: (response) => {
-        this.medicines = response.items || [];
-        this.totalItems = response.totalCount || 0;
-      },
-      error: () => {
-        this.error = 'Failed to load medicines';
-      }
-    });
   }
 
   saveMedicine(): void {
@@ -191,38 +280,32 @@ export class MedicinesComponent implements OnInit {
       }
     });
   }
-
-  get name() {
-    return this.medicineForm.get('name')!;
-  }
-  get description() {
-    return this.medicineForm.get('description')!;
-  }
-  get category() {
-    return this.medicineForm.get('category')!;
-  }
-
+  
   onPageChange(newPage: number): void {
     this.currentPage = newPage;
     this.loadMedicines();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize);
-  }
-
   openCreateModal(): void {
-    this.resetForm();
+    this.resetCreateMedicineForm();
     this.isModalOpen = true;
   }
 
   closeModal(): void {
     this.isModalOpen = false;
-    this.resetForm();
+    this.resetCreateMedicineForm();
   }
 
-  resetForm(): void {
-    this.newMedicine = { ...this.defaultMedicine };
+  resetCreateMedicineForm(): void {
+    this.medicineForm.reset({
+      name: '',
+      description: '',
+      category: '',
+      requiresSpecialApproval: false,
+      minimumStock: 0,
+      requiresStrictAudit: false,
+      auditFrequencyDays: 1
+    });
     this.selectedMedicine = null;
   }
 
@@ -236,7 +319,6 @@ export class MedicinesComponent implements OnInit {
 
   handleDeleteConfirm(): void {
     if (!this.medicineToDelete) return;
-
     this.medicineService.deleteMedicine(this.medicineToDelete.id).subscribe({
       next: () => {
         this.loadMedicines();
@@ -258,7 +340,29 @@ export class MedicinesComponent implements OnInit {
   }
 
   onEditFromDetails(medicine: ReturnMedicineDTO): void {
-    this.newMedicine = { ...medicine };
+    this.medicineForm.patchValue(medicine);
     this.isModalOpen = true;
   }
+
+  
+
+  
+  get minimumStock() {
+    return this.medicineForm.get('minimumStock')!;
+  }
+  
+  get auditFrequencyDays() {
+    return this.medicineForm.get('auditFrequencyDays')!;
+  }
+
+  get name() {
+    return this.medicineForm.get('name')!;
+  }
+  get description() {
+    return this.medicineForm.get('description')!;
+  }
+  get category() {
+    return this.medicineForm.get('category')!;
+  }
+
 }

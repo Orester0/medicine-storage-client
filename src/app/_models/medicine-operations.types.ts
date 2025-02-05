@@ -39,10 +39,10 @@ export interface CreateMedicineUsageDTO {
 }
  
  export enum RequestStatus {
-   Pending = 0,
-   PedingWithSpecial = 1,
-   Approved = 2,
-   Rejected = 3
+   Pending = 1,
+   PedingWithSpecial = 2,
+   Approved = 3,
+   Rejected = 4
  }
 
  export interface MedicineUsageParams {
@@ -61,8 +61,8 @@ export interface CreateMedicineUsageDTO {
 }
 
  export interface MedicineRequestParams {
-   fromDate?: Date | null;
-   toDate?: Date | null;
+   fromDate?: Date |  string | null;
+   toDate?: Date |  string | null;
    status?: RequestStatus | null;
    requestedByUserId?: number | null;
    approvedByUserId?: number | null;

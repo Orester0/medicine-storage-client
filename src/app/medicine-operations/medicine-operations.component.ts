@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MedicineRequestService, MedicineUsageService } from '../_services/medicine-ops.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateMedicineRequestDTO, CreateMedicineUsageDTO, MedicineRequestParams, RequestStatus, ReturnMedicineRequestDTO } from '../_models/medicine-operations.types';
 import { MedicineService } from '../_services/medicine.service';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
@@ -10,77 +10,48 @@ import { AccountService } from '../_services/account.service';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { MedicineOperationsDetailsComponent } from '../medicine-operations-details/medicine-operations-details.component';
+import { FilterComponent, FilterConfig } from '../filter/filter.component';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { CreateMedicineRequestFormComponent } from '../create-medicine-request-form/create-medicine-request-form.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-medicine-operations',
-  imports: [CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent],
+  imports: [CreateMedicineRequestFormComponent ,FilterComponent, CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent, ReactiveFormsModule],
   templateUrl: './medicine-operations.component.html',
   styleUrl: './medicine-operations.component.css'
 })
 export class MedicineOperationsComponent implements OnInit {
-
-  selectedOperation: ReturnMedicineRequestDTO | null = null;
-
-  viewOperationDetails(operation: ReturnMedicineRequestDTO): void {
-    this.selectedOperation = operation;
-  }
-
-  handleOperationAction(event: { action: string; id: number }): void {
-    if (event.action === 'approve') {
-      this.approveRequest(event.id);
-    } else if (event.action === 'reject') {
-      this.rejectRequest(event.id);
-    }
-    this.selectedOperation = null;
-  }
+  
 
 
+  requests: ReturnMedicineRequestDTO[] = [];
+  allMedicines: ReturnMedicineDTO[] = []; 
+  error: string | null = null;
+  
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalItems: number = 0;
+  
+  sortColumn = 'requestDate';
+  isDescending: boolean = false;
+  
+  isCreateRequestModalOpen = false;
+  isUsageModalOpen = false;
 
-  getRequestStatusText(status: RequestStatus): string {
-    const statusMap = {
-      [RequestStatus.Pending]: 'Pending',
-      [RequestStatus.PedingWithSpecial]: 'Pending With Special',
-      [RequestStatus.Approved]: 'Approved',
-      [RequestStatus.Rejected]: 'Rejected'
-    };
-    return statusMap[status] || 'Unknown';
-  }
-
-  getStatusBadgeClass(status: RequestStatus): string {
-    const classMap = {
-      [RequestStatus.Pending]: 'bg-warning',
-      [RequestStatus.PedingWithSpecial]: 'bg-info',
-      [RequestStatus.Approved]: 'bg-success',
-      [RequestStatus.Rejected]: 'bg-danger'
-    };
-    return classMap[status] || 'bg-secondary';
-  }
-
-    onSortChange(sortConfig: { key: keyof ReturnMedicineRequestDTO; isDescending: boolean }): void {
-        this.selectedSortBy = sortConfig.key as string;
-        this.isDescending = sortConfig.isDescending;
-        this.loadRequests();
-    }
-
-    tableActions: TableAction<ReturnMedicineRequestDTO>[] = [
+  tableActions: TableAction<ReturnMedicineRequestDTO>[] = [
     {
         label: 'Approve Request',
         class: 'btn btn-success btn-sm me-2',
         onClick: (row) => this.approveRequest(row.id),
-        visible: (row) => row.status === 0
+        visible: (row) => row.status === 1 || row.status === 2,
       },
     
     {
         label: 'Reject Request',
         class: 'btn btn-danger btn-sm me-2',
         onClick: (row) => this.rejectRequest(row.id),
-        visible: (row) => row.status === 0,
-    },
-    {
-        label: 'Add Usage',
-        class: 'btn btn-primary btn-sm',
-        onClick: (row) => this.openUsageModal(row),
-        visible: (row) => row.status === 2,
+        visible: (row) => row.status === 1 || row.status === 2,
     },
     {
       label: 'View Details',
@@ -134,194 +105,162 @@ export class MedicineOperationsComponent implements OnInit {
 
 
   users: UserDTO[] = [];
+  filterConfig: FilterConfig[] = [
+    
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: Object.values(RequestStatus)
+            .filter(status => typeof status === 'number') 
+            .map(status => ({
+              value: status as RequestStatus,
+              label: this.getRequestStatusText(status as RequestStatus)
+            }))
+    },
+    {
+      key: 'fromDate',
+      label: 'Required from date',
+      type: 'date'
+    },
+    {
+      key: 'toDate',
+      label: 'Required to date',
+      type: 'date'
+    },
+    
+  ];
 
-  private loadUsers(): void {
-    this.userService.getAllUsers().subscribe({
-      next: (data) => {
-        this.users = data;
-        this.error = null;
-      },
-      error: (error) => {
-        this.error = 'Failed to load users';
-        console.error(error);
-      }
-    });
-  }
-  ngOnInit(): void {
-    this.loadRequests();
-    this.loadMedicines();
-    this.loadUsers();
-  }
+  selectedRequest: ReturnMedicineRequestDTO | null = null;
+
   
 
-
-
-  requests: ReturnMedicineRequestDTO[] = [];
-  medicines: ReturnMedicineDTO[] = []; 
-  error: string | null = null;
-  
-  currentPage = 1;
-  pageSize = 10;
-  totalItems = 0;
-  
-  selectedSortBy = 'requestDate';
-  isDescending = false;
-  
-  isRequestModalOpen = false;
-  isUsageModalOpen = false;
-  
   filterModel = {
     fromDate: null as Date | null,
     toDate: null as Date | null,
     status: null as RequestStatus | null,
     requestedByUserId: null as number | null,
-    medicineId: null as number | null
+    medicineId: null as number | null,
+    pageNumber: 1,
+    pageSize: 10,
+    sortBy: 'plannedDate',
+    isDescending: false,
   };
   
-  newRequest: CreateMedicineRequestDTO = {
-    medicineId: 0,
-    quantity: 0,
-    requiredByDate: new Date(),
-    justification: ''
-  };
-  newUsage: CreateMedicineUsageDTO = {
-    medicineId: 0,
-    medicineRequestId: 0,
-    quantity: 0,
-    notes: ''
-  };
-
-  statuses = Object.entries(RequestStatus)
-    .filter(([key]) => !isNaN(Number(key)))
-    .map(([key, value]) => ({
-      id: Number(key),
-      name: this.getRequestStatusText(Number(key))
-    }));
   
   constructor(
+    private fb: FormBuilder,
     private requestService: MedicineRequestService,
-    private userService: AccountService,
-    private usageService: MedicineUsageService,
-    private medicineService: MedicineService
+    private route: ActivatedRoute
   ) {}
   
-
-  
-  filtersVisible: boolean = false;
-
-  toggleFilters() {
-    this.filtersVisible = !this.filtersVisible;
+  private initializeFilter(): void {
+    this.filterConfig = [
+      {
+        key: 'medicineId',
+        label: 'Medicine',
+        type: 'select',
+        options: this.allMedicines.map(medicine => ({
+          value: medicine.id,
+          label: medicine.name
+        }))
+      },
+      ...this.filterConfig,
+      {
+        key: 'requestedByUserId',
+        label: 'Requested By',
+        type: 'select',
+        options: this.users.map(user => ({
+          value: user.id,
+          label: `${user.firstName} ${user.lastName}`
+        }))
+      },
+      
+    ];
   }
+
   
+  ngOnInit(): void {
+    this.users = this.route.snapshot.data['users'];
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.initializeFilter();
+    this.loadRequests();
+  }
+
   loadRequests(): void {
     const filterModel: MedicineRequestParams = {
+      ...this.filterModel,
       pageNumber: this.currentPage,
       pageSize: this.pageSize,
-      sortBy: this.selectedSortBy,
+      sortBy: this.sortColumn,
       isDescending: this.isDescending,
-      fromDate: this.filterModel.fromDate,
-      toDate: this.filterModel.toDate,
-      status: this.filterModel.status,
-      requestedByUserId: this.filterModel.requestedByUserId,
-      medicineId: this.filterModel.medicineId
     };
-  
+
     this.requestService.getRequests(filterModel).subscribe({
       next: (response) => {
         this.requests = response.items;
         this.totalItems = response.totalCount;
       },
-      error: () => (this.error = 'Failed to load requests')
+      error: () => {
+        this.error = 'Failed to load requests'
+      },
     });
   }
-  
 
-  loadMedicines(): void {
-    this.medicineService.getMedicines({ 
-      pageNumber: 1, 
-      pageSize: 999, 
-      sortBy: 'name' 
-    }).subscribe({
-      next: (response) => this.medicines = response.items,
-      error: () => this.error = 'Failed to load medicines'
-    });
-  }
-  
-  
-  getSortIcon(column: string): string {
-    if (this.selectedSortBy !== column) return 'bi bi-chevron-expand';
-    return this.isDescending ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
-  }
-  
-  applyFilters(): void {
+ 
+  onFilterChange(filters: any): void {
+    this.filterModel = {
+      ...this.filterModel,
+      ...filters
+    };
     this.currentPage = 1;
     this.loadRequests();
   }
+
   
-  resetFilters(): void {
-    
-    this.filterModel = {
-      fromDate: null,
-      toDate: null,
-      status: null,
-      requestedByUserId: null,
-      medicineId: null
-    };
-    this.applyFilters();
+
+
+  viewOperationDetails(request: ReturnMedicineRequestDTO): void {
+    this.selectedRequest = request;
+  }
+
+  handleOperationAction(event: { action: string; id: number }): void {
+    if (event.action === 'approve') {
+      this.approveRequest(event.id);
+    } else if (event.action === 'reject') {
+      this.rejectRequest(event.id);
+    }
+    this.selectedRequest = null;
+  }
+
+
+
+
+    onSortChange(sortConfig: { key: keyof ReturnMedicineRequestDTO; isDescending: boolean }): void {
+        this.sortColumn = sortConfig.key as string;
+        this.isDescending = sortConfig.isDescending;
+        this.loadRequests();
+    }
+
+
+  openCreateRequestModal(): void {
+    this.isCreateRequestModalOpen = true;
+  }   
+  
+  closeCreateRequestModal(): void {
+    this.isCreateRequestModalOpen = false;
   }
   
-  openRequestModal(): void {
-    this.resetRequestForm();
-    this.isRequestModalOpen = true;
-  }
-  
-  closeRequestModal(): void {
-    this.isRequestModalOpen = false;
-  }
-  
-  openUsageModal(request: ReturnMedicineRequestDTO): void {
-    this.newUsage = {
-      medicineId: request.medicine.id,
-      medicineRequestId: request.id,
-      quantity: 0,
-      notes: ''
-    };
-    this.isUsageModalOpen = true;
-  }
-  
-  closeUsageModal(): void {
-    this.isUsageModalOpen = false;
-  }
-  
-  resetRequestForm(): void {
-    this.newRequest = {
-      medicineId: 0,
-      quantity: 0,
-      requiredByDate: new Date(),
-      justification: ''
-    };
-  }
-  
-  saveRequest(): void {
-    this.requestService.createRequest(this.newRequest).subscribe({
+  saveRequest(requestData: CreateMedicineRequestDTO): void {
+    this.requestService.createRequest(requestData).subscribe({
       next: () => {
         this.loadRequests();
-        this.closeRequestModal();
+        this.closeCreateRequestModal();
       },
       error: () => (this.error = 'Failed to create request')
     });
   }
   
-  
-  saveUsage(): void {
-    this.usageService.createUsage(this.newUsage).subscribe({
-      next: () => {
-        this.loadRequests();
-        this.closeUsageModal();
-      },
-      error: () => (this.error = 'Failed to create usage')
-    });
-  }
   
   
   approveRequest(requestId: number): void {
@@ -344,9 +283,24 @@ export class MedicineOperationsComponent implements OnInit {
   }
   
   
-  
-  get totalPages(): number[] {
-    const pages = Math.ceil(this.totalItems / this.pageSize);
-    return Array.from({ length: pages }, (_, i) => i + 1);
+  getRequestStatusText(status: RequestStatus): string {
+    const statusMap = {
+      [RequestStatus.Pending]: 'Pending',
+      [RequestStatus.PedingWithSpecial]: 'Pending With Special',
+      [RequestStatus.Approved]: 'Approved',
+      [RequestStatus.Rejected]: 'Rejected'
+    };
+    return statusMap[status] || 'Unknown';
   }
+
+  getRequestStatusBadgeClass(status: RequestStatus): string {
+    const classMap = {
+      [RequestStatus.Pending]: 'bg-warning',
+      [RequestStatus.PedingWithSpecial]: 'bg-info',
+      [RequestStatus.Approved]: 'bg-success',
+      [RequestStatus.Rejected]: 'bg-danger'
+    };
+    return classMap[status] || 'bg-secondary';
+  }
+  
 }

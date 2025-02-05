@@ -34,7 +34,7 @@
                 <td>{{ item.requiredQuantity }}</td>
                 <td>
                   <span class="badge {{ getItemStatusBadgeClass(item.status) }}">
-                    {{ item.status === 0 ? 'Pending' : 'Executed' }}
+                    {{ item.status === 1 ? 'Pending' : 'Executed' }}
                   </span>
                 </td>
               </tr>
@@ -64,14 +64,14 @@
                 </td>
                 <td>
                   <button
-                    *ngIf="tender.status === 2"
+                    *ngIf="tender.status === 3"
                     class="btn btn-success btn-sm"
                     (click)="selectWinner(proposal.id)"
                   >
                     Select Winner
                   </button>
                   <button
-                    *ngIf="tender.status === 3"
+                    *ngIf="tender.status === 4"
                     class="btn btn-primary btn-sm"
                     (click)="executeTender(proposal.id)"
                   >

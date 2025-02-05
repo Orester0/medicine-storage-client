@@ -1,14 +1,13 @@
 import { Component, OnInit, output, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { AccountService } from '../_services/account.service';
-import { TextInputComponent } from "../_forms/text-input/text-input.component";
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, TextInputComponent, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './register.component.html',
 })
 
@@ -91,11 +90,7 @@ export class RegisterComponent implements OnInit {
 
       this.accountService.register(formData).subscribe({
         next: () => {
-          this.router.navigate(['/login'], { 
-            queryParams: { 
-              registered: true 
-            }
-          });
+          this.router.navigate(['/login'], { queryParams: { registered: true } });
         },
         error: (error) => {
           this.handleValidationErrors(error);

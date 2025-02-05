@@ -1,0 +1,184 @@
+<!-- Template Modal Component -->
+<button class="icon-button fixed-top-right" (click)="toggleModal()">
+  <mat-icon [class.bell-notification]="hasNotifications">notifications</mat-icon>
+</button>
+<div class="modal fade show" [class.d-block]="showModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content shadow-sm">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title h6">Templates</h5>
+        <button type="button" class="btn-close" (click)="toggleModal()"></button>
+      </div>
+
+      <ul class="nav nav-tabs nav-fill mb-3">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'medicine-request'" (click)="setActiveTab('medicine-request')">Medicine Request</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'audit'" (click)="setActiveTab('audit')">Audit</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'tender'" (click)="setActiveTab('tender')">Tender</a>
+        </li>
+      </ul>
+
+      <!-- List View -->
+      <div class="modal-body" *ngIf="!isFormVisible && !isDetailsVisible">
+        <button class="btn btn-primary btn-sm mb-3" (click)="showCreateForm()">Create Template</button>
+        
+        <div class="list-group">
+          <div *ngFor="let template of getCurrentTemplates()" 
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+  
+            <div class="d-flex align-items-center">
+              <i *ngIf="templatesNeedingExecution[template.id]" class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+              <span>{{ template.name }}</span>
+            </div>
+
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-secondary" (click)="viewTemplateDetails(template)">View</button>
+              <button class="btn btn-outline-secondary" (click)="editTemplate(template)">Edit</button>
+              <button class="btn btn-outline-primary" (click)="onExecuteClick(activeTab, template.id)">Execute</button>
+              <button class="btn btn-outline-secondary" (click)="toggleTemplateStatus(activeTab, template.id, !template.isActive)">
+                {{ template.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteTemplate(activeTab, template.id)">Delete</button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Form View -->
+      <div class="modal-body" *ngIf="isFormVisible">
+        <h6 class="mb-3">{{ isEditMode ? 'Edit' : 'Create' }}</h6>
+        <form [formGroup]="getActiveForm()" (ngSubmit)="submitForm(activeTab)">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input formControlName="name" class="form-control form-control-sm" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Recurrence Interval</label>
+            <input type="number" formControlName="recurrenceInterval" class="form-control form-control-sm" />
+          </div>
+
+          <!-- Medicine Request fields -->
+          <ng-container *ngIf="activeTab === 'medicine-request'">
+            <div class="mb-3">
+              <label class="form-label">Medicine</label>
+              <select formControlName="medicineId" class="form-select form-select-sm">
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">{{ medicine.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantity</label>
+              <input type="number" formControlName="quantity" class="form-control form-control-sm" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Justification</label>
+              <textarea formControlName="justification" class="form-control form-control-sm" rows="3"></textarea>
+            </div>
+          </ng-container>
+
+          <!-- Audit fields -->
+          <ng-container *ngIf="activeTab === 'audit'">
+            <div class="mb-3">
+              <label class="form-label">Medicines</label>
+              <select multiple formControlName="medicineIds" class="form-select form-select-sm">
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">{{ medicine.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Notes</label>
+              <textarea formControlName="notes" class="form-control form-control-sm" rows="3"></textarea>
+            </div>
+          </ng-container>
+
+          <!-- Tender fields -->
+          <ng-container *ngIf="activeTab === 'tender'">
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input formControlName="title" class="form-control form-control-sm" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea formControlName="description" class="form-control form-control-sm" rows="3"></textarea>
+            </div>
+          </ng-container>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+            <button type="button" class="btn btn-light btn-sm" (click)="cancelForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Details View -->
+      <div class="modal-body" *ngIf="isDetailsVisible">
+        <h6 class="mb-3">Template Details</h6>
+        <div class="card" *ngIf="selectedTemplate">
+          <div class="card-body">
+            <dl class="row mb-0">
+              <dt class="col-sm-4">Name</dt>
+              <dd class="col-sm-8">{{ selectedTemplate.name }}</dd>
+
+              <dt class="col-sm-4">Recurrence Interval</dt>
+              <dd class="col-sm-8">{{ selectedTemplate.recurrenceInterval }}</dd>
+
+              <ng-container [ngSwitch]="activeTab">
+                <ng-container *ngSwitchCase="'medicine-request'" >
+                  <ng-container *ngIf="isMedicineRequest(selectedTemplate)">
+                    <dt class="col-sm-4">Medicine</dt>
+                    <dd class="col-sm-8">{{ getMedicineName(selectedTemplate.createDTO.medicineId) }}</dd>
+
+                    <dt class="col-sm-4">Quantity</dt>
+                    <dd class="col-sm-8">{{ selectedTemplate.createDTO.quantity }}</dd>
+
+                    <dt class="col-sm-4">Justification</dt>
+                    <dd class="col-sm-8">{{ selectedTemplate.createDTO.justification }}</dd>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'audit'">
+                  <ng-container *ngIf="isAudit(selectedTemplate)">
+                    <dt class="col-sm-4">Medicines</dt>
+                    <dd class="col-sm-8">
+                      <ul class="list-unstyled mb-0">
+                        <li *ngFor="let id of selectedTemplate.createDTO.medicineIds">
+                          {{ getMedicineName(id) }}
+                        </li>
+                      </ul>
+                    </dd>
+
+                    <dt class="col-sm-4">Notes</dt>
+                    <dd class="col-sm-8">{{ selectedTemplate.createDTO.notes }}</dd>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'tender'">
+                  <ng-container *ngIf="isTender(selectedTemplate)">
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">{{ selectedTemplate.createDTO.title }}</dd>
+
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">{{ selectedTemplate.createDTO.description }}</dd>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </dl>
+          </div>
+        </div>
+
+        <button class="btn btn-light btn-sm mt-3" (click)="closeDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-notification-template-date-pick
+  *ngIf="showExecuteDateModal"
+  [templateType]="selectedTemplateForExecution?.type!"
+  (confirmed)="onExecuteDateConfirmed($event)"
+  (cancelled)="onExecuteDateCancelled()">
+</app-notification-template-date-pick>

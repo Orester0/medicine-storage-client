@@ -19,81 +19,64 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
   
     // Tender endpoints
     getTenders(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
-      let httpParams = new HttpParams()
-          .append('pageNumber', (params.pageNumber ?? 1).toString())
-          .append('pageSize', (params.pageSize ?? 10).toString());
+      let httpParams = new HttpParams();
   
       if (params.title) httpParams = httpParams.append('title', params.title);
+  
       if (params.publishDateFrom) {
-          httpParams = httpParams.append(
-              'publishDateFrom',
-              params.publishDateFrom instanceof Date
-                  ? params.publishDateFrom.toISOString()
-                  : params.publishDateFrom
-          );
+        const fromDate = params.publishDateFrom instanceof Date ? params.publishDateFrom.toISOString() : params.publishDateFrom;
+        httpParams = httpParams.append('publishDateFrom', fromDate);
       }
       if (params.publishDateTo) {
-          httpParams = httpParams.append(
-              'publishDateTo',
-              params.publishDateTo instanceof Date
-                  ? params.publishDateTo.toISOString()
-                  : params.publishDateTo
-          );
+        const toDate = params.publishDateTo instanceof Date ? params.publishDateTo.toISOString() : params.publishDateTo;
+        httpParams = httpParams.append('publishDateTo', toDate);
       }
       if (params.closingDateFrom) {
-          httpParams = httpParams.append(
-              'closingDateFrom',
-              params.closingDateFrom instanceof Date
-                  ? params.closingDateFrom.toISOString()
-                  : params.closingDateFrom
-          );
+        const toDate = params.closingDateFrom instanceof Date ? params.closingDateFrom.toISOString() : params.closingDateFrom;
+        httpParams = httpParams.append('closingDateFrom', toDate);
       }
       if (params.closingDateTo) {
-          httpParams = httpParams.append(
-              'closingDateTo',
-              params.closingDateTo instanceof Date
-                  ? params.closingDateTo.toISOString()
-                  : params.closingDateTo
-          );
+        const toDate = params.closingDateTo instanceof Date ? params.closingDateTo.toISOString() : params.closingDateTo;
+        httpParams = httpParams.append('closingDateTo', toDate);
       }
       if (params.deadlineDateFrom) {
-          httpParams = httpParams.append(
-              'deadlineDateFrom',
-              params.deadlineDateFrom instanceof Date
-                  ? params.deadlineDateFrom.toISOString()
-                  : params.deadlineDateFrom
-          );
+        const toDate = params.deadlineDateFrom instanceof Date ? params.deadlineDateFrom.toISOString() : params.deadlineDateFrom;
+        httpParams = httpParams.append('deadlineDateFrom', toDate);
       }
       if (params.deadlineDateTo) {
-          httpParams = httpParams.append(
-              'deadlineDateTo',
-              params.deadlineDateTo instanceof Date
-                  ? params.deadlineDateTo.toISOString()
-                  : params.deadlineDateTo
-          );
+        const toDate = params.deadlineDateTo instanceof Date ? params.deadlineDateTo.toISOString() : params.deadlineDateTo;
+        httpParams = httpParams.append('deadlineDateTo', toDate);
       }
-      if (params.status !== undefined) {
+      if (params.status !== null && params.status !== undefined) {
           httpParams = httpParams.append('status', params.status.toString());
       }
-      if (params.createdByUserId !== undefined) {
+  
+      if (params.createdByUserId !== null && params.createdByUserId !== undefined) {
           httpParams = httpParams.append('createdByUserId', params.createdByUserId.toString());
       }
-      if (params.openedByUserId !== undefined) {
+      if (params.openedByUserId !== null && params.openedByUserId !== undefined) {
           httpParams = httpParams.append('openedByUserId', params.openedByUserId.toString());
       }
-      if (params.closedByUserId !== undefined) {
+      if (params.closedByUserId !== null && params.closedByUserId !== undefined) {
           httpParams = httpParams.append('closedByUserId', params.closedByUserId.toString());
       }
-      if (params.winnerSelectedByUserId !== undefined) {
+      if (params.winnerSelectedByUserId !== null && params.winnerSelectedByUserId !== undefined) {
           httpParams = httpParams.append('winnerSelectedByUserId', params.winnerSelectedByUserId.toString());
       }
-      if (params.sortBy) httpParams = httpParams.append('sortBy', params.sortBy);
-      if (params.isDescending !== undefined) {
+  
+      if (params.sortBy) {
+          httpParams = httpParams.append('sortBy', params.sortBy);
+      }
+      if (params.isDescending !== null && params.isDescending !== undefined) {
           httpParams = httpParams.append('isDescending', params.isDescending.toString());
       }
   
-      return this.http.get<PagedList<ReturnTenderDTO>>(this.tenderUrl, { params: httpParams }).pipe();
+      httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
+      httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
+  
+      return this.http.get<PagedList<ReturnTenderDTO>>(this.tenderUrl, { params: httpParams });
   }
+  
   
     
   

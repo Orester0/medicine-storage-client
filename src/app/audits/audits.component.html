@@ -7,54 +7,12 @@
     <i class="bi bi-plus-circle"></i> Create Audit
   </button>
 
-  <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h5 class="card-title mb-0">Filters</h5>
-      <button 
-        class="btn btn-link bg-primary" 
-        (click)="toggleFilters()">
-        <i class="bi" [class.bi-chevron-down]="!filtersVisible" [class.bi-chevron-up]="filtersVisible"></i>
-      </button>
-    </div>
-    <div class="card-body" *ngIf="filtersVisible">
-      <div class="row mb-3">
-        <div class="col-md-3">
-          <label class="form-label">From Date</label>
-          <input type="date" class="form-control" [(ngModel)]="filterModel.fromDate">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">To Date</label>
-          <input type="date" class="form-control" [(ngModel)]="filterModel.toDate">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Status</label>
-          <select class="form-select" [(ngModel)]="filterModel.status">
-            <option [ngValue]="null">All</option>
-            <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Planned By User ID</label>
-          <input type="number" class="form-control" [(ngModel)]="filterModel.plannedByUserId">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-3">
-          <label class="form-label">Executed By User ID</label>
-          <input type="number" class="form-control" [(ngModel)]="filterModel.executedByUserId">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-control" [(ngModel)]="filterModel.notes">
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-          <button class="btn btn-primary" (click)="applyFilters()">Apply Filters</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
+
+  <app-filter 
+  [config]="filterConfig"
+  [title]="'Filters'"
+  (filterChange)="onFilterChange($event)">
+  </app-filter>
 
   <div class="table-responsive">
     <app-table
@@ -65,8 +23,6 @@
     ></app-table>
   </div>
 
-
- 
   <app-pagination
     [totalItems]="totalItems"
     [pageSize]="pageSize"
@@ -74,83 +30,31 @@
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
     
-
-
   <div *ngIf="isModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg">
       <div class="modal-content shadow-lg border-0">
         <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">Create Audit</h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+          <h5 class="modal-title">{{'Create Audit'}}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeCreateAuditModal()"></button>
         </div>
         <div class="modal-body">
-          <form (ngSubmit)="saveAudit()">
-            <div class="mb-3">
-              <label for="plannedDate" class="form-label fw-bold">Planned Date</label>
-              <input
-                type="date"
-                id="plannedDate"
-                class="form-control"
-                [(ngModel)]="newAudit.plannedDate"
-                name="plannedDate"
-                required
-              />
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label fw-bold">Medicines</label>
-              <div class="mb-2">
-                <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectAllMedicines()">
-                  {{ selectedMedicines.length === medicines.length ? 'Deselect All' : 'Select All' }}
-                </button>
-              </div>
-              <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
-                <div class="form-check" *ngFor="let medicine of medicines">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    [id]="'medicine-' + medicine.id"
-                    [checked]="selectedMedicines.includes(medicine.id)"
-                    (change)="toggleMedicine(medicine.id)"
-                  />
-                  <label class="form-check-label" [for]="'medicine-' + medicine.id">
-                    {{ medicine.name }}
-                  </label>
-                </div>
-              </div>
-            </div>
-        
-            <div class="mb-3">
-              <label for="notes" class="form-label fw-bold">Notes</label>
-              <textarea
-                id="notes"
-                class="form-control"
-                [(ngModel)]="newAudit.notes"
-                name="notes"
-                rows="3"
-                placeholder="Enter notes"
-              ></textarea>
-            </div>
-        
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-success me-2 px-4" [disabled]="!selectedMedicines.length">
-                {{ selectedAudit ? 'Update' : 'Create' }}
-              </button>
-              <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">
-                Cancel
-              </button>
-            </div>
-          </form>
+          <div class="modal-body">
+            <app-create-audit-form
+              [medicines]="allMedicines"
+              (submitRequest)="saveAudit($event)"
+              (cancelRequest)="closeCreateAuditModal()"
+            ></app-create-audit-form>
+          </div>
         </div>
       </div>
     </div>
   </div>
   
+  
   <app-audits-details
       *ngIf="selectedAudit && !isModalOpen"
       [audit]="selectedAudit"
       (onClose)="selectedAudit = null"
-      (onEdit)="onEditFromDetails($event)"
   ></app-audits-details>
 
 

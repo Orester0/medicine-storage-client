@@ -4,10 +4,7 @@ import { AccountService } from './_services/account.service';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MedicineService } from './_services/medicine.service';
-import { TenderService } from './_services/tender.service';
 import { ToastrService } from 'ngx-toastr';
-import { TextInputComponent } from './_forms/text-input/text-input.component';
 @Component({
   selector: 'app-root',
   standalone: true,

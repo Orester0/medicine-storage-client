@@ -1,7 +1,7 @@
 import { ReturnMedicineDTO } from "./medicine.types";
 import { UserDTO } from "./user.types";
 
-export interface CreateAuditRequest {
+export interface CreateAuditDTO {
    medicineIds: number[];
    notes?: string | null;
    plannedDate: Date;
@@ -51,9 +51,9 @@ export interface ReturnAuditItemDTO {
 }
 
 export enum AuditStatus {
-   Planned = 0,
-   InProgress = 1,
-   Completed = 2,
-   RequiresFollowUp = 3,
-   Cancelled = 4,
+   Planned = 1,
+   InProgress = 2,
+   Completed = 3,
+   RequiresFollowUp = 4,
+   Cancelled = 5,
  }

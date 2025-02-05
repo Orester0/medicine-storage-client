@@ -21,17 +21,17 @@ export interface CreateMedicineDTO {
 }
   
 export interface MedicineParams {
-  name?: string;
-  description?: string;
-  category?: string;
-  requiresSpecialApproval?: boolean;
-  minStock?: number;
-  maxStock?: number;
-  minMinimumStock?: number;
-  maxMinimumStock?: number;
-  requiresStrictAudit?: boolean;
-  minAuditFrequencyDays?: number;
-  maxAuditFrequencyDays?: number;
+  name?: string | null;
+  description?: string | null;
+  category?: string | null; 
+  requiresSpecialApproval?: boolean | null;
+  minStock?: number | null;
+  maxStock?: number | null;
+  minMinimumStock?: number | null;
+  maxMinimumStock?: number | null;
+  requiresStrictAudit?: boolean | null;
+  minAuditFrequencyDays?: number | null;
+  maxAuditFrequencyDays?: number | null;
   sortBy?: string;
   isDescending?: boolean;
   pageNumber: number;

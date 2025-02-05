@@ -1,61 +1,54 @@
-<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="filterModalLabel">Filters</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="form" class="filter-form">
-          <div *ngFor="let field of fields" class="mb-3">
-            <label [for]="field.name" class="form-label">{{ field.label }}</label>
-            <input
-              *ngIf="field.type === 'text'"
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">{{ title }}</h5>
+    <button class="btn btn-link" (click)="toggleFilters()">
+      <i class="bi" [class.bi-chevron-down]="!isVisible" [class.bi-chevron-up]="isVisible"></i>
+    </button>
+  </div>
+  <div class="card-body" *ngIf="isVisible">
+    <form [formGroup]="form">
+      <div class="row mb-3">
+        <div *ngFor="let field of config" [class]="'col-md-' + (field.col || 3)">
+          <label [for]="field.key" class="form-label">{{ field.label }}</label>
+          
+          <ng-container [ngSwitch]="field.type">
+            <input *ngSwitchCase="'text'"
+              [id]="field.key"
               type="text"
               class="form-control"
-              [id]="field.name"
-              [formControlName]="field.name"
-            />
-            <input
-              *ngIf="field.type === 'number'"
+              [formControlName]="field.key">
+
+            <input *ngSwitchCase="'number'"
+              [id]="field.key"
               type="number"
               class="form-control"
-              [id]="field.name"
-              [formControlName]="field.name"
-            />
-            <input
-              *ngIf="field.type === 'date'"
+              [formControlName]="field.key">
+
+            <input *ngSwitchCase="'date'"
+              [id]="field.key"
               type="date"
               class="form-control"
-              [id]="field.name"
-              [formControlName]="field.name"
-            />
-            <select
-              *ngIf="field.type === 'select'"
+              [formControlName]="field.key">
+
+            <select *ngSwitchCase="'select'"
+              [id]="field.key"
               class="form-select"
-              [id]="field.name"
-              [formControlName]="field.name"
-            >
-              <option *ngFor="let option of field.options" [value]="option.value">
-                {{ option.label }}
+              [formControlName]="field.key">
+              <option [ngValue]="null">All</option>
+              <option *ngFor="let opt of field.options" [value]="opt.value">
+                {{ opt.label }}
               </option>
             </select>
-            <div *ngIf="field.type === 'checkbox'" class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                [id]="field.name"
-                [formControlName]="field.name"
-              />
-              <label class="form-check-label" [for]="field.name">{{ field.label }}</label>
-            </div>
-          </div>
-        </form>
+          </ng-container>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" (click)="form.reset()">Clear</button>
+      
+      <div class="row">
+        <div class="col d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset</button>
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply</button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>

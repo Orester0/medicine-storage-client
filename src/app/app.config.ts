@@ -8,11 +8,13 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideToastr } from 'ngx-toastr';
 import { errorInterceptor } from './_interceptors/error.interceptor';
 import { jwtInterceptor as jwtInterceptor } from './_interceptors/jwt.interceptor';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { cachingInterceptor } from './_interceptors/caching.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([errorInterceptor, jwtInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([errorInterceptor, jwtInterceptor, cachingInterceptor])),
     provideAnimations(),
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay()),
     provideToastr({
@@ -20,7 +22,7 @@ export const appConfig: ApplicationConfig = {
       timeOut: 3000,
       extendedTimeOut: 3000,
       closeButton: true
-    })
+    }), provideAnimationsAsync()
   ]
 };
 

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedList } from '../_models/service.types';
-import { ReturnAuditDTO, CreateAuditRequest, UpdateAuditItemsRequest, AuditNotes, AuditParams } from '../_models/audit.types';
+import { ReturnAuditDTO, CreateAuditDTO, UpdateAuditItemsRequest, AuditNotes, AuditParams } from '../_models/audit.types';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +14,6 @@ export class AuditService {
 
   getAllAudits(params: AuditParams): Observable<PagedList<ReturnAuditDTO>> {
     let httpParams = new HttpParams();
-
     if (params.fromDate) {
       const fromDate = params.fromDate instanceof Date ? params.fromDate.toISOString() : params.fromDate;
       httpParams = httpParams.append('fromDate', fromDate);
@@ -23,9 +22,13 @@ export class AuditService {
       const toDate = params.toDate instanceof Date ? params.toDate.toISOString() : params.toDate;
       httpParams = httpParams.append('toDate', toDate);
     }
-    if (params.status !== undefined && params.status !== null) {
+
+    if (params.status !== null && params.status !== undefined) { 
       httpParams = httpParams.append('status', params.status.toString());
     }
+    
+    
+    
     if (params.plannedByUserId !== undefined && params.plannedByUserId !== null) {
       httpParams = httpParams.append('plannedByUserId', params.plannedByUserId.toString());
     }
@@ -53,7 +56,7 @@ export class AuditService {
     return this.http.get<ReturnAuditDTO>(`${this.baseUrl}/${auditId}`);
   }
 
-  createAudit(request: CreateAuditRequest): Observable<ReturnAuditDTO> {
+  createAudit(request: CreateAuditDTO): Observable<ReturnAuditDTO> {
     return this.http.post<ReturnAuditDTO>(`${this.baseUrl}/create`, request);
   }
 

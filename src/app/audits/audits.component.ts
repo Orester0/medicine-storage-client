@@ -1,51 +1,65 @@
 import { Component, OnInit } from '@angular/core';
-import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditRequest } from '../_models/audit.types';
+import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditDTO } from '../_models/audit.types';
 import { AuditService } from '../_services/audit.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuditsDetailsComponent } from '../audits-details/audits-details.component';
 import { MedicineService } from '../_services/medicine.service';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { FilterComponent, FilterConfig } from '../filter/filter.component';
+import { CreateAuditFormComponent } from '../create-audit-form/create-audit-form.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-audits',
-  imports: [FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent],
+  imports: [CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
 })
 export class AuditsComponent implements OnInit {
-
-  getAuditStatusText(status: AuditStatus): string {
-    const statusMap: Record<AuditStatus, string> = {
-      [AuditStatus.Planned]: 'Planned',
-      [AuditStatus.InProgress]: 'In Progress',
-      [AuditStatus.Completed]: 'Completed',
-      [AuditStatus.RequiresFollowUp]: 'Requires Follow-Up',
-      [AuditStatus.Cancelled]: 'Cancelled',
-    };
-    return statusMap[status] ?? 'Unknown';
-  }
-
-  getAuditStatusBadgeClass(status: AuditStatus): string {
-    const classMap: Record<AuditStatus, string> = {
-      [AuditStatus.Planned]: 'bg-secondary',
-      [AuditStatus.InProgress]: 'bg-primary',
-      [AuditStatus.Completed]: 'bg-success',
-      [AuditStatus.RequiresFollowUp]: 'bg-warning text-dark',
-      [AuditStatus.Cancelled]: 'bg-danger',
-    };
-    return classMap[status] ?? 'bg-secondary';
-  }
+  filterConfig: FilterConfig[] = [
+    {
+      key: 'fromDate',
+      label: 'From Date',
+      type: 'date',
+    },
+    {
+      key: 'toDate',
+      label: 'To Date',
+      type: 'date',
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: Object.values(AuditStatus)
+      .filter(status => typeof status === 'number') 
+      .map(status => ({
+        value: status as AuditStatus,
+        label: this.getAuditStatusText(status as AuditStatus)
+      }))
+    },
+    {
+      key: 'plannedByUserId',
+      label: 'Planned By User ID',
+      type: 'number'
+    },
+    {
+      key: 'executedByUserId',
+      label: 'Executed By User ID',
+      type: 'number'
+    },
+    {
+      key: 'notes',
+      label: 'Notes',
+      type: 'text',
+      col: 6
+    }
+  ];
   
 
-  onSortChange(sortConfig: { key: keyof ReturnAuditDTO; isDescending: boolean }): void {
-    this.sortColumn = sortConfig.key as string;
-    this.isDescending = sortConfig.isDescending;
-    this.loadAudits();
-  }
-  
   tableActions: TableAction<ReturnAuditDTO>[] = [
     // {
     //   label: 'Delete',
@@ -95,61 +109,18 @@ export class AuditsComponent implements OnInit {
     }
   ];
   
-  
-
   audits: ReturnAuditDTO[] = [];
-  medicines: ReturnMedicineDTO[] = [];
-  selectedMedicines: number[] = [];
-  statusList = Object.values(AuditStatus);
+  allMedicines: ReturnMedicineDTO[] = [];
 
   selectedAudit: ReturnAuditDTO | null = null;
 
-  newAudit: CreateAuditRequest = {
-    medicineIds: [],
-    notes: '',
-    plannedDate: new Date()
-  };
-
   isModalOpen = false;
   error: string | null = null;
-
   sortColumn: string = 'plannedDate';
   isDescending: boolean = false;
   currentPage: number = 1;
   pageSize: number = 10;
   totalItems: number = 0;
-
-  constructor(
-    private auditService: AuditService,
-    private medicineService: MedicineService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadAudits();
-    this.loadMedicines();
-  }
-
-  loadMedicines(): void {
-    this.medicineService.getMedicines({ 
-      pageNumber: 1, 
-      pageSize: 999, 
-      sortBy: 'name' 
-    }).subscribe({
-      next: (response) => {
-        this.medicines = response.items;
-      },
-      error: () => {
-        this.error = 'Failed to load medicines';
-      }
-    });
-  }
-
-
-  filtersVisible: boolean = false;
-
-  toggleFilters() {
-    this.filtersVisible = !this.filtersVisible;
-  }
 
   filterModel: AuditParams = {
     fromDate: null,
@@ -163,13 +134,20 @@ export class AuditsComponent implements OnInit {
     sortBy: 'plannedDate',
     isDescending: false,
   };
+
+
+  constructor(
+    private auditService: AuditService,
+    private medicineService: MedicineService,
+    private route: ActivatedRoute 
+  ) {}
   
-  
-  applyFilters(): void {
-    this.currentPage = 1;
+
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
     this.loadAudits();
   }
-  
+
   loadAudits(): void {
     const queryParams = {
       ...this.filterModel,
@@ -189,83 +167,69 @@ export class AuditsComponent implements OnInit {
       },
     });
   }
+  
+  onFilterChange(filters: any): void {
+    this.filterModel = {
+      ...this.filterModel,
+      ...filters
+    };
+    this.currentPage = 1;
+    this.loadAudits();
+  }
 
-
+  onSortChange(sortConfig: { key: keyof ReturnAuditDTO; isDescending: boolean }): void {
+    this.sortColumn = sortConfig.key as string;
+    this.isDescending = sortConfig.isDescending;
+    this.loadAudits();
+  }
+  
+  saveAudit(auditData: CreateAuditDTO): void {
+    this.auditService.createAudit(auditData).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.closeCreateAuditModal();
+      },
+      error: () => (this.error = 'Failed to create audit'),
+    });
+  }
+  
   onPageChange(newPage: number): void {
     this.currentPage = newPage;
     this.loadAudits();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize);
-  }
-
-
-  saveAudit(): void {
-    if (this.selectedAudit) {
-      this.auditService.updateAudit(this.selectedAudit.id, this.selectedAudit).subscribe({
-        next: () => {
-          this.loadAudits();
-          this.closeModal();
-          this.selectedAudit = null;
-        },
-        error: () => (this.error = 'Failed to update audit'),
-      });
-    } else {
-      this.newAudit.medicineIds = this.selectedMedicines;
-      this.auditService.createAudit(this.newAudit).subscribe({
-        next: () => {
-          this.loadAudits();
-          this.closeModal();
-        },
-        error: () => (this.error = 'Failed to create audit'),
-      });
-    }
-  }
-
-  toggleMedicine(id: number): void {
-    const index = this.selectedMedicines.indexOf(id);
-    if (index === -1) {
-      this.selectedMedicines.push(id);
-    } else {
-      this.selectedMedicines.splice(index, 1);
-    }
-  }
-
-  selectAllMedicines(): void {
-    if (this.selectedMedicines.length === this.medicines.length) {
-      this.selectedMedicines = [];
-    } else {
-      this.selectedMedicines = this.medicines.map(m => m.id);
-    }
-  }
-
   openCreateModal(): void {
-    this.resetForm();
     this.isModalOpen = true;
   }
 
-  closeModal(): void {
+  closeCreateAuditModal(): void {
     this.isModalOpen = false;
-    this.resetForm();
   }
   
-  resetForm(): void {
-    this.newAudit = {
-      medicineIds: [],
-      notes: '',
-      plannedDate: new Date()
-    };
-    this.selectedMedicines = [];
-    this.selectedAudit = null;
-  }
-
   viewAuditDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = audit;
   }
 
-  onEditFromDetails(audit: ReturnAuditDTO): void {
-    this.selectedAudit = { ...audit };
-    this.isModalOpen = true;
+  getAuditStatusText(status: AuditStatus): string {
+    const statusMap: Record<AuditStatus, string> = {
+      [AuditStatus.Planned]: 'Planned',
+      [AuditStatus.InProgress]: 'In Progress',
+      [AuditStatus.Completed]: 'Completed',
+      [AuditStatus.RequiresFollowUp]: 'Requires Follow-Up',
+      [AuditStatus.Cancelled]: 'Cancelled',
+    };
+    return statusMap[status] ?? 'Unknown';
   }
+
+  getAuditStatusBadgeClass(status: AuditStatus): string {
+    const classMap: Record<AuditStatus, string> = {
+      [AuditStatus.Planned]: 'bg-secondary',
+      [AuditStatus.InProgress]: 'bg-primary',
+      [AuditStatus.Completed]: 'bg-success',
+      [AuditStatus.RequiresFollowUp]: 'bg-warning text-dark',
+      [AuditStatus.Cancelled]: 'bg-danger',
+    };
+    return classMap[status] ?? 'bg-secondary';
+  }
+
 }

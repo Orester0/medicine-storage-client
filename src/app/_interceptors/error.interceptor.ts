@@ -12,22 +12,26 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error) => {
       toastr.clear();
-
-      // Обробка формату з масивом `errors`
       if (Array.isArray(error.error.errors) && error.error.errors.length > 0) {
         
         error.error.errors
-          .filter((err: string) => err.trim() !== '') // Фільтруємо порожні рядки
+          .filter((err: string) => err.trim() !== '')
           .forEach((err: string) => toastr.error(err));
       } 
+      
       else if (error.error?.statusCode) {
         const { statusCode, message } = error.error;
 
-        if (message) {
+        if (message) 
+          {
           toastr.error(message);
-        } else {
-          toastr.error('An unexpected error occurred');
-        }
+          return throwError(() => error);
+        } 
+        // else 
+        // {
+        //   toastr.error('An unexpected error occurred');
+        //   return throwError(() => error);
+        // }
 
         switch (statusCode) {
           case 404:
@@ -44,9 +48,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
         }
       } 
-      else {
-        toastr.error('An unexpected error occurred');
-      }
 
       return throwError(() => error);
     })

@@ -172,7 +172,7 @@ export class TendersDetailsComponent implements OnInit {
   }
 
   loadMedicines() {
-    this.medicineService.getMedicines({ pageNumber: 1, pageSize: 999, sortBy: "name" }).subscribe((response) => {
+    this.medicineService.getMedicinesWithFilter({ pageNumber: 1, pageSize: 999, sortBy: "name" }).subscribe((response) => {
       this.medicines = response.items;
     });
   }

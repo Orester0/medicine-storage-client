@@ -10,10 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AuditsDetailsComponent {
   @Input() audit: ReturnAuditDTO | null = null;
-  
   @Output() onAction = new EventEmitter<{ action: string; id: number }>();
   @Output() onClose = new EventEmitter<void>();
-  @Output() onEdit = new EventEmitter<ReturnAuditDTO>();
 
   closeDetails(): void {
     this.onClose.emit();
@@ -26,11 +24,6 @@ export class AuditsDetailsComponent {
     }
   }
 
-  editAudit(): void {
-    if (this.audit) {
-      this.onEdit.emit(this.audit);
-    }
-  }
 
   getAuditStatusText(status: AuditStatus): string {
     const statusMap: Record<AuditStatus, string> = {

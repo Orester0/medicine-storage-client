@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-export interface FilterField {
-  name: string;
+export interface FilterConfig {
+  key: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'select' | 'checkbox';
-  options?: { label: string; value: any }[];
+  type: 'text' | 'number' | 'date' | 'select';
+  options?: { value: any; label: string }[];
+  col?: number;
 }
 
 @Component({
@@ -16,22 +17,43 @@ export interface FilterField {
   styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {
-  @Input() fields: FilterField[] = [];
-  @Output() filterChange = new EventEmitter<Record<string, any>>();
+  @Input() config: FilterConfig[] = [];
+  @Input() title = 'Filters';
+  @Output() filterChange = new EventEmitter<any>();
 
   form!: FormGroup;
+  isVisible = false;
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.initForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['config']) {
+      this.initForm();
+    }
+  }
+
+  private initForm(): void {
     const group: Record<string, any> = {};
-    this.fields.forEach((field) => {
-      group[field.name] = [''];
+    this.config.forEach(field => {
+      group[field.key] = [null];
     });
     this.form = this.fb.group(group);
+  }
 
-    this.form.valueChanges.subscribe((value) => {
-      this.filterChange.emit(value);
-    });
+  toggleFilters(): void {
+    this.isVisible = !this.isVisible;
+  }
+
+  resetFilters(): void {
+    this.form.reset();
+    this.filterChange.emit(this.form.value);
+  }
+
+  applyFilters(): void {
+    this.filterChange.emit(this.form.value);
   }
 }

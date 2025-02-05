@@ -9,13 +9,13 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './delete-confirmation-modal.component.css'
 })
 export class DeleteConfirmationModalComponent {
-  @Input() isOpen: boolean = false; // Відкрито чи закрито модальне вікно
-  @Input() name?: string; // Ім'я ліків, які потрібно видалити
-  @Output() confirm = new EventEmitter<void>(); // Подія підтвердження
-  @Output() cancel = new EventEmitter<void>(); // Подія скасування
+  @Input() isOpen: boolean = false;
+  @Input() name?: string;
+  @Output() confirm = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
 
-  deleteConfirmationName: string = ''; // Ім'я, введене користувачем
-  deleteError: string = ''; // Повідомлення про помилку
+  deleteConfirmationName: string = '';
+  deleteError: string = '';
 
   close() {
     this.cancel.emit();

@@ -71,18 +71,18 @@ export interface CreateTenderProposalItem {
    quantity: number;
 }
 export interface TenderParams {
-   title?: string;
-   publishDateFrom?: Date;
-   publishDateTo?: Date;
-   closingDateFrom?: Date;
-   closingDateTo?: Date;
-   deadlineDateFrom?: Date;
-   deadlineDateTo?: Date;
-   status?: TenderStatus;
-   createdByUserId?: number;
-   openedByUserId?: number;
-   closedByUserId?: number;
-   winnerSelectedByUserId?: number;
+   title?: string | null;
+   publishDateFrom?: Date | null;
+   publishDateTo?: Date | null;
+   closingDateFrom?: Date | null;
+   closingDateTo?: Date | null;
+   deadlineDateFrom?: Date | null;
+   deadlineDateTo?: Date | null;
+   status?: TenderStatus | null;
+   createdByUserId?: number | null;
+   openedByUserId?: number | null;
+   closedByUserId?: number | null;
+   winnerSelectedByUserId?: number | null;
    sortBy?: string;
    isDescending?: boolean;
    pageNumber?: number;
@@ -91,18 +91,18 @@ export interface TenderParams {
 
 
 export enum TenderItemStatus {
-   Pending = 0,
-   Executed = 1
+   Pending = 1,
+   Executed = 2
 }
 
 export enum TenderStatus {
-  Created = 0,
-  Published = 1,
-  Closed = 2,
-  Awarded = 3,
-  Executing = 4,
-  Executed = 5,
-  Cancelled = 6
+  Created = 1,
+  Published = 2,
+  Closed = 3,
+  Awarded = 4,
+  Executing = 5,
+  Executed = 6,
+  Cancelled = 7
 }
 
 export enum ProposalStatus {

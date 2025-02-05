@@ -1,0 +1,53 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+
+  
+  .template-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  
+  @keyframes bellShake {
+    0% { transform: rotate(0); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-15deg); }
+    60% { transform: rotate(7deg); }
+    80% { transform: rotate(-7deg); }
+    100% { transform: rotate(0); }
+  }
+  .bell-notification {
+    animation: bellShake 2s infinite;
+    color: #dc3545;
+  }
+  
+  @keyframes pulseHighlight {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(220, 53, 69, 0.1); }
+    100% { background-color: transparent; }
+  }
+  
+  .needs-execution {
+    animation: pulseHighlight 2s infinite;
+  }

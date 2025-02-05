@@ -12,10 +12,10 @@ import { AsyncPipe } from '@angular/common';
 
 export class UsersOnlineComponent implements OnInit {
   
-  onlineUsers$: Observable<string[]>;
+  //onlineUsers$: Observable<string[]>;
   constructor(private signalRService: SignalRService) {
-    console.log('UsersOnlineComponent constructor called');
-    this.onlineUsers$ = this.signalRService.onlineUsers$;
+    //console.log('UsersOnlineComponent constructor called');
+    //this.onlineUsers$ = this.signalRService.onlineUsers$;
   }
 
   ngOnInit() {}

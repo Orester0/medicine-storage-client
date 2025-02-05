@@ -2,26 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { CreateTenderDTO, CreateTenderItem, ReturnTenderDTO, TenderStatus } from '../_models/tender.types';
 import { TenderService } from '../_services/tender.service';
 import { TendersDetailsComponent } from '../tenders-details/tenders-details.component';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MedicineService } from '../_services/medicine.service';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { FilterComponent, FilterConfig } from '../filter/filter.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
-  imports: [TendersDetailsComponent, FormsModule, CommonModule, TableComponent, PaginationComponent]
+  imports: [FilterComponent, TendersDetailsComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule]
 })
 export class TendersComponent implements OnInit {
-    onSortChange(sortConfig: { key: keyof ReturnTenderDTO; isDescending: boolean }): void {
-        this.selectedSortBy = sortConfig.key as string;
-        this.isDescending = sortConfig.isDescending;
-        this.loadTenders();
-    }
-    tableActions: TableAction<ReturnTenderDTO>[] = [
+  tableActions: TableAction<ReturnTenderDTO>[] = [
     {
         label: 'View Details',
         class: 'btn btn-info btn-sm',
@@ -32,19 +29,19 @@ export class TendersComponent implements OnInit {
         label: 'Publish Tender',
         class: 'btn btn-success btn-sm me-2',
         onClick: (row) => this.publishTender(row.id),
-        visible: (row) => row.status === 0,
+        visible: (row) => row.status === 1,
     },
     {
         label: 'Add Item',
         class: 'btn btn-primary btn-sm me-2',
         onClick: (row) => this.openAddItemModal(row.id),
-        visible: (row) => row.status === 0,
+        visible: (row) => row.status === 1,
     },
     {
         label: 'Close Tender',
         class: 'btn btn-danger btn-sm me-2',
         onClick: (row) => this.closeTender(row.id),
-        visible: (row) => row.status === 1,
+        visible: (row) => row.status === 2,
     },
   ];
 
@@ -76,54 +73,78 @@ export class TendersComponent implements OnInit {
     }
   ];
 
-
-
-
-
-
-
+  createTenderForm!: FormGroup;
 
   tenders: ReturnTenderDTO[] = [];
-  medicines: ReturnMedicineDTO[] = [];
+  allMedicines: ReturnMedicineDTO[] = [];
   selectedTender: ReturnTenderDTO | null = null;
   selectedTenderId: number | null = null;
   error: string | null = null;
 
-  isModalOpen = false;
+  isCreateTenderModalOpen = false;
   isTenderItemModalOpen = false;
 
   currentPage = 1;
   pageSize = 10;
   totalItems = 0;
-  selectedSortBy = 'title';
+  sortColumn = 'title';
   isDescending = false;
 
-  newTender: CreateTenderDTO = {
-      title: '',
-      description: '',
-      deadlineDate: new Date()
-  };
-
-  newTenderItem: CreateTenderItem = {
-      tenderId: 0,
-      medicineId: 0,
-      requiredQuantity: 0
-  };
-
-  filtersVisible: boolean = false;
-
-  toggleFilters() {
-    this.filtersVisible = !this.filtersVisible;
-  }
-
-  constructor(
-      private tenderService: TenderService,
-      private medicineService: MedicineService
-  ) {}
-
-  ngOnInit(): void {
-      this.loadTenders();
-  }
+  filterConfig: FilterConfig[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      type: 'text',
+      col: 3
+    },
+    {
+          key: 'status',
+          label: 'Status',
+          type: 'select',
+          options: Object.values(TenderStatus)
+          .filter(status => typeof status === 'number') 
+          .map(status => ({
+            value: status as TenderStatus,
+            label: this.getTenderStatusText(status as TenderStatus)
+          }))
+        },
+    {
+      key: 'publishDateFrom',
+      label: 'Publish Date From',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'publishDateTo',
+      label: 'Publish Date To',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'closingDateFrom',
+      label: 'Closing Date From',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'closingDateTo',
+      label: 'Closing Date To',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'deadlineDateFrom',
+      label: 'Deadline Date From',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'deadlineDateTo',
+      label: 'Deadline Date To',
+      type: 'date',
+      col: 3
+    }
+  ];
 
   filterModel = {
     title: '',
@@ -134,71 +155,76 @@ export class TendersComponent implements OnInit {
     closingDateTo: null as Date | null,
     deadlineDateFrom: null as Date | null,
     deadlineDateTo: null as Date | null
-};
+  };
 
+  newTenderItem: CreateTenderItem = {
+      tenderId: 0,
+      medicineId: 0,
+      requiredQuantity: 0
+  };
 
-loadTenders(): void {
-    this.tenderService.getTenders({
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize,
-        sortBy: this.selectedSortBy,
-        isDescending: this.isDescending,
-        title: this.filterModel.title || undefined,
-        publishDateFrom: this.filterModel.publishDateFrom || undefined,
-        publishDateTo: this.filterModel.publishDateTo || undefined,
-        status: this.filterModel.status ?? undefined,
-        closingDateFrom: this.filterModel.closingDateFrom || undefined,
-        closingDateTo: this.filterModel.closingDateTo || undefined,
-        deadlineDateFrom: this.filterModel.deadlineDateFrom || undefined,
-        deadlineDateTo: this.filterModel.deadlineDateTo || undefined
-    })
-    .subscribe({
-        next: (response) => {
-            this.tenders = response.items;
-            this.totalItems = response.totalCount;
-        },
-        error: () => console.error('Failed to load tenders')
+  constructor(
+    private fb: FormBuilder,
+      private tenderService: TenderService,
+      private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+      this.allMedicines = this.route.snapshot.data['medicines'];
+      this.loadTenders();
+      this.initializeForm();
+  }
+
+  
+  private loadTenders(): void {
+    const queryParams = {
+      ...this.filterModel,
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: this.sortColumn,
+      isDescending: this.isDescending
+    };
+
+    
+    this.tenderService.getTenders(queryParams).subscribe({
+      next: (response) => {
+        this.tenders = response.items || [];
+        this.totalItems = response.totalCount || 0;
+      },
+      error: () => {
+        this.error = 'Failed to load tenders';
+      }
     });
-}
+  }
+  
+  initializeForm(): void {
+    this.createTenderForm = this.fb.group({
+        title: ['', Validators.required],
+        description: [''],
+        deadlineDate: ['', Validators.required]
+    });
+  }
 
+  openCreateModal(): void {
+      this.createTenderForm.reset();
+      this.isCreateTenderModalOpen = true;
+  }
+  onSortChange(sortConfig: { key: keyof ReturnTenderDTO; isDescending: boolean }): void {
+    this.sortColumn = sortConfig.key as string;
+    this.isDescending = sortConfig.isDescending;
+    this.loadTenders();
+  }
 
-applyFilters(): void {
+  onFilterChange(filters: any): void {
+    this.filterModel = {
+    ...this.filterModel,
+    ...filters
+    };
+
     this.currentPage = 1;
     this.loadTenders();
-}
-
-resetFilters(): void {
-    this.filterModel = {
-        title: '',
-        publishDateFrom: null as Date | null,
-        publishDateTo: null as Date | null,
-        status: null as TenderStatus | null,
-        closingDateFrom: null as Date | null,
-        closingDateTo: null as Date | null,
-        deadlineDateFrom: null as Date | null,
-        deadlineDateTo: null as Date | null
-    };
-    
-    this.applyFilters();
-}
-
-statuses = Object.entries(TenderStatus)
-    .filter(([key]) => !isNaN(Number(key)))
-    .map(([key, value]) => ({
-        id: Number(key),
-        name: this.getTenderStatusText(Number(key))
-    }));
-
-  loadMedicines(): void {
-      this.medicineService.getMedicines({ 
-          pageNumber: 1, 
-          pageSize: 999, 
-          sortBy: 'name' 
-      }).subscribe({
-          next: (response) => this.medicines = response.items,
-          error: () => this.error = 'Failed to load medicines'
-      });
   }
+
 
   publishTender(tenderId: number): void {
     this.tenderService.publishTender(tenderId).subscribe({
@@ -210,30 +236,23 @@ statuses = Object.entries(TenderStatus)
         },
         error: () => this.error = 'Failed to publish tender'
     });
-}
+  }
 
-closeTender(tenderId: number): void {
-    this.tenderService.closeTender(tenderId).subscribe({
-        next: () => {
-            this.loadTenders();
-            if (this.selectedTender?.id === tenderId) {
-                this.viewTenderDetails({ ...this.selectedTender, status: TenderStatus.Closed });
-            }
-        },
-        error: () => this.error = 'Failed to close tender'
-    });
-}
-
-
-
-  openCreateModal(): void {
-      this.resetForm();
-      this.isModalOpen = true;
+  closeTender(tenderId: number): void {
+      this.tenderService.closeTender(tenderId).subscribe({
+          next: () => {
+              this.loadTenders();
+              if (this.selectedTender?.id === tenderId) {
+                  this.viewTenderDetails({ ...this.selectedTender, status: TenderStatus.Closed });
+              }
+          },
+          error: () => this.error = 'Failed to close tender'
+      });
   }
 
   closeModal(): void {
-      this.isModalOpen = false;
-      this.resetForm();
+      this.isCreateTenderModalOpen = false;
+      this.resetCreateTenderForm();
   }
 
   viewTenderDetails(tender: ReturnTenderDTO): void {
@@ -247,21 +266,16 @@ closeTender(tenderId: number): void {
   openAddItemModal(tenderId: number): void {
       this.selectedTenderId = tenderId;
       this.resetTenderItemForm();
-      this.loadMedicines();
       this.isTenderItemModalOpen = true;
   }
 
   closeTenderItemModal(): void {
       this.isTenderItemModalOpen = false;
-      this.resetForm();
+      this.resetCreateTenderForm();
   }
 
-  resetForm(): void {
-      this.newTender = {
-          title: '',
-          description: '',
-          deadlineDate: new Date()
-      };
+  resetCreateTenderForm(): void {
+    this.createTenderForm.reset();
   }
 
   resetTenderItemForm(): void {
@@ -273,8 +287,10 @@ closeTender(tenderId: number): void {
   }
 
   
-saveTender(): void {
-    this.tenderService.createTender(this.newTender).subscribe({
+  saveTender(): void {
+    if (this.createTenderForm.invalid) return;
+
+    this.tenderService.createTender(this.createTenderForm.value).subscribe({
         next: () => {
             this.loadTenders();
             this.closeModal();
@@ -282,23 +298,23 @@ saveTender(): void {
         },
         error: () => this.error = 'Failed to create tender'
     });
-}
+  }
 
-saveTenderItem(): void {
-    if (!this.selectedTenderId) return;
-    
-    this.tenderService.addTenderItem(this.selectedTenderId, this.newTenderItem).subscribe({
-        next: () => {
-            this.loadTenders();
-            this.closeTenderItemModal();
-            if (this.selectedTender?.id === this.selectedTenderId) {
-                this.viewTenderDetails(this.selectedTender);
-            }
-            this.error = null;
-        },
-        error: () => this.error = 'Failed to add tender item'
-    });
-}
+  saveTenderItem(): void {
+      if (!this.selectedTenderId) return;
+      
+      this.tenderService.addTenderItem(this.selectedTenderId, this.newTenderItem).subscribe({
+          next: () => {
+              this.loadTenders();
+              this.closeTenderItemModal();
+              if (this.selectedTender?.id === this.selectedTenderId) {
+                  this.viewTenderDetails(this.selectedTender);
+              }
+              this.error = null;
+          },
+          error: () => this.error = 'Failed to add tender item'
+      });
+  }
 
  
 
@@ -318,23 +334,18 @@ saveTenderItem(): void {
         [TenderStatus.Cancelled]: 'Cancelled'
     };
     return statusMap[status] ?? 'Unknown';
-}
+  }
 
-getStatusBadgeClass(status: TenderStatus): string {
-    const classMap: Record<TenderStatus, string> = {
-        [TenderStatus.Created]: 'bg-secondary',
-        [TenderStatus.Published]: 'bg-success',
-        [TenderStatus.Closed]: 'bg-warning text-dark',
-        [TenderStatus.Awarded]: 'bg-info text-dark',
-        [TenderStatus.Executing]: 'bg-primary',
-        [TenderStatus.Executed]: 'bg-dark',
-        [TenderStatus.Cancelled]: 'bg-danger'
-    };
-    return classMap[status] ?? 'bg-secondary';
-}
-
-  get totalPages(): number[] {
-      const pages = Math.ceil(this.totalItems / this.pageSize);
-      return Array.from({ length: pages }, (_, i) => i + 1);
+  getStatusBadgeClass(status: TenderStatus): string {
+      const classMap: Record<TenderStatus, string> = {
+          [TenderStatus.Created]: 'bg-secondary',
+          [TenderStatus.Published]: 'bg-success',
+          [TenderStatus.Closed]: 'bg-warning text-dark',
+          [TenderStatus.Awarded]: 'bg-info text-dark',
+          [TenderStatus.Executing]: 'bg-primary',
+          [TenderStatus.Executed]: 'bg-dark',
+          [TenderStatus.Cancelled]: 'bg-danger'
+      };
+      return classMap[status] ?? 'bg-secondary';
   }
 }

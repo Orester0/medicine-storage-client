@@ -16,8 +16,14 @@ export class MedicineRequestService {
   getRequests(params: MedicineRequestParams): Observable<PagedList<ReturnMedicineRequestDTO>> {
     let httpParams = new HttpParams();
     
-    if (params.fromDate) httpParams = httpParams.append('fromDate', params.fromDate.toISOString());
-    if (params.toDate) httpParams = httpParams.append('toDate', params.toDate.toISOString());
+    if (params.fromDate) {
+      const fromDate = params.fromDate instanceof Date ? params.fromDate.toISOString() : params.fromDate;
+      httpParams = httpParams.append('fromDate', fromDate);
+    }
+    if (params.toDate) {
+      const toDate = params.toDate instanceof Date ? params.toDate.toISOString() : params.toDate;
+      httpParams = httpParams.append('toDate', toDate);
+    }
     if (params.status !== null && params.status !== undefined) httpParams = httpParams.append('status', params.status.toString());
     if (params.requestedByUserId) httpParams = httpParams.append('requestedByUserId', params.requestedByUserId.toString());
     if (params.approvedByUserId) httpParams = httpParams.append('approvedByUserId', params.approvedByUserId.toString());

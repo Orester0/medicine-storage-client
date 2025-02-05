@@ -4,10 +4,11 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown'
 import { AccountService } from '../_services/account.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationTemplateComponent } from '../notification-template/notification-template.component';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive],
+  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive, NotificationTemplateComponent],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })

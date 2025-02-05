@@ -7,77 +7,12 @@
     <i class="bi bi-plus-circle"></i> Add Medicine
   </button>
 
-
-  <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h5 class="card-title mb-0">Filters</h5>
-      <button 
-        class="btn btn-link bg-primary" 
-        (click)="toggleFilters()">
-        <i class="bi" [class.bi-chevron-down]="!filtersVisible" [class.bi-chevron-up]="filtersVisible"></i>
-      </button>
-    </div>
-    <div class="card-body" *ngIf="filtersVisible">
-      <form class="row g-3 mb-4" (ngSubmit)="applyFilters()">
-        <div class="col-md-3">
-          <input type="text" class="form-control" [(ngModel)]="filterModel.name" name="name" placeholder="Name">
-        </div>
-        
-        <div class="col-md-3">
-          <input type="text" class="form-control" [(ngModel)]="filterModel.description" name="description" placeholder="Description">
-        </div>
-        
-        <div class="col-md-3">
-          <input type="text" class="form-control" [(ngModel)]="filterModel.category" name="category" placeholder="Category">
-        </div>
-        
-        <div class="col-md-3">
-          <div class="input-group">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.minStock" name="minStock" placeholder="Min Stock">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.maxStock" name="maxStock" placeholder="Max Stock">
-          </div>
-        </div>
-        
-        <div class="col-md-3">
-          <div class="input-group">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.minMinimumStock" name="minMinimumStock" placeholder="Min Minimum Stock">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.maxMinimumStock" name="maxMinimumStock" placeholder="Max Minimum Stock">
-          </div>
-        </div>
-        
-        <div class="col-md-3">
-          <select class="form-select" [(ngModel)]="filterModel.requiresSpecialApproval" name="requiresSpecialApproval">
-            <option [ngValue]="undefined">Special Approval (Any)</option>
-            <option [ngValue]="true">Yes</option>
-            <option [ngValue]="false">No</option>
-          </select>
-        </div>
-        
-        <div class="col-md-3">
-          <select class="form-select" [(ngModel)]="filterModel.requiresStrictAudit" name="requiresStrictAudit">
-            <option [ngValue]="undefined">Strict Audit (Any)</option>
-            <option [ngValue]="true">Yes</option>
-            <option [ngValue]="false">No</option>
-          </select>
-        </div>
-        
-        <div class="col-md-3">
-          <div class="input-group">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.minAuditFrequencyDays" name="minAuditFrequencyDays" placeholder="Min Audit Days">
-            <input type="number" class="form-control" [(ngModel)]="filterModel.maxAuditFrequencyDays" name="maxAuditFrequencyDays" placeholder="Max Audit Days">
-          </div>
-        </div>
-
-
-        <div class="col-md-3">
-          <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
-          <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <app-filter 
+  [config]="filterConfig"
+  [title]="'Filters'"
+  (filterChange)="onFilterChange($event)">
+  </app-filter>
   
-
   <div class="table-responsive">
     <app-table
     [columns]="medicineColumns"

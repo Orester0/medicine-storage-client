@@ -7,11 +7,21 @@ import { UserDTO, UserToken } from '../_models/user.types';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountService {
+export class AccountService  {
   private http = inject(HttpClient);
   private baseUrlAccount = `${environment.apiUrl}account`;
-  private baseUrlUser = `${environment.apiUrl}user`;
+  private baseUrlUser = `${environment.apiUrl}users`;
   currentUser = signal<UserToken | null>(null);
+
+  uploadPhoto(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.baseUrlAccount}/upload-photo`, formData);
+  }
+
+  getPhoto() {
+    return this.http.get(`${this.baseUrlAccount}/photo`, { responseType: 'blob' });
+  }
 
   login(model: any){
     return this.http.post<UserToken>(this.baseUrlAccount + '/login', model).pipe(

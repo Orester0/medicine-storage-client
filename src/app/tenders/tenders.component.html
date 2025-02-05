@@ -7,92 +7,13 @@
     <i class="bi bi-plus-circle"></i> Add Tender
   </button>
 
-  <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h5 class="card-title mb-0">Filters</h5>
-      <button 
-        class="btn btn-link bg-primary" 
-        (click)="toggleFilters()">
-        <i class="bi" [class.bi-chevron-down]="!filtersVisible" [class.bi-chevron-up]="filtersVisible"></i>
-      </button>
-    </div>
-    <div class="card-body" *ngIf="filtersVisible">
-      <div class="row">
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Title</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            [(ngModel)]="filterModel.title"
-            placeholder="Search by title">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Status</label>
-          <select class="form-select" [(ngModel)]="filterModel.status">
-            <option [ngValue]="null">All Statuses</option>
-            <option *ngFor="let status of statuses" [value]="status.id">
-              {{ status.name }}
-            </option>
-          </select>
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">From Date</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.publishDateFrom">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">To Date</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.publishDateTo">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Closing Date From</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.closingDateFrom">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Closing Date To</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.closingDateTo">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Deadline Date From</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.deadlineDateFrom">
-        </div>
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Deadline Date To</label>
-          <input 
-            type="date" 
-            class="form-control" 
-            [(ngModel)]="filterModel.deadlineDateTo">
-        </div>
-      </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-primary" (click)="applyFilters()">
-          <i class="bi bi-search"></i> Apply Filters
-        </button>
-        <button class="btn btn-secondary" (click)="resetFilters()">
-          <i class="bi bi-x-circle"></i> Reset
-        </button>
-      </div>
-    </div>
+ 
+  <app-filter 
+  [config]="filterConfig"
+  [title]="'Filters'"
+  (filterChange)="onFilterChange($event)">
+  </app-filter>
 
-  
-
-
-
-</div>
   <div class="table-responsive">
     <app-table
     [columns]="tenderColumns"
@@ -102,7 +23,6 @@
     ></app-table>
   </div>
 
-  
   <app-pagination
     [totalItems]="totalItems"
     [pageSize]="pageSize"
@@ -110,8 +30,6 @@
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
     
-  
-  
   <div *ngIf="isTenderItemModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg">
       <div class="modal-content shadow-lg border-0">
@@ -125,7 +43,7 @@
           required
         >
           <option value="">Select Medicine</option>
-          <option *ngFor="let medicine of medicines" [value]="medicine.id">
+          <option *ngFor="let medicine of allMedicines" [value]="medicine.id">
             {{medicine.name}}
           </option>
         </select>
@@ -158,7 +76,7 @@
     </div>
   </div>
 
-  <div *ngIf="isModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div *ngIf="isCreateTenderModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg">
       <div class="modal-content shadow-lg border-0">
         <div class="modal-header bg-primary text-white">
@@ -168,15 +86,14 @@
           <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
         </div>
         <div class="modal-body">
-          <form (ngSubmit)="saveTender()">
+          <form [formGroup]="createTenderForm" (ngSubmit)="saveTender()">
             <div class="mb-3">
               <label for="title" class="form-label fw-bold">Title</label>
               <input
                 type="text"
                 id="title"
                 class="form-control"
-                [(ngModel)]="newTender.title"
-                name="title"
+                formControlName="title"
                 required
                 placeholder="Enter tender title"
               />
@@ -186,8 +103,7 @@
               <textarea
                 id="description"
                 class="form-control"
-                [(ngModel)]="newTender.description"
-                name="description"
+                formControlName="description"
                 rows="3"
                 placeholder="Enter description"
               ></textarea>
@@ -198,28 +114,25 @@
                 type="date"
                 id="deadlineDate"
                 class="form-control"
-                [(ngModel)]="newTender.deadlineDate"
-                name="deadlineDate"
+                formControlName="deadlineDate"
                 required
               />
             </div>
             <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-success me-2 px-4">
+              <button type="submit" class="btn btn-success me-2 px-4" [disabled]="createTenderForm.invalid">
                 {{ selectedTender ? 'Save' : 'Create' }}
               </button>
-              <button
-                type="button"
-                class="btn btn-secondary px-4"
-                (click)="closeModal()"
-              >
+              <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">
                 Cancel
               </button>
             </div>
           </form>
+          
         </div>
       </div>
     </div>
   </div>
+
   <app-tenders-details
     *ngIf="selectedTender"
     [tender]="selectedTender"

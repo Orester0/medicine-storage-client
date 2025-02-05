@@ -8,6 +8,9 @@ import { authGuard } from './_guards/auth.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { InternalServerErrorComponent } from './internal-server-error/internal-server-error.component';
 import { MedicineOperationsComponent } from './medicine-operations/medicine-operations.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { medicinesResolver } from './_resolvers/medicines.resolver';
+import { usersResolver } from './_resolvers/users.resolver';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -16,10 +19,11 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [authGuard],
         children: [
-            {path: 'medicines', component: MedicinesComponent},
-            {path: 'tenders', component: TendersComponent},
-            {path: 'audits', component: AuditsComponent},
-            {path: 'requests', component: MedicineOperationsComponent},
+            {path: 'medicines', component: MedicinesComponent, resolve: {medicines: medicinesResolver}},
+            {path: 'tenders', component: TendersComponent, resolve: {medicines: medicinesResolver}},
+            {path: 'audits', component: AuditsComponent,  resolve: {medicines: medicinesResolver}},
+            {path: 'requests', component: MedicineOperationsComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
+            {path: 'user-profile', component: UserProfileComponent},
         ]
     },
     {path: 'not-found', component: NotFoundComponent},
