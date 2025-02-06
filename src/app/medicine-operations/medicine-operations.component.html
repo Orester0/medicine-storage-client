@@ -28,6 +28,15 @@
     [currentPage]="currentPage"
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
+
+  
+  <app-delete-confirmation-modal
+  *ngIf="requestToDelete"
+  [isOpen]="!!requestToDelete"
+  [name]="requestToDelete.medicine.name"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
     
 
   <div *ngIf="isCreateRequestModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">

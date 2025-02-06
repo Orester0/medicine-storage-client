@@ -14,10 +14,11 @@ import { FilterComponent, FilterConfig } from '../filter/filter.component';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { CreateMedicineRequestFormComponent } from '../create-medicine-request-form/create-medicine-request-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-medicine-operations',
-  imports: [CreateMedicineRequestFormComponent ,FilterComponent, CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent, ReactiveFormsModule],
+  imports: [DeleteConfirmationModalComponent, CreateMedicineRequestFormComponent ,FilterComponent, CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent, ReactiveFormsModule],
   templateUrl: './medicine-operations.component.html',
   styleUrl: './medicine-operations.component.css'
 })
@@ -58,7 +59,37 @@ export class MedicineOperationsComponent implements OnInit {
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewOperationDetails(row),
     },
+    {
+      label: 'Delete',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.deleteTenderPrompt(row),
+      visible: (row) =>  row.status === 1 || row.status === 2
+    },
   ];
+
+  
+    requestToDelete: ReturnMedicineRequestDTO | null = null;
+  
+    deleteTenderPrompt(request: ReturnMedicineRequestDTO): void {
+      this.requestToDelete = request;
+    }
+  
+    handleDeleteConfirm(): void {
+      if (!this.requestToDelete) return;
+      this.requestService.deleteRequest(this.requestToDelete.id).subscribe({
+        next: () => {
+          this.loadRequests();
+          this.requestToDelete = null;
+        },
+        error: () => {
+          console.error('Failed to delete request.');
+        },
+      });
+    }
+  
+    handleDeleteCancel(): void {
+      this.requestToDelete = null;
+    }
 
   requestColumns: TableColumn<ReturnMedicineRequestDTO>[] = [
     {

@@ -50,6 +50,37 @@
     </div>
   </div>
   
+  <app-audit-notes
+  *ngIf="auditToStart"
+  [title]="'Start Audit'"
+  (submit)="handleStartSubmit($event)"
+  (cancel)="auditToStart = null">
+  </app-audit-notes>
+
+  <app-audit-notes
+    *ngIf="auditToClose"
+    [title]="'Close Audit'"
+    (submit)="handleCloseSubmit($event)"
+    (cancel)="auditToClose = null">
+  </app-audit-notes>
+
+  <app-audit-update-items
+  *ngIf="auditToUpdate"
+  [title]="'Update Audit Items'"
+  [auditItems]="auditToUpdate.auditItems || []"
+  [showQuantities]="true"
+  (submit)="handleUpdateSubmit($event)"
+  (cancel)="auditToUpdate = null"
+  ></app-audit-update-items>  
+
+  <app-delete-confirmation-modal
+  *ngIf="auditToDelete"
+  [isOpen]="!!auditToDelete"
+  [name]="auditToDelete.plannedDate.toDateString()"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
+
   
   <app-audits-details
       *ngIf="selectedAudit && !isModalOpen"

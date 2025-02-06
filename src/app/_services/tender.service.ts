@@ -141,5 +141,9 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
 
     addTenderItem(tenderId: number, tenderItem: CreateTenderItem): Observable<ReturnTenderItem> {
       return this.http.post<ReturnTenderItem>(`${this.tenderUrl}/add-tender-item/${tenderId}`, tenderItem).pipe();
-  }
+    }
+
+    deleteTender(tenderId: number): Observable<void> {
+      return this.http.delete<void>(`${this.tenderUrl}/${tenderId}`);
+    }
   }

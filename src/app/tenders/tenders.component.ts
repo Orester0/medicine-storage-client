@@ -10,12 +10,13 @@ import { TableAction, TableColumn, TableComponent } from '../table/table.compone
 import { PaginationComponent } from '../pagination/pagination.component';
 import { FilterComponent, FilterConfig } from '../filter/filter.component';
 import { ActivatedRoute } from '@angular/router';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
-  imports: [FilterComponent, TendersDetailsComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule]
+  imports: [DeleteConfirmationModalComponent, FilterComponent, TendersDetailsComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule]
 })
 export class TendersComponent implements OnInit {
   tableActions: TableAction<ReturnTenderDTO>[] = [
@@ -43,7 +44,37 @@ export class TendersComponent implements OnInit {
         onClick: (row) => this.closeTender(row.id),
         visible: (row) => row.status === 2,
     },
+    {
+      label: 'Delete',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.deleteTenderPrompt(row),
+      visible: (row) => row.status === 1,
+    },
   ];
+
+
+  tenderToDelete: ReturnTenderDTO | null = null;
+
+  deleteTenderPrompt(medicine: ReturnTenderDTO): void {
+    this.tenderToDelete = medicine;
+  }
+
+  handleDeleteConfirm(): void {
+    if (!this.tenderToDelete) return;
+    this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
+      next: () => {
+        this.loadTenders();
+        this.tenderToDelete = null;
+      },
+      error: () => {
+        console.error('Failed to delete tender.');
+      },
+    });
+  }
+
+  handleDeleteCancel(): void {
+    this.tenderToDelete = null;
+  }
 
   tenderColumns: TableColumn<ReturnTenderDTO>[] = [
     {

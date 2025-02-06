@@ -113,15 +113,16 @@ export class MedicinesComponent implements OnInit {
 
   tableActions: TableAction<ReturnMedicineDTO>[] = [
     {
-      label: 'Delete',
-      class: 'btn btn-danger btn-sm me-2',
-      onClick: (row) => this.deleteMedicinePrompt(row)
-    },
-    {
       label: 'View Details',
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewMedicineDetails(row),
     },
+    {
+      label: 'Delete',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.deleteMedicinePrompt(row)
+    },
+    
   ];
 
   medicineColumns: TableColumn<ReturnMedicineDTO>[] = [

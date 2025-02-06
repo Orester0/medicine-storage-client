@@ -15,8 +15,8 @@
             {{ audit.plannedByUser ? (audit.plannedByUser.lastName + ' ' + audit.plannedByUser.firstName) : 'N/A' }}
           </li>
           <li class="list-group-item">
-            <strong>Executed By:</strong> 
-            {{ audit.executedByUser ? (audit.executedByUser.lastName + ' ' + audit.executedByUser.firstName) : 'N/A' }}
+            <strong>Closed By:</strong> 
+            {{ audit.closedByUser ? (audit.closedByUser.lastName + ' ' + audit.closedByUser.firstName) : 'N/A' }}
           </li>
           <li class="list-group-item">
             <strong>Planned Date:</strong> 
@@ -37,12 +37,27 @@
             </span>
           </li>
           <li class="list-group-item">
+            <strong>Audit Items:</strong>
+            <ul>
+              <li *ngFor="let item of audit.auditItems" class="list-group-item">
+                <strong>Medicine:</strong> {{ item.medicine.name || 'N/A' }}<br />
+                <strong>Expected Quantity:</strong> {{ item.expectedQuantity || 'N/A' }}<br />
+                <strong>Actual Quantity:</strong> {{ item.actualQuantity || 'N/A' }}<br />
+                <strong>Checked By:</strong> 
+                {{ item.checkedByUser ? (item.checkedByUser.lastName + ' ' + item.checkedByUser.firstName) : 'N/A' }}
+              </li>
+            </ul>
+          </li>
+          <li class="list-group-item">
             <strong>Notes:</strong>
-            <p class="mb-0">{{ audit.notes || 'N/A' }}</p>
+            <ul>
+              <li *ngFor="let note of audit.notes" class="list-group-item">
+                <strong>{{ note.createdAt | date: 'dd.MM.yyyy HH:mm' }}:</strong> {{ note.note }}
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
-
 
       <div class="modal-footer justify-content-between">
         <button class="btn btn-secondary" (click)="closeDetails()">Close</button>

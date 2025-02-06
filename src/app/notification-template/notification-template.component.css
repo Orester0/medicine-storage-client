@@ -47,7 +47,10 @@
     50% { background-color: rgba(220, 53, 69, 0.1); }
     100% { background-color: transparent; }
   }
-  
-  .needs-execution {
-    animation: pulseHighlight 2s infinite;
+
+  .nav-link.needs-execution {
+    border: 2px solid #ffc107;
+    font-weight: bold;
   }
+
+  

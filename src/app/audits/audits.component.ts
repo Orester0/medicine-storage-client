@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditDTO } from '../_models/audit.types';
+import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditDTO, UpdateAuditItemsRequest } from '../_models/audit.types';
 import { AuditService } from '../_services/audit.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,14 +11,43 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { FilterComponent, FilterConfig } from '../filter/filter.component';
 import { CreateAuditFormComponent } from '../create-audit-form/create-audit-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
+import { AuditNotesComponent } from '../audit-notes/audit-notes.component';
+import { AuditUpdateItemsComponent } from "../audit-update-items/audit-update-items.component";
 
 @Component({
   selector: 'app-audits',
-  imports: [CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent],
+  imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
 })
 export class AuditsComponent implements OnInit {
+
+
+  auditToDelete: ReturnAuditDTO | null = null;
+
+  deleteAuditPrompt(audit: ReturnAuditDTO): void {
+    this.auditToDelete = audit;
+  }
+
+  handleDeleteConfirm(): void {
+    if (!this.auditToDelete) return;
+    this.auditService.deleteAudit(this.auditToDelete.id).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToDelete = null;
+      },
+      error: () => {
+        console.error('Failed to delete tender.');
+      },
+    });
+  }
+
+  handleDeleteCancel(): void {
+    this.auditToDelete = null;
+  }
+
+
   filterConfig: FilterConfig[] = [
     {
       key: 'fromDate',
@@ -60,18 +89,94 @@ export class AuditsComponent implements OnInit {
   ];
   
 
+  auditToStart: ReturnAuditDTO | null = null;
+  auditToClose: ReturnAuditDTO | null = null;
+  auditToUpdate: ReturnAuditDTO | null = null;
+
+  startAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToStart = audit;
+  }
+
+  closeAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToClose = audit;
+  }
+
+  updateAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToUpdate = audit;
+  }
+
+  handleStartSubmit(data: { note: string }) {
+    console.log('Sending request with:', data); 
+    if (!this.auditToStart) return;
+    
+    this.auditService.startAudit(this.auditToStart.id, { note: data.note }).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToStart = null;
+      },
+      error: () => this.error = 'Failed to start audit'
+    });
+  }
+
+  handleCloseSubmit(data: { note: string }) { 
+    console.log('Sending request with:', data); 
+    if (!this.auditToClose) return;
+
+    this.auditService.closeAudit(this.auditToClose.id, { note: data.note }).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToClose = null;
+      },
+      error: () => this.error = 'Failed to close audit'
+    });
+  }
+
+  handleUpdateSubmit(data: UpdateAuditItemsRequest) {
+    if (!this.auditToUpdate) return;
+
+    this.auditService.updateAuditItems(this.auditToUpdate.id, data).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToUpdate = null;
+      },
+      error: () => console.error('Failed to update audit items'),
+    });
+  }
+
+
   tableActions: TableAction<ReturnAuditDTO>[] = [
-    // {
-    //   label: 'Delete',
-    //   class: 'btn btn-danger btn-sm me-2',
-    //   onClick: (row) => this.deleteAuditPrompt(row),
-    //   visible: (row) => row.status === 'Planned',
-    // },
     {
-      label: 'View Details',
+      label: 'View',
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewAuditDetails(row),
     },
+    {
+      label: 'Execute',
+      class: 'btn btn-info btn-sm',
+      onClick: (row) => this.updateAudit(row.id),
+      visible: (row) => row.status === 2 ||  row.status === 4,
+    },
+    {
+      label: 'Start Audit',
+      class: 'btn btn-success btn-sm me-2',
+      onClick: (row) => this.startAudit(row.id),
+      visible: (row) => row.status === 1,
+    },
+    {
+      label: 'Close Audit',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.closeAudit(row.id),
+      visible: (row) => row.status === 2 ||  row.status === 4,
+  },
+  {
+    label: 'Delete',
+    class: 'btn btn-danger btn-sm me-2',
+    onClick: (row) => this.deleteAuditPrompt(row),
+    visible: (row) => row.status === 1,
+  },
   ];
 
   auditColumns: TableColumn<ReturnAuditDTO>[] = [
@@ -138,7 +243,6 @@ export class AuditsComponent implements OnInit {
 
   constructor(
     private auditService: AuditService,
-    private medicineService: MedicineService,
     private route: ActivatedRoute 
   ) {}
   
@@ -208,6 +312,7 @@ export class AuditsComponent implements OnInit {
   
   viewAuditDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = audit;
+    console.log(this.selectedAudit);
   }
 
   getAuditStatusText(status: AuditStatus): string {
@@ -231,5 +336,8 @@ export class AuditsComponent implements OnInit {
     };
     return classMap[status] ?? 'bg-secondary';
   }
+
+
+
 
 }

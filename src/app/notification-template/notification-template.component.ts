@@ -19,27 +19,61 @@ export class NotificationTemplateComponent {
   // NOTIFICATIONS
   hasNotifications = false;
   templatesNeedingExecution: Record<string, boolean> = {};
+  tabsNeedingExecution: Record<TemplateType, boolean> = {
+    'medicine-request': false,
+    'audit': false,
+    'tender': false
+  };
+  
 
   checkNotifications(): void {
     const today = new Date();
-    
     this.hasNotifications = false;
     this.templatesNeedingExecution = {};
-
+    this.tabsNeedingExecution = { 'medicine-request': false, 'audit': false, 'tender': false };
+  
     const checkTemplate = (template: Template) => {
-      if (!template.lastExecutedDate) return false;
+      if (!template.isActive || !template.lastExecutedDate) return false;
       const lastExec = new Date(template.lastExecutedDate);
       const nextExec = new Date(lastExec.setDate(lastExec.getDate() + template.recurrenceInterval));
       return nextExec <= today;
     };
-
-    [...this.medicineTemplates, ...this.auditTemplates, ...this.tenderTemplates].forEach(template => {
-      const needsExecution = checkTemplate(template);
-      if (needsExecution) {
+  
+    const updateTabStatus = (template: Template, tab: TemplateType) => {
+      const key = `${tab}-${template.id}`; 
+      if (checkTemplate(template)) {
         this.hasNotifications = true;
-        this.templatesNeedingExecution[template.id] = true;
+        this.templatesNeedingExecution[key] = true;
+        this.tabsNeedingExecution[tab] = true;
       }
+      
+    };
+  
+    this.medicineTemplates.forEach(template => updateTabStatus(template, 'medicine-request'));
+    this.auditTemplates.forEach(template => updateTabStatus(template, 'audit'));
+    this.tenderTemplates.forEach(template => updateTabStatus(template, 'tender'));
+  }
+
+  
+  toggleTemplateStatus(type: TemplateType, id: number, isActive: boolean): void {
+    const action = isActive ? this.templateService.activateTemplate : this.templateService.deactivateTemplate;
+    action.call(this.templateService, type, id).subscribe(() => {
+      this.loadTemplates();
+      this.checkNotifications();
     });
+  }
+  
+  
+  viewTemplateDetails(template: Template): void {
+    
+    this.isDetailsVisible = true;
+    this.isFormVisible = false;
+    this.selectedTemplate = template;
+  }
+
+  closeDetails(): void {
+    this.isDetailsVisible = false;
+    this.selectedTemplate = null;
   }
 
   // OTHER STUFF
@@ -101,16 +135,6 @@ export class NotificationTemplateComponent {
     this.getActiveForm().patchValue(template);
   }
 
-  viewTemplateDetails(template: Template): void {
-    this.isDetailsVisible = true;
-    this.isFormVisible = false;
-    this.selectedTemplate = template;
-  }
-
-  closeDetails(): void {
-    this.isDetailsVisible = false;
-    this.selectedTemplate = null;
-  }
 
   cancelForm(): void {
     this.isFormVisible = false;
@@ -193,7 +217,7 @@ export class NotificationTemplateComponent {
 
   private loadData(): void {
     forkJoin({
-        medicines: this.medicineService.getMedicinesWithFilter({ pageNumber: 1, pageSize: 999, sortBy: 'name' }),
+        medicines: this.medicineService.getAllMedicines(),
         medicineTemplates: this.templateService.getTemplatesByUserId<MedicineRequestTemplateDTO>('medicine-request'),
         auditTemplates: this.templateService.getTemplatesByUserId<AuditTemplateDTO>('audit'),
         tenderTemplates: this.templateService.getTemplatesByUserId<TenderTemplateDTO>('tender')
@@ -222,29 +246,29 @@ export class NotificationTemplateComponent {
   }
 
   showExecuteDateModal = false;
-selectedTemplateForExecution: { type: TemplateType; id: number } | null = null;
+  selectedTemplateForExecution: { type: TemplateType; id: number } | null = null;
 
-onExecuteClick(type: TemplateType, id: number): void {
-  this.selectedTemplateForExecution = { type, id };
-  this.showExecuteDateModal = true;
-}
-
-onExecuteDateConfirmed(date: Date): void {
-  if (this.selectedTemplateForExecution) {
-    this.executeTemplate(
-      this.selectedTemplateForExecution.type,
-      this.selectedTemplateForExecution.id,
-      date
-    );
+  onExecuteClick(type: TemplateType, id: number): void {
+    this.selectedTemplateForExecution = { type, id };
+    this.showExecuteDateModal = true;
   }
-  this.showExecuteDateModal = false;
-  this.selectedTemplateForExecution = null;
-}
 
-onExecuteDateCancelled(): void {
-  this.showExecuteDateModal = false;
-  this.selectedTemplateForExecution = null;
-}
+  onExecuteDateConfirmed(date: Date): void {
+    if (this.selectedTemplateForExecution) {
+      this.executeTemplate(
+        this.selectedTemplateForExecution.type,
+        this.selectedTemplateForExecution.id,
+        date
+      );
+    }
+    this.showExecuteDateModal = false;
+    this.selectedTemplateForExecution = null;
+  }
+
+  onExecuteDateCancelled(): void {
+    this.showExecuteDateModal = false;
+    this.selectedTemplateForExecution = null;
+  }
 
   executeTemplate(type: TemplateType, id: number, date: Date): void {
     this.templateService.executeTemplate(type, id, date).subscribe(() => {
@@ -253,11 +277,6 @@ onExecuteDateCancelled(): void {
     });
   }
 
-
-  toggleTemplateStatus(type: TemplateType, id: number, isActive: boolean): void {
-    const action = isActive ? this.templateService.deactivateTemplate : this.templateService.activateTemplate;
-    action.call(this.templateService, type, id).subscribe(() => this.loadTemplates());
-  }
 
   deleteTemplate(type: TemplateType, id: number): void {
     this.templateService.deleteTemplate(type, id).subscribe(() => this.loadTemplates());

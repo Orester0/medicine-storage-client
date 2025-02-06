@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedList } from '../_models/service.types';
-import { ReturnAuditDTO, CreateAuditDTO, UpdateAuditItemsRequest, AuditNotes, AuditParams } from '../_models/audit.types';
+import { ReturnAuditDTO, CreateAuditDTO, UpdateAuditItemsRequest, ReturnAuditNoteDTO, AuditParams, CreateAuditNoteDTO } from '../_models/audit.types';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +12,8 @@ export class AuditService {
 
   constructor(private http: HttpClient) {}
 
-  getAllAudits(params: AuditParams): Observable<PagedList<ReturnAuditDTO>> {
+  getAllAudits(params: AuditParams): Observable<PagedList<ReturnAuditDTO>> 
+  {
     let httpParams = new HttpParams();
     if (params.fromDate) {
       const fromDate = params.fromDate instanceof Date ? params.fromDate.toISOString() : params.fromDate;
@@ -49,8 +50,7 @@ export class AuditService {
     httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
 
     return this.http.get<PagedList<ReturnAuditDTO>>(this.baseUrl, { params: httpParams });
-}
-
+  }
 
   getAuditById(auditId: number): Observable<ReturnAuditDTO> {
     return this.http.get<ReturnAuditDTO>(`${this.baseUrl}/${auditId}`);
@@ -60,7 +60,7 @@ export class AuditService {
     return this.http.post<ReturnAuditDTO>(`${this.baseUrl}/create`, request);
   }
 
-  startAudit(auditId: number, notes: AuditNotes): Observable<ReturnAuditDTO> {
+  startAudit(auditId: number, notes: CreateAuditNoteDTO): Observable<ReturnAuditDTO> {
     return this.http.put<ReturnAuditDTO>(`${this.baseUrl}/start/${auditId}`, notes);
   }
 
@@ -68,12 +68,8 @@ export class AuditService {
     return this.http.put<ReturnAuditDTO>(`${this.baseUrl}/update-items/${auditId}`, request);
   }
 
-  closeAudit(auditId: number, notes: AuditNotes): Observable<ReturnAuditDTO> {
+  closeAudit(auditId: number, notes: CreateAuditNoteDTO): Observable<ReturnAuditDTO> {
     return this.http.put<ReturnAuditDTO>(`${this.baseUrl}/close/${auditId}`, notes);
-  }
-
-  updateAudit(auditId: number, audit: ReturnAuditDTO): Observable<ReturnAuditDTO> {
-    return this.http.put<ReturnAuditDTO>(`${this.baseUrl}/update/${auditId}`, audit);
   }
 
   deleteAudit(auditId: number): Observable<void> {

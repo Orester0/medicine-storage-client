@@ -1,0 +1,47 @@
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="auditForm" (ngSubmit)="onSubmit()">
+          <div *ngIf="auditItems.length > 0; else noItems">
+            <div *ngFor="let item of auditItems">
+              <div *ngIf="item.checkedByUser === null" class="mb-3">
+                <label class="form-label">
+                  {{ item.medicine.name }} (Expected: {{ item.expectedQuantity }})
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [formControlName]="item.id.toString()"
+                  min="0"
+                />
+                <div *ngIf="auditForm.get(item.id.toString())?.invalid && auditForm.get(item.id.toString())?.touched"
+                     class="text-danger">
+                  Please enter a valid quantity (minimum 0).
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Notes:</label>
+              <textarea class="form-control" formControlName="notes" rows="3"></textarea>
+            </div>
+          </div>
+
+          <ng-template #noItems>
+            <div class="alert alert-info">No items available for update.</div>
+          </ng-template>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="auditForm.invalid">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
