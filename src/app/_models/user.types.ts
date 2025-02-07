@@ -12,37 +12,28 @@
     password: string;
  }
  
- export interface UserDTO {
+ export interface ReturnUserDTO {
     id: number;
     firstName: string;
     lastName: string;
     userName: string;
+    position?: string | null;
     email: string;
     roles: string[];
  }
  
- export interface UserUpdate {
-    firstName: string;
-    lastName: string;
-    email: string;
+ export interface UserUpdateDTO {
+   firstName?: string | null;
+   lastName?: string | null;
+   position?: string | null; 
+   email?: string | null;
  }
  
- export interface UserTokenReturn {
-    userName: string;
-    token: string;
- }
-
  export interface UserToken{
    token: string;
 }
  
- export interface UserKnown {
-    firstName: string;
-    lastName: string;
-    roles: string[];
- }
- 
- export interface ChangePassword {
+ export interface ChangePasswordDTO {
     userId: number;
     currentPassword: string;
     newPassword: string;

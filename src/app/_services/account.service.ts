@@ -2,24 +2,44 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { map, Observable } from 'rxjs';
-import { UserDTO, UserToken } from '../_models/user.types';
+import { ChangePasswordDTO, ReturnUserDTO, UserToken, UserUpdateDTO } from '../_models/user.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService  {
+
+
+
+
+
+
+
+  
   private http = inject(HttpClient);
   private baseUrlAccount = `${environment.apiUrl}account`;
   private baseUrlUser = `${environment.apiUrl}users`;
-  currentUser = signal<UserToken | null>(null);
-
-  uploadPhoto(file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post(`${this.baseUrlAccount}/upload-photo`, formData);
+  currentUserToken = signal<UserToken | null>(null);
+  
+  updateCurrentUserInfo(model: UserUpdateDTO): Observable<void> {
+    return this.http.put<void>(`${this.baseUrlAccount}/update`, model);
   }
 
-  getPhoto() {
+  uploadCurrentUserPhoto(file: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<void>(`${this.baseUrlAccount}/upload-photo`, formData);
+  }
+
+  getCurrentUserInfo(): Observable<ReturnUserDTO> {
+    return this.http.get<ReturnUserDTO>(`${this.baseUrlAccount}/info`);
+  }
+
+  changePassword(model: ChangePasswordDTO): Observable<void> {
+    return this.http.post<void>(`${this.baseUrlAccount}/change-password`, model);
+  }
+
+  getCurrentUserPhoto() {
     return this.http.get(`${this.baseUrlAccount}/photo`, { responseType: 'blob' });
   }
 
@@ -28,7 +48,7 @@ export class AccountService  {
       map(user => {
         if(user){
           localStorage.setItem('user', JSON.stringify(user));
-          this.currentUser.set(user); 
+          this.currentUserToken.set(user); 
         }
       })
     );
@@ -39,7 +59,7 @@ export class AccountService  {
       map(user => {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
-          this.currentUser.set(user);
+          this.currentUserToken.set(user);
         }
         return user;
       })
@@ -48,11 +68,11 @@ export class AccountService  {
 
   logout(){
     localStorage.removeItem('user');
-    this.currentUser.set(null);
+    this.currentUserToken.set(null);
   }
 
-  getAllUsers(): Observable<UserDTO[]> {
-    return this.http.get<UserDTO[]>(`${this.baseUrlUser}`);
+  getAllUsers(): Observable<ReturnUserDTO[]> {
+    return this.http.get<ReturnUserDTO[]>(`${this.baseUrlUser}`);
   }
 
   constructor() {
@@ -61,6 +81,6 @@ export class AccountService  {
       return;
     }
     const user = JSON.parse(userString);
-    this.currentUser.set(user);
+    this.currentUserToken.set(user);
    }
 }

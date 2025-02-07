@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent implements OnInit {
   accountService = inject(AccountService);
-  currentUser = this.accountService.currentUser;
+  currentUser = this.accountService.currentUserToken;
   registerMode = false;
 
   ngOnInit(): void {}

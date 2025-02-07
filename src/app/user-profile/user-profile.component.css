@@ -1,0 +1,19 @@
+.photo-container {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    cursor: pointer;
+  }
+  
+  .photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    transition: opacity 0.3s;
+  }
+  
+  .photo-container:hover img {
+    opacity: 0.8;
+  }
+  

@@ -1,5 +1,5 @@
 import { ReturnMedicineDTO } from "./medicine.types";
-import { UserDTO } from "./user.types";
+import { ReturnUserDTO } from "./user.types";
 
 export interface CreateAuditDTO {
    medicineIds: number[];
@@ -19,8 +19,8 @@ export interface ReturnAuditDTO {
   startDate: Date | null;
   endDate: Date | null;
   status: AuditStatus;
-  plannedByUser: UserDTO;
-  closedByUser: UserDTO | null;
+  plannedByUser: ReturnUserDTO;
+  closedByUser: ReturnUserDTO | null;
   auditItems: ReturnAuditItemDTO[];
   notes: ReturnAuditNoteDTO[];
 }
@@ -31,7 +31,7 @@ export interface ReturnAuditItemDTO {
   expectedQuantity: number;
   actualQuantity: number;
   medicine: ReturnMedicineDTO;
-  checkedByUser: UserDTO | null;
+  checkedByUser: ReturnUserDTO | null;
 }
 
  export interface ReturnAuditNoteDTO {
@@ -51,8 +51,8 @@ export interface ReturnAuditDTO {
    startDate: Date | null;
    endDate: Date | null;
    status: AuditStatus;
-   plannedByUser: UserDTO;
-   closedByUser: UserDTO | null;
+   plannedByUser: ReturnUserDTO;
+   closedByUser: ReturnUserDTO | null;
    auditItems: ReturnAuditItemDTO[];
    notes: ReturnAuditNoteDTO[];
  }
@@ -63,7 +63,7 @@ export interface ReturnAuditDTO {
    expectedQuantity: number;
    actualQuantity: number;
    medicine: ReturnMedicineDTO;
-   checkedByUser: UserDTO | null;
+   checkedByUser: ReturnUserDTO | null;
  }
 
 

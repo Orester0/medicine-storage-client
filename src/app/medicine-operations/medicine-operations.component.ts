@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CreateMedicineRequestDTO, CreateMedicineUsageDTO, MedicineRequestParams, RequestStatus, ReturnMedicineRequestDTO } from '../_models/medicine-operations.types';
 import { MedicineService } from '../_services/medicine.service';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
-import { UserDTO } from '../_models/user.types';
+import { ReturnUserDTO } from '../_models/user.types';
 import { AccountService } from '../_services/account.service';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -135,7 +135,7 @@ export class MedicineOperationsComponent implements OnInit {
 
 
 
-  users: UserDTO[] = [];
+  users: ReturnUserDTO[] = [];
   filterConfig: FilterConfig[] = [
     
     {

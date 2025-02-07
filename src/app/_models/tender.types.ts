@@ -1,5 +1,5 @@
 import { ReturnMedicineDTO } from "./medicine.types";
-import { UserDTO } from "./user.types";
+import { ReturnUserDTO } from "./user.types";
 
 export interface ReturnTenderDTO {
    id: number;
@@ -9,10 +9,10 @@ export interface ReturnTenderDTO {
    closingDate?: Date;
    deadlineDate: Date;
    status: TenderStatus;
-   createdByUser?: UserDTO;
-   openedByUser?: UserDTO;
-   closedByUser?: UserDTO;
-   winnerSelectedByUser?: UserDTO;
+   createdByUser?: ReturnUserDTO;
+   openedByUser?: ReturnUserDTO;
+   closedByUser?: ReturnUserDTO;
+   winnerSelectedByUser?: ReturnUserDTO;
    items: ReturnTenderItem[];
    proposals: ReturnTenderProposal[];
 }
@@ -45,7 +45,7 @@ export interface ReturnTenderProposal {
    totalPrice: number;
    submissionDate: Date;
    status: ProposalStatus;
-   createdByUser?: UserDTO;
+   createdByUser?: ReturnUserDTO;
    items: ReturnTenderProposalItem[];
 }
  

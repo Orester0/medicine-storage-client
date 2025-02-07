@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
       return;
     }
     const user = JSON.parse(userString);
-    this.accountService.currentUser.set(user);
+    this.accountService.currentUserToken.set(user);
   }
   
 
