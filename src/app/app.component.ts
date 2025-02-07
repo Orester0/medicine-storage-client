@@ -1,10 +1,11 @@
 import { Component, inject, OnInit} from '@angular/core';
 import { NavComponent } from "./nav/nav.component";
-import { AccountService } from './_services/account.service';
+import { UserService } from './_services/user.service';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from './_services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -13,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  private accountService = inject(AccountService);
+  private authService = inject(AuthService);
   private toastr = inject(ToastrService);
 
   title = 'Medicine Storage Client';
@@ -30,7 +31,7 @@ export class AppComponent implements OnInit {
       return;
     }
     const user = JSON.parse(userString);
-    this.accountService.currentUserToken.set(user);
+    this.authService.currentUserToken.set(user);
   }
   
 

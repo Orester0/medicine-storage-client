@@ -1,8 +1,9 @@
 import { Component, OnInit, output, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { AccountService } from '../_services/account.service';
+import { UserService } from '../_services/user.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +24,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private accountService: AccountService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -88,7 +89,7 @@ export class RegisterComponent implements OnInit {
         roles: [this.registerForm.value.role],
       };
 
-      this.accountService.register(formData).subscribe({
+      this.authService.register(formData).subscribe({
         next: () => {
           this.router.navigate(['/login'], { queryParams: { registered: true } });
         },

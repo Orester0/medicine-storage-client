@@ -6,7 +6,7 @@ import { CreateMedicineRequestDTO, CreateMedicineUsageDTO, MedicineRequestParams
 import { MedicineService } from '../_services/medicine.service';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
 import { ReturnUserDTO } from '../_models/user.types';
-import { AccountService } from '../_services/account.service';
+import { UserService } from '../_services/user.service';
 import { TableAction, TableColumn, TableComponent } from '../table/table.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { MedicineOperationsDetailsComponent } from '../medicine-operations-details/medicine-operations-details.component';

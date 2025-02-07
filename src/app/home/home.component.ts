@@ -1,7 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RegisterComponent } from "../register/register.component";
-import { AccountService } from '../_services/account.service';
+import { UserService } from '../_services/user.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../_services/auth.service';
 @Component({
   selector: 'app-home',
   imports: [RegisterComponent, CommonModule],
@@ -9,8 +10,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  accountService = inject(AccountService);
-  currentUser = this.accountService.currentUserToken;
+  authService = inject(AuthService);
+  currentUser = this.authService.currentUserToken;
   registerMode = false;
 
   ngOnInit(): void {}

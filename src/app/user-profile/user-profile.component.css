@@ -17,3 +17,20 @@
     opacity: 0.8;
   }
   
+  .container {
+    max-width: 500px;
+  }
+  
+  .profile-card {
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  

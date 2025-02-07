@@ -1,24 +1,21 @@
-@if (currentUserDTO) {
-    <div class="dropdown d-flex align-items-center" dropdown>
-        <a dropdownToggle class="dropdown-toggle text-light text-decoration-none d-flex align-items-center">
-            <img [src]="photoUrl || 'assets/default-avatar.png'" 
-                 alt="Profile Picture" 
-                 class="rounded-circle me-2" 
-                 width="35" height="35">
-            <span>{{ currentUserDTO.firstName }} {{ currentUserDTO.lastName }}</span>
-        </a> 
-        <div *dropdownMenu class="dropdown-menu">
-            <a class="dropdown-item" routerLink="/user-profile">Edit profile</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)="logout()">Logout</a>
-        </div>
+<div class="dropdown d-flex align-items-center" *ngIf="currentUser()" dropdown>
+    <a dropdownToggle class="dropdown-toggle text-light text-decoration-none d-flex align-items-center">
+      <img [src]="photoUrl() || 'assets/default-avatar.png'" 
+           alt="Profile Picture" 
+           class="rounded-circle me-2" 
+           width="35" height="35">
+      <span>{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</span>
+    </a>
+    <div *dropdownMenu class="dropdown-menu">
+      <a class="dropdown-item" routerLink="/user-profile">View profile</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" (click)="logout()">Logout</a>
     </div>
-}
-
-@if (!currentUserDTO) {
-    <form #loginForm="ngForm" (ngSubmit)="login(model)" class="d-flex" autocomplete="off">
-        <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username">
-        <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password" type="password">
-        <button class="btn btn-success" type="submit">Login</button>
-    </form>
-}
+  </div>
+  
+  <form *ngIf="!currentUser()" #loginForm="ngForm" (ngSubmit)="login(model)" class="d-flex" autocomplete="off">
+    <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username" required>
+    <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password" type="password" required>
+    <button class="btn btn-success" type="submit">Login</button>
+  </form>
+  

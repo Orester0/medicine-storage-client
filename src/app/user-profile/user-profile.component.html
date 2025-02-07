@@ -1,47 +1,49 @@
-<div class="container mt-4">
-    <h2 class="text-center">User profile</h2>
-  
-    <div class="text-center mt-3">
-      <div class="photo-container" (click)="onPhotoClick()">
-        <img *ngIf="photoUrl" [src]="photoUrl" alt="Profile Photo" class="rounded-circle img-thumbnail" />
+<div class="container d-flex justify-content-center mt-4">
+  <div class="card profile-card">
+    <div class="card-body text-center">
+      <h2 class="card-title">User Profile</h2>
+
+      <!-- Фото профілю -->
+      <div class="photo-container mt-3" (click)="onPhotoClick()">
+        <img *ngIf="photoUrl()" [src]="photoUrl()" alt="Profile Photo" class="rounded-circle img-thumbnail profile-photo">
         <input type="file" id="fileInput" (change)="onFileSelected($event)" hidden />
       </div>
-      <p class="text-muted">Click on the photo, to change</p>
-    </div>
-  
-    <div class="card mt-3 p-3">
-      <div *ngIf="!editMode">
-        <p><strong>First name:</strong> {{ user?.firstName }}</p>
-        <p><strong>Last name:</strong> {{ user?.lastName }}</p>
-        <p><strong>Position:</strong> {{ user?.position || 'Не вказано' }}</p>
-        <p><strong>Email:</strong> {{ user?.email }}</p>
+      <p class="text-muted">Click on the photo to change</p>
+
+      <!-- Дані користувача -->
+      <div *ngIf="!editMode" class="mt-3 text-start">
+        <p><strong>First name:</strong> {{ currentUser()?.firstName }}</p>
+        <p><strong>Last name:</strong> {{ currentUser()?.lastName }}</p>
+        <p><strong>Position:</strong> {{ currentUser()?.position || 'Not specified' }}</p>
+        <p><strong>Email:</strong> {{ currentUser()?.email }}</p>
         <button class="btn btn-primary w-100 mt-2" (click)="toggleEditMode()">Edit</button>
       </div>
-  
+
+      <!-- Форма редагування -->
       <form *ngIf="editMode" [formGroup]="userForm" class="mt-3">
         <div class="mb-3">
           <label class="form-label">First name</label>
-          <input class="form-control" formControlName="firstName" />
+          <input class="form-control" formControlName="firstName" required>
         </div>
-  
+
         <div class="mb-3">
-          <label class="form-label">Last name:</label>
-          <input class="form-control" formControlName="lastName" />
+          <label class="form-label">Last name</label>
+          <input class="form-control" formControlName="lastName" required>
         </div>
-  
+
         <div class="mb-3">
-          <label class="form-label">Position:</label>
-          <input class="form-control" formControlName="position" />
+          <label class="form-label">Position</label>
+          <input class="form-control" formControlName="position">
         </div>
-  
+
         <div class="mb-3">
-          <label class="form-label">Email:</label>
-          <input class="form-control" formControlName="email" />
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="email" type="email" required>
         </div>
-  
+
         <button class="btn btn-success w-100" type="button" (click)="saveChanges()">Save</button>
-        <button class="btn btn-secondary w-100 mt-2" type="button" (click)="toggleEditMode()">Cancel</button>
+        <button class="btn btn-outline-danger w-100 mt-2" type="button" (click)="toggleEditMode()">Cancel</button>
       </form>
     </div>
   </div>
-  
+</div>
