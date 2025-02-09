@@ -1,167 +1,168 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CreateTenderProposal, CreateTenderProposalItem, ProposalStatus, ReturnTenderDTO, ReturnTenderItem, ReturnTenderProposal, TenderItemStatus, TenderStatus } from '../_models/tender.types';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { CreateTenderItem, CreateTenderProposal, CreateTenderProposalItem, ProposalStatus, ReturnTenderDTO, ReturnTenderItem as ReturnTenderItemDTO, ReturnTenderProposal as ReturnTenderProposalDTO, TenderItemStatus, TenderStatus } from '../_models/tender.types';
 import { TenderService } from '../_services/tender.service';
-import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MedicineParams, ReturnMedicineDTO } from '../_models/medicine.types';
-import { MedicineService } from '../_services/medicine.service';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ReturnMedicineDTO } from '../_models/medicine.types';
+import { CreateTenderProposalComponent } from '../create-tender-proposal/create-tender-proposal.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TableAction, TableColumn, TableComponent } from '../table/table.component';
+import { TenderItemsComponent } from '../tender-items/tender-items.component';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-tenders-details',
   templateUrl: './tenders-details.component.html',
   styleUrls: ['./tenders-details.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent],
+  providers: [CurrencyPipe]
 })
 export class TendersDetailsComponent implements OnInit {
-  @Input() tender!: ReturnTenderDTO;
-  @Output() onClose = new EventEmitter<void>();
+ itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
+    {
+      label: 'Execute',
+      class: 'btn btn-primary btn-sm',
+      onClick: (row) => {
+        const winningProposal = this.proposals.find(p => p.status === ProposalStatus.Accepted);
+        if (winningProposal) {
+          this.executeTenderItem(row.id, winningProposal.id);
+        }
+      },
+      visible: (row) => row.status === TenderItemStatus.Pending && this.tender.status === TenderStatus.Executing,
+    },
+  ];
+  
+  
+  itemsTableColumns: TableColumn<ReturnTenderItemDTO>[] = [
+    {
+      key: 'medicine',
+      label: 'Medicine',
+      render: (row) => `${row.name}`,
+    },
+    {
+      key: 'requiredQuantity',
+      label: 'Quantity',
+      render: (row) => `${row}`, 
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (row) => this.getTextByItemStatus(row),
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+    },
+  ];
 
-  tenderItems: ReturnTenderItem[] = [];
-  proposals: ReturnTenderProposal[] = [];
-  error: string | null = null;
+  
+  proposalTableActions: TableAction<ReturnTenderProposalDTO>[] = [
+    {
+      label: 'Select Winner',
+      class: 'btn btn-success btn-sm me-1',
+      onClick: (row) => this.selectWinner(row.id),
+      visible: (row) => row.status === ProposalStatus.Submitted && this.tender.status === TenderStatus.Closed,
+    },
+    {
+      label: 'Execute',
+      class: 'btn btn-primary btn-sm',
+      onClick: (row) => this.executeProposal(row.id),
+      visible: (row) => this.tender.status === TenderStatus.Awarded,
+    },
+    
+  ];
 
-  proposalForm!: FormGroup;
-  medicines: ReturnMedicineDTO[] = [];
-  showProposalForm = false;
+  proposalTableColumns: TableColumn<ReturnTenderProposalDTO>[] = [
+    {
+      key: 'createdByUser',
+      label: 'Vendor',
+      render: (value) => `${value?.firstName} ${value?.lastName}`,
+    },
+    {
+      key: 'totalPrice',
+      label: 'Amount',
+      render: (value) => this.currencyPipe.transform(value) || '0.00', 
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (value) => this.getTextByProposalStatus(value),
+    },
+    {
+      key: 'submissionDate',
+      label: 'Submission Date',
+      render: (value) => new Date(value).toLocaleDateString(),
+    },
+    {
+      key: 'items',
+      label: 'Items Count',
+      render: (value) => value?.length,
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+    },
+  ];
+
+  // delete
+  tenderToDelete: ReturnTenderDTO | null = null;
+
+  deleteTenderPrompt(tender: ReturnTenderDTO): void {
+    this.tenderToDelete = tender;
+  }
+
+  handleDeleteConfirm(): void {
+    if (!this.tenderToDelete) return;
+    this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
+      next: () => {
+        this.tenderToDelete = null;
+      },
+      error: () => {
+        console.error('Failed to delete tender.');
+      },
+    });
+  }
+
+  handleDeleteCancel(): void {
+    this.tenderToDelete = null;
+  }
+
+  // tender item
+  isTenderItemModalOpen = false;
+  saveTenderItem(tenderItem: CreateTenderItem): void {
+    this.tenderService.addTenderItem(tenderItem.tenderId, tenderItem).subscribe(() => {
+      this.reloadTenderInfo();
+      this.isTenderItemModalOpen = false;
+    });
+  }
+  
+  openAddItemModal(tender: ReturnTenderDTO): void {
+    this.tender = tender;
+    this.isTenderItemModalOpen = true;
+  }
+  
+  addItem(): void {
+    this.openAddItemModal(this.tender);
+  }
+
+  // load data
 
   constructor(
-    private fb: FormBuilder,
     private tenderService: TenderService,
-    private medicineService: MedicineService
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loadTenderItems();
-    this.loadProposals();
-    this.loadMedicines();
-    this.initForm();
+    this.tender = this.route.snapshot.data['tender'];
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.reloadTenderInfo();
   }
 
-  
-
-
-  toggleProposalForm() {
-    this.showProposalForm = !this.showProposalForm;
-  }
-
-
-  selectWinner(proposalId: number): void {
-    this.tenderService.selectWinningProposal(this.tender.id, proposalId).subscribe({
-      next: (updatedTender) => {
-        this.tender = updatedTender;
-        this.loadProposals();
-      },
-      error: () => {
-        this.error = 'Failed to select winning proposal';
-      }
-    });
-  }
-
-  closeDetails(): void {
-    this.onClose.emit();
-  }
-
-  executeTenderItem(tenderItemId: number, proposalId: number): void {
-    this.tenderService.executeTenderItem(tenderItemId, proposalId).subscribe({
-      next: () => {
-        this.loadTenderItems();
-      },
-      error: () => {
-        this.error = 'Failed to execute tender item';
-      }
-    });
-  }
-
-  executeTender(proposalId: number): void {
-    this.tenderService.executeTender(proposalId).subscribe({
-      next: () => {
-        this.loadProposals();
-        this.loadTenderItems();
-      },
-      error: () => {
-        this.error = 'Failed to execute tender';
-      }
-    });
-  }
-
-  getStatusBadgeClass(status: TenderStatus): string {
-    switch (status) {
-      case TenderStatus.Created: return 'bg-secondary';
-      case TenderStatus.Published: return 'bg-success';
-      case TenderStatus.Closed: return 'bg-warning';
-      case TenderStatus.Awarded: return 'bg-info';
-      case TenderStatus.Executing: return 'bg-primary';
-      case TenderStatus.Executed: return 'bg-dark';
-      case TenderStatus.Cancelled: return 'bg-danger';
-      default: return 'bg-secondary';
-    }
-  }
-
-  getItemStatusBadgeClass(status: TenderItemStatus): string {
-    switch (status) {
-      case TenderItemStatus.Pending: return 'bg-warning';
-      case TenderItemStatus.Executed: return 'bg-success';
-      default: return 'bg-secondary';
-    }
-  }
-
-
-
-   getTenderStatusText(status: TenderStatus): string {
-    switch (status) {
-      case TenderStatus.Created:
-        return 'Created';
-      case TenderStatus.Published:
-        return 'Published';
-      case TenderStatus.Closed:
-        return 'Closed';
-      case TenderStatus.Awarded:
-        return 'Awarded';
-      case TenderStatus.Executing:
-        return 'Executing';
-      case TenderStatus.Executed:
-        return 'Executed';
-      case TenderStatus.Cancelled:
-        return 'Cancelled';
-      default:
-        return 'Unknown';
-    }
-  }
-
-  getProposalStatusText(status: ProposalStatus): string {
-    switch (status) {
-      case ProposalStatus.Submitted:
-        return 'Submitted';
-      case ProposalStatus.Accepted:
-        return 'Accepted';
-      case ProposalStatus.Rejected:
-        return 'Rejected';
-      default:
-        return 'Unknown';
-    }
-  }
-
-  getProposalStatusBadgeClass(status: ProposalStatus): string {
-    switch (status) {
-      case ProposalStatus.Submitted: return 'bg-primary';
-      case ProposalStatus.Accepted: return 'bg-success';
-      case ProposalStatus.Rejected: return 'bg-danger';
-      default: return 'bg-secondary';
-    }
-  }
-
-
-
-  initForm() {
-    this.proposalForm = this.fb.group({
-      proposalItems: this.fb.array([])
-    });
-  }
-
-  loadTenderItems() {
-    this.tenderService.getTenderItems(this.tender.id).subscribe((items) => {
-      this.tenderItems = items;
-      this.initProposalItems();
+  reloadTenderInfo() {
+    this.tenderService.getTenderById(this.tender.id).subscribe((tender) => {
+      this.tender = tender;
+      this.loadProposals();
     });
   }
 
@@ -171,61 +172,147 @@ export class TendersDetailsComponent implements OnInit {
     });
   }
 
-  loadMedicines() {
-    this.medicineService.getMedicinesWithFilter({ pageNumber: 1, pageSize: 999, sortBy: "name" }).subscribe((response) => {
-      this.medicines = response.items;
-    });
+
+
+
+
+
+  allMedicines: ReturnMedicineDTO[] = [];
+  private currencyPipe = inject(CurrencyPipe);
+
+  tender!: ReturnTenderDTO;
+  @Output() onClose = new EventEmitter<void>();
+  
+  proposals: ReturnTenderProposalDTO[] = [];
+  showProposalModal = false;
+  
+  TenderStatus = TenderStatus; 
+
+  ProposalStatus = ProposalStatus; 
+  
+
+
+  closeDetails(): void {
+    this.router.navigate(['/tenders']);
   }
 
-  initProposalItems() {
-    const proposalItemsArray = this.proposalForm.get('proposalItems') as FormArray;
-    this.tenderItems.forEach(item => {
-      proposalItemsArray.push(
-        this.fb.group({
-          medicineId: [item.medicine.id],
-          quantity: [item.requiredQuantity, [Validators.required, Validators.min(1)]],
-          unitPrice: [0, [Validators.required, Validators.min(0)]]
-        })
-      );
-    });
+  openProposalModal(): void {
+    this.showProposalModal = true;
   }
 
-  get proposalItemsControls() {
-    return (this.proposalForm.get('proposalItems') as FormArray).controls;
+  closeProposalModal(): void {
+    this.showProposalModal = false;
+    this.reloadTenderInfo();
   }
 
-  getMedicineName(medicineId: number): string {
-    const medicine = this.medicines.find(m => m.id === medicineId);
-    return medicine?.name || 'Unknown';
-  }
-
-  onSubmitProposal() {
-    if (this.proposalForm.valid) {
-      const proposalItems: CreateTenderProposalItem[] = this.proposalForm.value.proposalItems.map(
-        (item: any) => ({
-          medicineId: item.medicineId,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          tenderProposalId: 0
-        })
-      );
-
-      const totalPrice = proposalItems.reduce(
-        (sum, item) => sum + item.quantity * item.unitPrice, 0
-      );
-
-      const proposal: CreateTenderProposal = {
-        totalPrice,
-        proposalItemsDTOs: proposalItems
-      };
-
-      this.tenderService.submitProposal(this.tender.id, proposal).subscribe(() => {
-        this.showProposalForm = false;
-        this.proposalForm.reset();
-        this.loadProposals();
+  selectWinner(proposalId: number): void {
+    this.tenderService.selectWinningProposal(this.tender.id, proposalId)
+      .subscribe({
+        next: () => {
+          this.reloadTenderInfo();
+        },
       });
-    }
+  }
+
+  executeProposal(proposalId: number): void {
+    this.tenderService.executeTenderProposal(proposalId)
+      .subscribe({
+        next: () => {
+          this.reloadTenderInfo();
+        },
+      });
+  }
+
+  
+  publishTender(): void {
+    this.tenderService.publishTender(this.tender.id).subscribe({
+      next: () => {
+        this.reloadTenderInfo();
+      }
+    });
+  }
+
+  closeTender(): void {
+    this.tenderService.closeTender(this.tender.id).subscribe({
+      next: () => {
+        this.reloadTenderInfo();
+      }
+    });
+  }
+
+  executeTenderItem(tenderItemId: number, proposalId: number): void {
+    this.tenderService.executeTenderProposalItem(tenderItemId, proposalId)
+      .subscribe({
+        next: () => {
+          this.reloadTenderInfo();
+        }
+      });
   }
 
 
+  
+
+  
+  getTextByTenderStatus(status: TenderStatus): string {
+    const statusMap = {
+      [TenderStatus.Created]: 'Created',
+      [TenderStatus.Published]: 'Published',
+      [TenderStatus.Closed]: 'Closed',
+      [TenderStatus.Awarded]: 'Awarded',
+      [TenderStatus.Executing]: 'Executing',
+      [TenderStatus.Executed]: 'Executed',
+      [TenderStatus.Cancelled]: 'Cancelled'
+    };
+    return statusMap[status] || 'Unknown';
+  }
+
+  getBadgeByTenderStatus(status: TenderStatus): string {
+    const baseClasses = 'badge rounded-pill';
+    const statusClasses = {
+      [TenderStatus.Created]: 'bg-secondary',
+      [TenderStatus.Published]: 'bg-primary',
+      [TenderStatus.Closed]: 'bg-info',
+      [TenderStatus.Awarded]: 'bg-success',
+      [TenderStatus.Executing]: 'bg-warning',
+      [TenderStatus.Executed]: 'bg-success',
+      [TenderStatus.Cancelled]: 'bg-danger'
+    };
+    return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
+  }
+
+  getTextByItemStatus(status: TenderItemStatus): string {
+    const statusMap = {
+      [TenderItemStatus.Pending]: 'Pending',
+      [TenderItemStatus.Executed]: 'Executed'
+    };
+    return statusMap[status] || 'Unknown';
+  }
+
+  getBadgeByItemStatus(status: TenderItemStatus): string {
+    const baseClasses = 'badge rounded-pill';
+    const statusClasses = {
+      [TenderItemStatus.Pending]: 'bg-warning',
+      [TenderItemStatus.Executed]: 'bg-success'
+    };
+    return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
+  }
+
+  getTextByProposalStatus(status: ProposalStatus): string {
+    const statusMap = {
+      [ProposalStatus.Submitted]: 'Submitted',
+      [ProposalStatus.Accepted]: 'Accepted',
+      [ProposalStatus.Rejected]: 'Rejected'
+    };
+    return statusMap[status] || 'Unknown';
+  }
+
+  getBadgeByProposalStatus(status: ProposalStatus): string {
+    const baseClasses = 'badge rounded-pill';
+    const statusClasses = {
+      [ProposalStatus.Submitted]: 'bg-info',
+      [ProposalStatus.Accepted]: 'bg-success',
+      [ProposalStatus.Rejected]: 'bg-danger'
+    };
+    return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
+  }
 }

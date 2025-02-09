@@ -1,121 +1,131 @@
-<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Tender Details</h5>
-        <button type="button" class="btn-close btn-close-white" (click)="closeDetails()"></button>
-      </div>
-      <div class="modal-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Title:</strong> {{ tender.title }}</li>
-          <li class="list-group-item"><strong>Description:</strong> {{ tender.description }}</li>
-          <li class="list-group-item">
-            <strong>Status:</strong>
-            <span class="badge {{ getStatusBadgeClass(tender.status) }}">
-              {{ getTenderStatusText(tender.status) }}
-            </span>
-          </li>
-          <li class="list-group-item"><strong>Deadline:</strong> {{ tender.deadlineDate | date }}</li>
-        </ul>
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Tender Details #{{tender.id}}</h3>
+    <div class="d-flex gap-2">
+      <button *ngIf="tender.status === 1" 
+              class="btn btn-primary btn-sm"
+              (click)="addItem()">
+        Add Item
+      </button>
+      
+      <button *ngIf="tender.status === 1" 
+              class="btn btn-success btn-sm"
+              (click)="publishTender()">
+        Publish Tender
+      </button>
+      
+      <button *ngIf="tender.status === 2" 
+              class="btn btn-danger btn-sm"
+              (click)="closeTender()">
+        Close Tender
+      </button>
+      <button *ngIf="tender.status === 1" 
+      class="btn btn-danger btn-sm"
+      (click)="deleteTenderPrompt(tender)">
+      Delete
+      </button>
+      <button class="btn btn-outline-secondary" 
+              (click)="closeDetails()">
+        Back to List
+      </button>
+    </div>
+  </div>
 
-        <div class="mt-4">
-          <h5>Tender Items</h5>
-          <table class="table table-bordered mt-3">
-            <thead>
-              <tr>
-                <th>Medicine</th>
-                <th>Quantity</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of tenderItems">
-                <td>{{ getMedicineName(item.medicine.id) }}</td>
-                <td>{{ item.requiredQuantity }}</td>
-                <td>
-                  <span class="badge {{ getItemStatusBadgeClass(item.status) }}">
-                    {{ item.status === 1 ? 'Pending' : 'Executed' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  
+  <app-delete-confirmation-modal
+  *ngIf="tenderToDelete"
+  [isOpen]="!!tenderToDelete"
+  [name]="tenderToDelete.title"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
 
-        <div class="mt-4">
-          <h5>Proposals</h5>
-          <table class="table table-bordered mt-3">
-            <thead>
-              <tr>
-                <th>Vendor</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let proposal of proposals">
-                <td>{{ proposal.createdByUser?.id }}</td>
-                <td>{{ proposal.totalPrice | currency }}</td>
-                <td>
-                  <span class="badge {{ getProposalStatusBadgeClass(proposal.status) }}">
-                    {{ getProposalStatusText(proposal.status) }}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    *ngIf="tender.status === 3"
-                    class="btn btn-success btn-sm"
-                    (click)="selectWinner(proposal.id)"
-                  >
-                    Select Winner
-                  </button>
-                  <button
-                    *ngIf="tender.status === 4"
-                    class="btn btn-primary btn-sm"
-                    (click)="executeTender(proposal.id)"
-                  >
-                    Execute
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <app-tender-items
+    *ngIf="isTenderItemModalOpen" 
+    [tenderId]="tender!.id" 
+    [medicines]="allMedicines"
+    (save)="saveTenderItem($event)" 
+    (close)="isTenderItemModalOpen = false">
+  </app-tender-items>
 
-        <div *ngIf="showProposalForm" class="mt-4">
-          <h5>Create Proposal</h5>
-          <form [formGroup]="proposalForm" (ngSubmit)="onSubmitProposal()">
-            <div formArrayName="proposalItems">
-              <div *ngFor="let item of proposalItemsControls; let i = index" class="mb-3">
-                <div [formGroupName]="i" class="row">
-                  <div class="col-md-4">
-                    <label class="form-label">Medicine</label>
-                    <input type="text" class="form-control" [value]="getMedicineName(item.get('medicineId')?.value)" readonly>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">Quantity</label>
-                    <input type="number" class="form-control" formControlName="quantity">
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">Unit Price</label>
-                    <input type="number" class="form-control" formControlName="unitPrice">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mt-3">
-              <button type="submit" class="btn btn-primary" [disabled]="!proposalForm.valid">Submit Proposal</button>
-            </div>
-          </form>
+  <div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Tender Information</h5>
+      <span [class]="getBadgeByTenderStatus(tender.status)">{{getTextByTenderStatus(tender.status)}}</span>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Title:</strong> {{tender.title}}</li>
+            <li class="list-group-item"><strong>Description:</strong> {{tender.description}}</li>
+            <li class="list-group-item"><strong>Deadline:</strong> {{tender.deadlineDate | date:'medium'}}</li>
+            <li class="list-group-item"><strong>Publish Date:</strong> {{tender.publishDate | date:'medium'}}</li>
+            <li class="list-group-item"><strong>Closing Date:</strong> {{tender.closingDate | date:'medium'}}</li>
+          </ul>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" (click)="toggleProposalForm()">
-          {{ showProposalForm ? 'Cancel Proposal' : 'Create Proposal' }}
-        </button>
-        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+        <div class="col-md-6">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Created By:</strong> {{tender.createdByUser?.firstName}} {{tender.createdByUser?.lastName}}
+            </li>
+            <li class="list-group-item">
+              <strong>Opened By:</strong> {{tender.openedByUser?.firstName}} {{tender.openedByUser?.lastName}}
+            </li>
+            <li class="list-group-item">
+              <strong>Closed By:</strong> {{tender.closedByUser?.firstName}} {{tender.closedByUser?.lastName}}
+            </li>
+            <li class="list-group-item">
+              <strong>Winner Selected By:</strong> {{tender.winnerSelectedByUser?.firstName}} {{tender.winnerSelectedByUser?.lastName}}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header bg-secondary text-white">
+      <h5 class="card-title mb-0">Tender Items</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <app-table
+          [columns]="itemsTableColumns"
+          [data]="tender.items"
+          [actions]="itemsTableActions"
+          ></app-table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="card-title mb-0">Proposals</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <app-table
+        [columns]="proposalTableColumns"
+        [data]="proposals"
+        [actions]="proposalTableActions"
+        ></app-table>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end mb-5">
+    <button class="btn btn-primary" 
+            (click)="openProposalModal()"
+            [disabled]="tender.status !== TenderStatus.Published">
+      Create Proposal
+    </button>
+  </div>
 </div>
+
+<app-create-tender-proposal
+  *ngIf="showProposalModal"
+  [tenderId]="tender.id"
+  [tenderItems]="tender.items"
+  (onClose)="closeProposalModal()">
+</app-create-tender-proposal>

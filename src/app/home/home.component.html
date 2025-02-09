@@ -1,22 +1,29 @@
 <div class="container mt-5">
-    @if (!currentUser(); as user) {
-      <h2>Welcome to the Medicine Storage Service</h2>
-      <p>To get started, please sign up.</p>
-  
-      <button 
-        class="btn btn-primary me-2"
-        (click)="registerToggle()">
-        Register
-      </button>
-  
-      @if (registerMode) {
-        <app-register (cancelRegister)="registerToggle()"/>
-      }
-    } @else {
-      <p>Here is the general information about the system:</p>
-  
-      
-  
-      
-    }
+  <div *ngIf="!currentUser(); else loggedInTemplate">
+    <h2 class="text-center text-primary fw-bold">Welcome to the Medicine Storage Service</h2>
+    <p class="text-center">To get started, please sign up.</p>
+
+    <div class="text-center">
+      <button class="btn btn-primary" (click)="registerToggle()">Register</button>
+    </div>
+
+    <app-register 
+      *ngIf="registerMode" 
+      (cancelRegister)="registerToggle()">
+    </app-register>
   </div>
+
+  <ng-template #loggedInTemplate>
+    <div class="card shadow-sm p-4">
+      <h4 class="text-success">Welcome, {{ currentUser()?.firstName }}!</h4>
+      <p>Here is the general information about the system:</p>
+      
+      <!-- Додайте корисну інформацію -->
+      <ul class="list-group">
+        <li class="list-group-item">🛠 Manage your medicine inventory</li>
+        <li class="list-group-item">📊 View audit reports and logs</li>
+        <li class="list-group-item">📦 Submit tender proposals</li>
+      </ul>
+    </div>
+  </ng-template>
+</div>

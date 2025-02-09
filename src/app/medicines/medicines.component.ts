@@ -10,10 +10,13 @@ import { FilterComponent, FilterConfig } from '../filter/filter.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { ActivatedRoute } from '@angular/router';
+import { CreateMedicineRequestDTO } from '../_models/medicine-operations.types';
+import { CreateMedicineRequestFormComponent } from '../create-medicine-request-form/create-medicine-request-form.component';
+import { MedicineRequestService } from '../_services/medicine-ops.service';
 
 @Component({
   selector: 'app-medicines',
-  imports: [FilterComponent, FormsModule, CommonModule, PaginationComponent, MedicinesDetailsComponent, ReactiveFormsModule, TableComponent, DeleteConfirmationModalComponent],
+  imports: [CreateMedicineRequestFormComponent, FilterComponent, FormsModule, CommonModule, PaginationComponent, MedicinesDetailsComponent, ReactiveFormsModule, TableComponent, DeleteConfirmationModalComponent],
   templateUrl: './medicines.component.html',
   styleUrl: './medicines.component.css'
 })
@@ -118,12 +121,41 @@ export class MedicinesComponent implements OnInit {
       onClick: (row) => this.viewMedicineDetails(row),
     },
     {
+      label: 'Create Request',
+      class: 'btn btn-primary btn-sm me-2',
+      onClick: (row) => this.openCreateRequestModal(row),
+    },
+    {
       label: 'Delete',
       class: 'btn btn-danger btn-sm me-2',
       onClick: (row) => this.deleteMedicinePrompt(row)
     },
     
   ];
+
+  isCreateRequestModalOpen = false;
+selectedMedicineForRequest: ReturnMedicineDTO | null = null;
+
+openCreateRequestModal(medicine: ReturnMedicineDTO): void {
+  this.selectedMedicineForRequest = medicine;
+  this.isCreateRequestModalOpen = true;
+}
+
+closeCreateRequestModal(): void {
+  this.isCreateRequestModalOpen = false;
+  this.selectedMedicineForRequest = null;
+}
+
+handleRequestSubmit(request: CreateMedicineRequestDTO): void {
+  this.medicineRequestService.createRequest(request).subscribe({
+    next: () => {
+      this.closeCreateRequestModal();
+    },
+    error: () => {
+      this.error = 'Failed to create request';
+    }
+  });
+}
 
   medicineColumns: TableColumn<ReturnMedicineDTO>[] = [
     {
@@ -168,7 +200,7 @@ export class MedicinesComponent implements OnInit {
   totalItems = 0;
 
 
-  constructor(private medicineService: MedicineService, private fb: FormBuilder, private route: ActivatedRoute ) {
+  constructor(private medicineService: MedicineService, private fb: FormBuilder, private route: ActivatedRoute, private medicineRequestService: MedicineRequestService ) {
 
   }
 
@@ -263,6 +295,8 @@ export class MedicinesComponent implements OnInit {
       next: () => {
         this.medicineForm.reset();
         this.serverErrors = null;
+        this.isModalOpen = false;
+        this.loadMedicines();
       },
       error: (err) => {
         if (err.status === 400) {

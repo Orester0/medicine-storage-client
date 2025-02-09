@@ -11,7 +11,7 @@ export const cachingInterceptor: HttpInterceptorFn = (req, next) => {
   const urlParts = cleanUrl.split('/');
   const baseResource = `${urlParts[0]}//${urlParts[2]}/${urlParts[3]}/${urlParts[4]}`;
 
-
+  // && !req.url.includes('sensitive-data')
   if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
     return next(req).pipe(
       tap(() => {

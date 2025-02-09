@@ -49,11 +49,7 @@ export interface ReturnTenderProposal {
    items: ReturnTenderProposalItem[];
 }
  
-export interface CreateTenderProposal {
-   totalPrice: number;
-   proposalItemsDTOs: CreateTenderProposalItem[];
-}
- 
+
 export interface ReturnTenderProposalItem {
    id: number;
    tenderProposalId: number;
@@ -61,6 +57,10 @@ export interface ReturnTenderProposalItem {
    quantity: number;
    totalItemPrice: number;
    medicine: ReturnMedicineDTO;
+}
+export interface CreateTenderProposal {
+   totalPrice: number;
+   proposalItemsDTOs: CreateTenderProposalItem[];
 }
  
 

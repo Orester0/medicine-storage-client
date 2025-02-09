@@ -1,0 +1,72 @@
+<div class="modal fade show d-block" tabindex="-1" aria-labelledby="createProposalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createProposalModalLabel">Create Tender Proposal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="close()"></button>
+            </div>
+
+            <div class="modal-body">
+                <form [formGroup]="proposalForm" (ngSubmit)="submitProposal()">
+                    <div formArrayName="proposalItems">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Medicine</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of proposalItemsControls; let i = index" [formGroupName]="i">
+                                        <td class="align-middle">
+                                            {{tenderItems[i].medicine.name}}
+                                        </td>
+                                        
+                                        <td class="align-middle">
+                                            {{tenderItems[i].requiredQuantity}}
+                                        </td>
+
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number"
+                                                       class="form-control"
+                                                       formControlName="unitPrice"
+                                                       (input)="calculateTotalPrice()"
+                                                       [class.is-invalid]="isFieldInvalid(item, 'unitPrice')">
+                                                <div class="invalid-feedback" *ngIf="isFieldInvalid(item, 'unitPrice')">
+                                                    Price must be greater than 0
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="align-middle">{{calculateItemTotal(item.value) | number:'1.2-2'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12 text-end">
+                            <h4 class="fw-bold">Total Proposal Price: {{totalPrice | number:'1.2-2'}}</h4>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" (click)="close()" data-bs-dismiss="modal">Cancel</button>
+                <button type="button"
+                        class="btn btn-primary"
+                        (click)="submitProposal()"
+                        [disabled]="!proposalForm.valid">
+                    Submit Proposal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show"></div>

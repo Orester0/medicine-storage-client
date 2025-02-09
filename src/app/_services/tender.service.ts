@@ -112,11 +112,6 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       return this.http.put<ReturnTenderDTO>(`${this.tenderUrl}/close/${tenderId}`, {}).pipe();
     }
   
-    selectWinningProposal(tenderId: number, proposalId: number): Observable<ReturnTenderDTO> {
-      return this.http.put<ReturnTenderDTO>(
-        `${this.tenderUrl}/${tenderId}/select-winning-proposal/${proposalId}`, {}).pipe();
-    }
-  
     // Proposal endpoints
     getProposalById(proposalId: number): Observable<ReturnTenderProposal> {
       return this.http.get<ReturnTenderProposal>(`${this.proposalUrl}/${proposalId}`).pipe();
@@ -130,12 +125,18 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       return this.http.post<ReturnTenderProposal>(`${this.proposalUrl}/submit/${tenderId}`, proposal).pipe();
     }
   
-    executeTenderItem(tenderItemId: number, proposalId: number): Observable<ReturnTenderProposal> {
+    executeTenderProposalItem(tenderItemId: number, proposalId: number): Observable<ReturnTenderProposal> {
       return this.http.put<ReturnTenderProposal>(
         `${this.proposalUrl}/execute/${proposalId}/${tenderItemId}`, {}).pipe();
     }
+    
+    selectWinningProposal(tenderId: number, proposalId: number): Observable<ReturnTenderDTO> {
+      return this.http.put<ReturnTenderDTO>(
+        `${this.tenderUrl}/${tenderId}/select-winning-proposal/${proposalId}`, {}).pipe();
+    }
   
-    executeTender(proposalId: number): Observable<ReturnTenderProposal> {
+  
+    executeTenderProposal(proposalId: number): Observable<ReturnTenderProposal> {
       return this.http.put<ReturnTenderProposal>(`${this.proposalUrl}/execute/${proposalId}`, {}).pipe();
     }
 

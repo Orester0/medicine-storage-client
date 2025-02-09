@@ -11,7 +11,8 @@ import { AuthService } from '../_services/auth.service';
 })
 export class HomeComponent implements OnInit {
   authService = inject(AuthService);
-  currentUser = this.authService.currentUserToken;
+  currentUserToken = this.authService.currentUserToken;
+  currentUser = this.authService.currentUser;
   registerMode = false;
 
   ngOnInit(): void {}

@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class CreateMedicineRequestFormComponent implements OnInit{
   @Input() medicines: ReturnMedicineDTO[] = [];
   @Input() initialData: Partial<CreateMedicineRequestDTO> = {};
+  @Input() preselectedMedicine: ReturnMedicineDTO | null = null;
   @Output() submitRequest = new EventEmitter<CreateMedicineRequestDTO>();
   @Output() cancelRequest = new EventEmitter<void>();
 
@@ -22,9 +23,9 @@ export class CreateMedicineRequestFormComponent implements OnInit{
 
   ngOnInit(): void {
     this.requestForm = this.fb.group({
-      medicineId: [this.initialData.medicineId || 0, Validators.required],
+      medicineId: [this.preselectedMedicine?.id || this.initialData.medicineId || 0, Validators.required],
       quantity: [this.initialData.quantity || 0, [Validators.required, Validators.min(1)]],
-      requiredByDate: [this.initialData.requiredByDate || '', Validators.required],
+      requiredByDate: [this.initialData.requiredByDate || new Date().toISOString().split('T')[0], Validators.required],
       justification: [this.initialData.justification || '']
     });
   }

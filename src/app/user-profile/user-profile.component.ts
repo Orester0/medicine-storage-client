@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ReturnUserDTO, UserUpdateDTO } from '../_models/user.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../_services/auth.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -12,47 +14,38 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './user-profile.component.css'
 })
 export class UserProfileComponent implements OnInit  {
-
-  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private toastr = inject(ToastrService);
+  private fb = inject(FormBuilder);
 
-  constructor(private fb: FormBuilder) {
-    
-  }
-
-  currentUser = this.userService.currentUser;
-  photoUrl = this.userService.currentUserPhoto;
+  currentUser = this.authService.currentUser;
+  photoUrl = this.authService.currentUserPhoto;
   editMode = false;
+  userEditForm!: FormGroup;
 
-  userForm!: FormGroup;
-
-
-  private initializeForm(){
-    this.userForm = this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      position: [''],
-      email: ['']
+  private initializeForm() {
+    const user = this.currentUser();
+    this.userEditForm = this.fb.group({
+      firstName: [user?.firstName || ''],
+      lastName: [user?.lastName || ''],
+      position: [user?.position || ''],
+      company: [user?.company || ''],
+      email: [user?.email || '']
     });
   }
 
   ngOnInit(): void {
     this.initializeForm();
-    if (this.currentUser()) {
-      this.userForm.patchValue(this.currentUser()!);
-    }
   }
 
   onPhotoClick() {
-    document.getElementById('fileInput')?.click();  
+    document.getElementById('fileInput')?.click();
   }
-
-  
 
   toggleEditMode() {
     this.editMode = !this.editMode;
     if (!this.editMode && this.currentUser()) {
-      this.userForm.patchValue(this.currentUser()!);
+      this.userEditForm.patchValue(this.currentUser()!);
     }
   }
 
@@ -70,8 +63,11 @@ export class UserProfileComponent implements OnInit  {
         return;
       }
 
-      this.userService.uploadCurrentUserPhoto(file).subscribe({
-        next: () => this.toastr.success('Photo uploaded successfully'),
+      this.authService.uploadCurrentUserPhoto(file).subscribe({
+        next: () => {
+          this.toastr.success('Photo uploaded successfully');
+          this.authService.getCurrentUserPhoto().subscribe();
+        },
         error: () => this.toastr.error('Error uploading photo')
       });
 
@@ -82,12 +78,13 @@ export class UserProfileComponent implements OnInit  {
   }
 
   saveChanges() {
-    if (this.userForm.valid) {
-      const updatedUser: UserUpdateDTO = this.userForm.value;
-      this.userService.updateCurrentUserInfo(updatedUser).subscribe({
+    if (this.userEditForm.valid) {
+      const updatedUser: UserUpdateDTO = this.userEditForm.value;
+      this.authService.updateCurrentUserInfo(updatedUser).subscribe({
         next: () => {
           this.toastr.success('Profile updated successfully');
           this.editMode = false;
+          this.authService.getCurrentUserInfo().subscribe();
         },
         error: () => this.toastr.error('Error updating profile')
       });

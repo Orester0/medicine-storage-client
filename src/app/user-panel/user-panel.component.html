@@ -1,6 +1,6 @@
 <div class="dropdown d-flex align-items-center" *ngIf="currentUser()" dropdown>
     <a dropdownToggle class="dropdown-toggle text-light text-decoration-none d-flex align-items-center">
-      <img [src]="photoUrl() || 'assets/default-avatar.png'" 
+      <img [src]="photoUrl()" 
            alt="Profile Picture" 
            class="rounded-circle me-2" 
            width="35" height="35">
@@ -13,8 +13,8 @@
     </div>
   </div>
   
-  <form *ngIf="!currentUser()" #loginForm="ngForm" (ngSubmit)="login(model)" class="d-flex" autocomplete="off">
-    <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username" required>
+  <form *ngIf="!currentUser()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex" autocomplete="off">
+    <input name="username" [(ngModel)]="model.userName" class="form-control me-2" placeholder="Username" required>
     <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password" type="password" required>
     <button class="btn btn-success" type="submit">Login</button>
   </form>

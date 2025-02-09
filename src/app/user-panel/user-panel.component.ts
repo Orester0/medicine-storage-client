@@ -1,11 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../_services/user.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ReturnUserDTO } from '../_models/user.types';
+import { UserLoginDTO } from '../_models/user.types';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -15,22 +14,21 @@ import { AuthService } from '../_services/auth.service';
   styleUrl: './user-panel.component.css'
 })
 export class UserPanelComponent{
-  authService = inject(AuthService);
-  userService = inject(UserService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-  model: any = {};
-
-
-
-
-  currentUser = this.userService.currentUser;
-  photoUrl = this.userService.currentUserPhoto;
   
-  login(model: any) {
-    this.authService.login(model).subscribe({
-      next: () => this.router.navigateByUrl('/medicines'),
-      error: (error) => this.toastr.error(error.Errors)
+  model: UserLoginDTO = { userName: '', password: '' };
+  currentUser = this.authService.currentUser;
+  photoUrl = this.authService.currentUserPhoto;
+  
+  login() {
+    this.authService.login(this.model).subscribe({
+      next: () => {
+        this.toastr.success('Login successful');
+        this.router.navigateByUrl('/medicines');
+      },
+      error: (error) => this.toastr.error(error.error || 'Login failed')
     });
   }
 
