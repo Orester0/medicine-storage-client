@@ -1,0 +1,74 @@
+<div *ngIf="isOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Medicine Request</h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="requestForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label">Medicine</label>
+            <select 
+              class="form-select"
+              formControlName="medicineId"
+              required>
+              <option [ngValue]="0">Select Medicine</option>
+              <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                {{ medicine.name }}
+              </option>
+            </select>
+            
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input 
+              type="number"
+              class="form-control"
+              formControlName="quantity"
+              required>
+              
+          <app-validation-errors [control]="requestForm.get('quantity')!"></app-validation-errors>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Required By Date</label>
+            <input 
+              type="date"
+              class="form-control"
+              formControlName="requiredByDate"
+              required>
+              
+          <app-validation-errors [control]="requestForm.get('requiredByDate')!"></app-validation-errors>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Justification</label>
+            <textarea 
+              class="form-control"
+              formControlName="justification"
+              rows="3"></textarea>
+              
+          <app-validation-errors [control]="requestForm.get('justification')!"></app-validation-errors>
+          </div>
+
+          <div class="text-end">
+            <button 
+              type="button" 
+              class="btn btn-secondary me-2" 
+              (click)="onCancel()">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="requestForm.invalid">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

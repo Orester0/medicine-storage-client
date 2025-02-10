@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { map, Observable } from 'rxjs';
-import { AuditTemplateDTO, MedicineRequestTemplateDTO, NotificationTemplateBaseDTO, Template, TemplateType, TenderTemplateDTO } from '../_models/notification-template.types';
+import { AuditTemplateDTO, MedicineRequestTemplateDTO, NotificationTemplateBaseDTO, Template, TemplateType, TenderTemplateDTO } from '../_models/template.types';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable({

@@ -1,0 +1,37 @@
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">{{ tender ? 'Edit Tender' : 'Create Tender' }}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="close.emit()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="tenderForm" (ngSubmit)="submitForm()">
+            <div class="mb-3">
+              <label for="title" class="form-label fw-bold">Title</label>
+              <input type="text" id="title" class="form-control" formControlName="title" required />
+              
+          <app-validation-errors [control]="tenderForm.get('title')!"></app-validation-errors>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label fw-bold">Description</label>
+              <textarea id="description" class="form-control" formControlName="description" rows="3"></textarea>
+              
+          <app-validation-errors [control]="tenderForm.get('description')!"></app-validation-errors>
+            </div>
+            <div class="mb-3">
+              <label for="deadlineDate" class="form-label fw-bold">Deadline Date</label>
+              <input type="date" id="deadlineDate" class="form-control" formControlName="deadlineDate" required />
+              
+          <app-validation-errors [control]="tenderForm.get('deadlineDate')!"></app-validation-errors>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-success me-2 px-4" [disabled]="tenderForm.invalid">Save</button>
+              <button type="button" class="btn btn-secondary px-4" (click)="close.emit()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

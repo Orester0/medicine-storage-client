@@ -17,9 +17,8 @@
               [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
               placeholder="Enter first name"
             />
-            <div class="invalid-feedback" *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
-              First name is required (max 100 characters).
-            </div>
+
+            <app-validation-errors [control]="registerForm.get('firstName')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
@@ -31,6 +30,8 @@
               formControlName="lastName"
               placeholder="Enter last name"
             />
+            
+            <app-validation-errors [control]="registerForm.get('lastName')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
@@ -42,6 +43,8 @@
               formControlName="username"
               placeholder="Enter username"
             />
+            
+            <app-validation-errors [control]="registerForm.get('username')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
@@ -53,6 +56,8 @@
               formControlName="email"
               placeholder="Enter email"
             />
+            
+            <app-validation-errors [control]="registerForm.get('email')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
@@ -64,6 +69,8 @@
               formControlName="password"
               placeholder="Enter password"
             />
+            
+            <app-validation-errors [control]="registerForm.get('password')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
@@ -75,6 +82,9 @@
               formControlName="confirmPassword"
               placeholder="Confirm password"
             />
+            <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class="text-danger">
+              Passwords do not match.
+            </div>
           </div>
 
           <div class="mb-3">

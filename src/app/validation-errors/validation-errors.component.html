@@ -1,0 +1,18 @@
+<div *ngIf="shouldShowErrors && errors" class="text-danger small">
+  <div *ngIf="errors['required']">Field is required.</div>
+  <div *ngIf="errors['minlength']">Minimal length: {{ errors['minlength'].requiredLength }}.</div>
+  <div *ngIf="errors['maxlength']">Max length: {{ errors['maxlength'].requiredLength }}.</div>
+  <div *ngIf="errors['min']">Minimal value is {{ errors['min'].min }}.</div>
+  <div *ngIf="errors['max']">Maximum value is {{ errors['max'].max }}.</div>
+  
+  <div *ngIf="errors['invalidDate']">Invalid date format.</div>
+  <div *ngIf="errors['pastDate']">Date cannot be in the past.</div>
+  <div *ngIf="errors['futureDate']">Date cannot be in the future.</div>
+
+  <div *ngIf="errors['unique']">This value must be unique.</div>
+  
+  <div *ngIf="errors['mismatch']">Passwords do not match.</div>
+
+  <div *ngIf="errors['email']">Please enter a valid email address.</div>
+  <div *ngIf="errors['serverError']">{{ errors['serverError'] }}</div>
+</div>

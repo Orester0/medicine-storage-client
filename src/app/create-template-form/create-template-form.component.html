@@ -1,0 +1,76 @@
+<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="mb-3">{{ isEditMode ? 'Edit' : 'Create' }} Template</h6>
+          <button type="button" class="btn-close" (click)="cancel.emit()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="getActiveForm()" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input formControlName="name" class="form-control form-control-sm" />
+              <app-validation-errors [control]="getActiveForm().get('name')!"></app-validation-errors>
+            </div>
+  
+            <div class="mb-3">
+              <label class="form-label">Recurrence Interval</label>
+              <input type="number" formControlName="recurrenceInterval" class="form-control form-control-sm" />
+              <app-validation-errors [control]="getActiveForm().get('recurrenceInterval')!"></app-validation-errors>
+            </div>
+  
+            <ng-container *ngIf="activeTab === 'medicine-request'">
+              <div class="mb-3">
+                <label class="form-label">Medicine</label>
+                <select formControlName="medicineId" class="form-select form-select-sm">
+                  <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                    {{ medicine.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" formControlName="quantity" class="form-control form-control-sm" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Justification</label>
+                <textarea formControlName="justification" class="form-control form-control-sm" rows="3"></textarea>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngIf="activeTab === 'audit'">
+              <div class="mb-3">
+                <label class="form-label">Medicines</label>
+                <select multiple formControlName="medicineIds" class="form-select form-select-sm">
+                  <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                    {{ medicine.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea formControlName="notes" class="form-control form-control-sm" rows="3"></textarea>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngIf="activeTab === 'tender'">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input formControlName="title" class="form-control form-control-sm" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea formControlName="description" class="form-control form-control-sm" rows="3"></textarea>
+              </div>
+            </ng-container>
+  
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary btn-sm">Save</button>
+              <button type="button" class="btn btn-light btn-sm" (click)="cancel.emit()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

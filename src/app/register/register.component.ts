@@ -4,11 +4,13 @@ import { UserService } from '../_services/user.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../_services/auth.service';
+import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
+import { passwordMatchValidator } from '../_validators/validators';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
   templateUrl: './register.component.html',
 })
 
@@ -34,9 +36,9 @@ export class RegisterComponent implements OnInit {
 
   private initializeForm(): void {
     this.registerForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(100)]],
-      lastName: ['', [Validators.required, Validators.maxLength(100)]],
-      username: ['', [Validators.required, Validators.maxLength(100)]],
+      firstName: ['', [Validators.required, Validators.maxLength(100), Validators.minLength(3)]],
+      lastName: ['', [Validators.required, Validators.maxLength(100), Validators.minLength(3)]],
+      username: ['', [Validators.required, Validators.maxLength(100), Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required, 
@@ -45,16 +47,13 @@ export class RegisterComponent implements OnInit {
       ]],
       confirmPassword: ['', [Validators.required]],
       role: ['', [Validators.required]],
-    }, { 
-      validators: this.passwordMatchValidator 
-    });
+    }, 
+    { 
+      validators: [passwordMatchValidator]
+    }
+  );
   }
 
-  private passwordMatchValidator(g: FormGroup) {
-    return g.get('password')?.value === g.get('confirmPassword')?.value 
-      ? null 
-      : { mismatch: true };
-  }
 
   private handleValidationErrors(error: unknown): void {
     if (typeof error === 'object' && error !== null) {
@@ -91,7 +90,7 @@ export class RegisterComponent implements OnInit {
 
       this.authService.register(formData).subscribe({
         next: () => {
-          this.router.navigate(['/login'], { queryParams: { registered: true } });
+          this.router.navigate(['/medicines']);
         },
         error: (error) => {
           this.handleValidationErrors(error);

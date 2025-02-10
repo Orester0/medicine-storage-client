@@ -7,4 +7,16 @@
     background-color: #f8f9fa;
   }
   
+  :host {
+    display: block;
+    width: 100%;
+  }
   
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .table td {
+    max-width: 0;
+    overflow: hidden;
+  }
