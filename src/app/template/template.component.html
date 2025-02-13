@@ -1,9 +1,7 @@
-
 <div class="container-fluid p-4">
   <div class="row">
     <div class="col">
       <h5 class="mb-4">Templates</h5>
-
 
       <ul class="nav nav-tabs nav-fill mb-3">
         <li class="nav-item">
@@ -11,8 +9,7 @@
              [class.active]="activeTab === 'medicine-request'"
              [class.needs-execution]="tabsNeedingExecution['medicine-request']"
              (click)="setActiveTab('medicine-request')">
-            Medicine Request
-            <i class="bi"></i>
+            Medicine Request <i class="bi"></i>
           </a>
         </li>
         <li class="nav-item">
@@ -20,8 +17,7 @@
              [class.active]="activeTab === 'audit'" 
              [class.needs-execution]="tabsNeedingExecution['audit']"
              (click)="setActiveTab('audit')">
-            Audit
-            <i class="bi"></i>
+            Audit <i class="bi"></i>
           </a>
         </li>
         <li class="nav-item">
@@ -29,8 +25,7 @@
              [class.active]="activeTab === 'tender'"
              [class.needs-execution]="tabsNeedingExecution['tender']"
              (click)="setActiveTab('tender')">
-            Tender
-            <i class="bi"></i>
+            Tender <i class="bi"></i>
           </a>
         </li>
       </ul>
@@ -88,62 +83,13 @@
 
 
         <!-- Details View -->
-        <div *ngIf="isDetailsVisible && selectedTemplate">
-          <h6 class="mb-3">Template Details</h6>
-          <div class="card">
-            <div class="card-body">
-              <dl class="row mb-0">
-                <dt class="col-sm-4">Name</dt>
-                <dd class="col-sm-8">{{ selectedTemplate.name }}</dd>
-
-                <dt class="col-sm-4">Recurrence Interval</dt>
-                <dd class="col-sm-8">{{ selectedTemplate.recurrenceInterval }}</dd>
-
-                <ng-container [ngSwitch]="activeTab">
-                  <ng-container *ngSwitchCase="'medicine-request'">
-                    <ng-container *ngIf="isMedicineRequest(selectedTemplate)">
-                      <dt class="col-sm-4">Medicine</dt>
-                      <dd class="col-sm-8">{{ getMedicineName(selectedTemplate.createDTO.medicineId) }}</dd>
-
-                      <dt class="col-sm-4">Quantity</dt>
-                      <dd class="col-sm-8">{{ selectedTemplate.createDTO.quantity }}</dd>
-
-                      <dt class="col-sm-4">Justification</dt>
-                      <dd class="col-sm-8">{{ selectedTemplate.createDTO.justification }}</dd>
-                    </ng-container>
-                  </ng-container>
-
-                  <ng-container *ngSwitchCase="'audit'">
-                    <ng-container *ngIf="isAudit(selectedTemplate)">
-                      <dt class="col-sm-4">Medicines</dt>
-                      <dd class="col-sm-8">
-                        <ul class="list-unstyled mb-0">
-                          <li *ngFor="let id of selectedTemplate.createDTO.medicineIds">
-                            {{ getMedicineName(id) }}
-                          </li>
-                        </ul>
-                      </dd>
-
-                      <dt class="col-sm-4">Notes</dt>
-                      <dd class="col-sm-8">{{ selectedTemplate.createDTO.notes }}</dd>
-                    </ng-container>
-                  </ng-container>
-
-                  <ng-container *ngSwitchCase="'tender'">
-                    <ng-container *ngIf="isTender(selectedTemplate)">
-                      <dt class="col-sm-4">Title</dt>
-                      <dd class="col-sm-8">{{ selectedTemplate.createDTO.title }}</dd>
-
-                      <dt class="col-sm-4">Description</dt>
-                      <dd class="col-sm-8">{{ selectedTemplate.createDTO.description }}</dd>
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-              </dl>
-            </div>
-          </div>
-          <button class="btn btn-light btn-sm mt-3" (click)="closeDetails()">Close</button>
-        </div>
+        <app-template-details
+          [template]="selectedTemplate!"
+          [type]="activeTab"
+          [medicines]="medicines"
+          [isOpen]="isDetailsVisible"
+          (close)="closeDetails()">
+        </app-template-details>
       </div>
     </div>
   </div>

@@ -2,10 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TemplateType } from '../_models/template.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { pastDateValidator, validDateValidator } from '../_validators/validators';
+import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 @Component({
   selector: 'app-notification-template-date-pick',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ValidationErrorsComponent],
   templateUrl: './template-date-pick.component.html',
   styleUrl: './template-date-pick.component.css'
 })

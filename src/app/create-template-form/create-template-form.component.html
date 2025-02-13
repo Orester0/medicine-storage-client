@@ -24,7 +24,7 @@
                 <label class="form-label">Medicine</label>
                 <select formControlName="medicineId" class="form-select form-select-sm">
                   <option *ngFor="let medicine of medicines" [value]="medicine.id">
-                    {{ medicine.name }}
+                    {{ medicine | medicineName }}
                   </option>
                 </select>
               </div>
@@ -43,7 +43,7 @@
                 <label class="form-label">Medicines</label>
                 <select multiple formControlName="medicineIds" class="form-select form-select-sm">
                   <option *ngFor="let medicine of medicines" [value]="medicine.id">
-                    {{ medicine.name }}
+                    {{ medicine | medicineName }}
                   </option>
                 </select>
               </div>

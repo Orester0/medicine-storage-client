@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-create-audit-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe],
   templateUrl: './create-audit-form.component.html',
   styleUrl: './create-audit-form.component.css'
 })

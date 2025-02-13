@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReturnAuditItemDTO, UpdateAuditItemsRequest } from '../../_models/audit.types';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-audit-update-items',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe],
   templateUrl: './audit-update-items.component.html',
   styleUrl: './audit-update-items.component.css'
 })

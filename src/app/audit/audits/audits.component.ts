@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditDTO, UpdateAuditItemsRequest } from '../../_models/audit.types';
 import { AuditService } from '../../_services/audit.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,15 +14,17 @@ import { ActivatedRoute } from '@angular/router';
 import { DeleteConfirmationModalComponent } from '../../delete-confirmation-modal/delete-confirmation-modal.component';
 import { AuditNotesComponent } from '../audit-notes/audit-notes.component';
 import { AuditUpdateItemsComponent } from "../audit-update-items/audit-update-items.component";
+import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
 
 @Component({
   selector: 'app-audits',
   imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
+  providers: [AuditStatusPipe],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
 })
 export class AuditsComponent implements OnInit {
-
+  auditStatusPipe = inject(AuditStatusPipe);
 
   auditToDelete: ReturnAuditDTO | null = null;
 
@@ -67,7 +69,7 @@ export class AuditsComponent implements OnInit {
       .filter(status => typeof status === 'number') 
       .map(status => ({
         value: status as AuditStatus,
-        label: this.getAuditStatusText(status as AuditStatus)
+        label: this.auditStatusPipe.transform(status)
       }))
     },
     {
@@ -205,7 +207,7 @@ export class AuditsComponent implements OnInit {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => this.getAuditStatusText(value as AuditStatus),
+      render: (value) => this.auditStatusPipe.transform(value),
       sortable: true,
     },
     { 
@@ -338,17 +340,6 @@ export class AuditsComponent implements OnInit {
     this.closeAudit(audit.id)
   }
 
-
-  getAuditStatusText(status: AuditStatus): string {
-    const statusMap: Record<AuditStatus, string> = {
-      [AuditStatus.Planned]: 'Planned',
-      [AuditStatus.InProgress]: 'In Progress',
-      [AuditStatus.Completed]: 'Completed',
-      [AuditStatus.RequiresFollowUp]: 'Requires Follow-Up',
-      [AuditStatus.Cancelled]: 'Cancelled',
-    };
-    return statusMap[status] ?? 'Unknown';
-  }
 
   getAuditStatusBadgeClass(status: AuditStatus): string {
     const classMap: Record<AuditStatus, string> = {

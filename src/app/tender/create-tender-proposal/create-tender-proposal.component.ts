@@ -3,10 +3,11 @@ import { FormGroup, FormBuilder, FormArray, Validators, ReactiveFormsModule } fr
 import { ReturnTenderItem, CreateTenderProposalItem, CreateTenderProposal } from '../../_models/tender.types';
 import { TenderService } from '../../_services/tender.service';
 import { CommonModule } from '@angular/common';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-create-tender-proposal',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe],
   templateUrl: './create-tender-proposal.component.html',
   styleUrl: './create-tender-proposal.component.css'
 })

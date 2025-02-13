@@ -2,10 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RequestStatus, ReturnMedicineRequestDTO } from '../../_models/medicine-operations.types';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
+import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
 
 @Component({
   selector: 'app-medicine-operations-details',
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, MedicineNamePipe, UserFullNamePipe, LocalizedDatePipe, RequestStatusPipe],
   templateUrl: './medicine-operations-details.component.html',
   styleUrl: './medicine-operations-details.component.css'
 })
@@ -35,16 +39,6 @@ export class MedicineOperationsDetailsComponent {
       [RequestStatus.Rejected]: 'cancel'
     };
     return icons[status] || 'help';
-  }
-
-  getStatusText(status: RequestStatus): string {
-    const texts = {
-      [RequestStatus.Pending]: 'Pending',
-      [RequestStatus.PedingWithSpecial]: 'Pending (Special)',
-      [RequestStatus.Approved]: 'Approved',
-      [RequestStatus.Rejected]: 'Rejected'
-    };
-    return texts[status] || 'Unknown';
   }
 
   performAction(action: 'approve' | 'reject'): void {

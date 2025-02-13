@@ -15,7 +15,7 @@
               required>
               <option [ngValue]="0">Select Medicine</option>
               <option *ngFor="let medicine of medicines" [value]="medicine.id">
-                {{ medicine.name }}
+                {{ medicine | medicineName }}
               </option>
             </select>
             

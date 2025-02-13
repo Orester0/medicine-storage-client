@@ -9,11 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { interval } from 'rxjs/internal/observable/interval';
 import { AuthService } from '../_services/auth.service';
+import { LocalizedDatePipe } from '../_pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-notifications',
   imports: [MatIconModule, CommonModule, MatBadgeModule, MatButtonModule, 
-    MatSlideToggleModule],
+    MatSlideToggleModule, LocalizedDatePipe],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
 })

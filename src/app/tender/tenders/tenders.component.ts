@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CreateTenderDTO, CreateTenderItem, ReturnTenderDTO, TenderStatus } from '../../_models/tender.types';
 import { TenderService } from '../../_services/tender.service';
 import { TendersDetailsComponent } from '../tenders-details/tenders-details.component';
@@ -13,15 +13,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteConfirmationModalComponent } from '../../delete-confirmation-modal/delete-confirmation-modal.component';
 import { CreateTenderFormComponent } from '../create-tender-form/create-tender-form.component';
 import { TenderItemsComponent } from '../tender-items/tender-items.component';
+import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
 
 @Component({
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
-  imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule]
+  imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
+  providers: [TenderStatusPipe],
 })
 export class TendersComponent implements OnInit {
-
+  tenderStatusPipe = inject(TenderStatusPipe);
+  
   constructor(
     private tenderService: TenderService,
     private route: ActivatedRoute, 
@@ -94,7 +97,7 @@ export class TendersComponent implements OnInit {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => this.getTenderStatusText(value as TenderStatus),
+      render: (value) => this.tenderStatusPipe.transform(value),
       sortable: true,
     },
     {
@@ -145,7 +148,7 @@ export class TendersComponent implements OnInit {
           .filter(status => typeof status === 'number') 
           .map(status => ({
             value: status as TenderStatus,
-            label: this.getTenderStatusText(status as TenderStatus)
+            label: this.tenderStatusPipe.transform(status)
           }))
         },
     
@@ -219,19 +222,6 @@ export class TendersComponent implements OnInit {
 
   openCreateModal(): void {
     this.isCreateTenderModalOpen = true;
-  }
-
-  getTenderStatusText(status: TenderStatus): string {
-    const statusMap: Record<TenderStatus, string> = {
-        [TenderStatus.Created]: 'Created',
-        [TenderStatus.Published]: 'Published',
-        [TenderStatus.Closed]: 'Closed',
-        [TenderStatus.Awarded]: 'Awarded',
-        [TenderStatus.Executing]: 'Executing',
-        [TenderStatus.Executed]: 'Executed',
-        [TenderStatus.Cancelled]: 'Cancelled'
-    };
-    return statusMap[status] ?? 'Unknown';
   }
 
   getStatusBadgeClass(status: TenderStatus): string {

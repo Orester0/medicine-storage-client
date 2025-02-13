@@ -28,8 +28,8 @@
                   <p class="mb-2 fw-medium">{{ medicineRequest.id || 'N/A' }}</p>
                 </div>
                 <div class="mb-3">
-                  <label class="text-muted small">Medicine Name</label>
-                  <p class="mb-2 fw-medium">{{ medicineRequest.medicine.name || 'N/A' }}</p>
+                  <label class="text-muted small">Medicine</label>
+                  <p class="mb-2 fw-medium">{{ medicineRequest.medicine | medicineName }}</p>
                 </div>
                 <div class="mb-3">
                   <label class="text-muted small">Quantity</label>
@@ -39,7 +39,7 @@
                   <label class="text-muted small">Status</label>
                   <span class="badge rounded-pill px-3 py-2 {{ getStatusBadgeClass(medicineRequest.status) }}">
                     <mat-icon class="align-middle me-1" style="font-size: 16px">{{ getStatusIcon(medicineRequest.status) }}</mat-icon>
-                    {{ getStatusText(medicineRequest.status) }}
+                    {{ medicineRequest.status | requestStatus }}
                   </span>
                 </div>
               </div>
@@ -58,19 +58,19 @@
                 <div class="mb-3">
                   <label class="text-muted small">Required By Date</label>
                   <p class="mb-2 fw-medium">
-                    {{ medicineRequest.requiredByDate ? (medicineRequest.requiredByDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                    {{ medicineRequest.requiredByDate | localizedDate }}
                   </p>
                 </div>
                 <div class="mb-3">
                   <label class="text-muted small">Request Date</label>
                   <p class="mb-2 fw-medium">
-                    {{ medicineRequest.requestDate ? (medicineRequest.requestDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                    {{ medicineRequest.requestDate | localizedDate }}
                   </p>
                 </div>
                 <div class="mb-3">
                   <label class="text-muted small">Approval Date</label>
                   <p class="mb-2 fw-medium">
-                    {{ medicineRequest.approvalDate ? (medicineRequest.approvalDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                    {{ medicineRequest.approvalDate | localizedDate }}
                   </p>
                 </div>
               </div>
@@ -90,17 +90,13 @@
                   <div class="col-md-6">
                     <label class="text-muted small">Requested By</label>
                     <p class="mb-2 fw-medium">
-                      {{ medicineRequest.requestedByUser ?
-                        (medicineRequest.requestedByUser.firstName + ' ' + medicineRequest.requestedByUser.lastName) :
-                        'N/A' }}
+                      {{ medicineRequest.requestedByUser | userFullName }}
                     </p>
                   </div>
                   <div class="col-md-6">
                     <label class="text-muted small">Approved By</label>
                     <p class="mb-2 fw-medium">
-                      {{ medicineRequest.approvedByUser ?
-                        (medicineRequest.approvedByUser.firstName + ' ' + medicineRequest.approvedByUser.lastName) :
-                        'N/A' }}
+                      {{ medicineRequest.approvedByUser | userFullName }}
                     </p>
                   </div>
                 </div>

@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonEngine } from '@angular/ssr/node';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CreateTenderItem } from '../../_models/tender.types';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-tender-items',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe],
   templateUrl: './tender-items.component.html',
   styleUrl: './tender-items.component.css'
 })

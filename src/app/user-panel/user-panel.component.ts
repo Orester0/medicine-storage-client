@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { UserLoginDTO } from '../_models/user.types';
 import { AuthService } from '../_services/auth.service';
+import { UserFullNamePipe } from '../_pipes/user-full-name.pipe';
 
 @Component({
   selector: 'app-user-panel',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, BsDropdownModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, BsDropdownModule, RouterLink, UserFullNamePipe ],
   templateUrl: './user-panel.component.html',
   styleUrl: './user-panel.component.css'
 })

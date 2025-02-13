@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
 import { TemplateType, Template } from '../_models/template.types';
+import { MedicineNamePipe } from '../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-create-template-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe],
   templateUrl: './create-template-form.component.html',
   styleUrl: './create-template-form.component.css'
 })

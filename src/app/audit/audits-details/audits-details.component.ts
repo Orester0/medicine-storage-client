@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuditStatus, ReturnAuditDTO } from '../../_models/audit.types';
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
 
 @Component({
   selector: 'app-audits-details',
-  imports: [CommonModule],
+  imports: [CommonModule, LocalizedDatePipe, UserFullNamePipe, MedicineNamePipe, AuditStatusPipe],
   templateUrl: './audits-details.component.html',
   styleUrl: './audits-details.component.css'
 })
@@ -30,19 +34,6 @@ export class AuditsDetailsComponent {
   }
   closeAudit(): void {
     this.onCloseAudit.emit(this.audit);
-  }
-
-
-
-  getAuditStatusText(status: AuditStatus): string {
-    const statusMap: Record<AuditStatus, string> = {
-      [AuditStatus.Planned]: 'Planned',
-      [AuditStatus.InProgress]: 'In Progress',
-      [AuditStatus.Completed]: 'Completed',
-      [AuditStatus.RequiresFollowUp]: 'Requires Follow-Up',
-      [AuditStatus.Cancelled]: 'Cancelled',
-    };
-    return statusMap[status] ?? 'Unknown';
   }
 
   getAuditStatusBadgeClass(status: AuditStatus): string {

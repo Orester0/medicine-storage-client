@@ -4,7 +4,7 @@
            alt="Profile Picture" 
            class="rounded-circle me-2" 
            width="35" height="35">
-      <span>{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</span>
+      <span>{{ currentUser() | userFullName }}</span>
     </a>
     <div *dropdownMenu class="dropdown-menu">
       <a class="dropdown-item" routerLink="/user-profile">View profile</a>

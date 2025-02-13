@@ -1,0 +1,69 @@
+<div class="modal" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Template Details</h5>
+        <button type="button" class="btn-close" (click)="close.emit()"></button>
+      </div>
+      <div class="modal-body" *ngIf="template">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Name</dt>
+          <dd class="col-sm-8">{{ template.name }}</dd>
+
+          <dt class="col-sm-4">Recurrence Interval</dt>
+          <dd class="col-sm-8">{{ template.recurrenceInterval }}</dd>
+
+          <dt class="col-sm-4">Last Execution</dt>
+          <dd class="col-sm-8">
+            {{ template.lastExecutedDate ? (template.lastExecutedDate | localizedDate ) : 'Nan' }}
+          </dd>
+
+          <ng-container [ngSwitch]="type">
+            <ng-container *ngSwitchCase="'medicine-request'">
+              <ng-container *ngIf="isMedicineRequest(template)">
+                <dt class="col-sm-4">Medicine</dt>
+                <dd class="col-sm-8">{{ getMedicineName(template.createDTO.medicineId) }}</dd>
+
+                <dt class="col-sm-4">Quantity</dt>
+                <dd class="col-sm-8">{{ template.createDTO.quantity }}</dd>
+
+                <dt class="col-sm-4">Justification</dt>
+                <dd class="col-sm-8">{{ template.createDTO.justification }}</dd>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'audit'">
+              <ng-container *ngIf="isAudit(template)">
+                <dt class="col-sm-4">Medicines</dt>
+                <dd class="col-sm-8">
+                  <ul class="list-unstyled mb-0">
+                    <li *ngFor="let id of template.createDTO.medicineIds">
+                      {{ getMedicineName(id) }}
+                    </li>
+                  </ul>
+                </dd>
+
+                <dt class="col-sm-4">Notes</dt>
+                <dd class="col-sm-8">{{ template.createDTO.notes }}</dd>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'tender'">
+              <ng-container *ngIf="isTender(template)">
+                <dt class="col-sm-4">Title</dt>
+                <dd class="col-sm-8">{{ template.createDTO.title }}</dd>
+
+                <dt class="col-sm-4">Description</dt>
+                <dd class="col-sm-8">{{ template.createDTO.description }}</dd>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </dl>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close.emit()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="isOpen"></div>

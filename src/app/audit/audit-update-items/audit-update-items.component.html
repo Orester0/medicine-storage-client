@@ -11,7 +11,7 @@
             <div *ngFor="let item of auditItems">
               <div *ngIf="item.checkedByUser === null" class="mb-3">
                 <label class="form-label">
-                  {{ item.medicine.name }} (Expected: {{ item.expectedQuantity }})
+                  {{ item.medicine | medicineName }} (Expected: {{ item.expectedQuantity }})
                 </label>
                 <input
                   type="number"

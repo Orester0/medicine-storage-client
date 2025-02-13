@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MedicineRequestService, MedicineUsageService } from '../../_services/medicine-ops.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,15 +15,18 @@ import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { CreateMedicineRequestFormComponent } from '../create-medicine-request-form/create-medicine-request-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { DeleteConfirmationModalComponent } from '../../delete-confirmation-modal/delete-confirmation-modal.component';
+import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
 
 @Component({
   selector: 'app-medicine-operations',
   imports: [DeleteConfirmationModalComponent, CreateMedicineRequestFormComponent ,FilterComponent, CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent, ReactiveFormsModule],
+  providers: [RequestStatusPipe],
   templateUrl: './medicine-operations.component.html',
   styleUrl: './medicine-operations.component.css'
 })
 export class MedicineOperationsComponent implements OnInit {
   
+  requestStatusPipe = inject(RequestStatusPipe);
 
 
   requests: ReturnMedicineRequestDTO[] = [];
@@ -111,7 +114,7 @@ export class MedicineOperationsComponent implements OnInit {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => this.getRequestStatusText(value as RequestStatus),
+      render: (value) => this.requestStatusPipe.transform(value),
       sortable: true,
     },
     {
@@ -146,7 +149,7 @@ export class MedicineOperationsComponent implements OnInit {
             .filter(status => typeof status === 'number') 
             .map(status => ({
               value: status as RequestStatus,
-              label: this.getRequestStatusText(status as RequestStatus)
+              label: this.requestStatusPipe.transform(status)
             }))
     },
     {
@@ -310,15 +313,6 @@ export class MedicineOperationsComponent implements OnInit {
   }
   
   
-  getRequestStatusText(status: RequestStatus): string {
-    const statusMap = {
-      [RequestStatus.Pending]: 'Pending',
-      [RequestStatus.PedingWithSpecial]: 'Pending With Special',
-      [RequestStatus.Approved]: 'Approved',
-      [RequestStatus.Rejected]: 'Rejected'
-    };
-    return statusMap[status] || 'Unknown';
-  }
 
   getRequestStatusBadgeClass(status: RequestStatus): string {
     const classMap = {

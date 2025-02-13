@@ -9,15 +9,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { TenderItemsComponent } from '../tender-items/tender-items.component';
 import { DeleteConfirmationModalComponent } from '../../delete-confirmation-modal/delete-confirmation-modal.component';
+import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
+import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
+import { ProposalStatusPipe } from '../../_pipes/proposal-status.pipe';
+import { TenderItemStatusPipe } from '../../_pipes/tender-item-status.pipe';
 
 @Component({
   selector: 'app-tenders-details',
   templateUrl: './tenders-details.component.html',
   styleUrls: ['./tenders-details.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent],
-  providers: [CurrencyPipe]
+  imports: [TenderStatusPipe, CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent, LocalizedDatePipe, UserFullNamePipe],
+  providers: [CurrencyPipe, ProposalStatusPipe, TenderItemStatusPipe]
 })
 export class TendersDetailsComponent implements OnInit {
+  proposalStatusPipe = inject(ProposalStatusPipe);
+  tenderItemStatusPipe = inject(TenderItemStatusPipe);
+
  itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
     {
       label: 'Execute',
@@ -37,17 +45,17 @@ export class TendersDetailsComponent implements OnInit {
     {
       key: 'medicine',
       label: 'Medicine',
-      render: (row) => `${row.name}`,
+      render: (value) => `${value.name}`,
     },
     {
       key: 'requiredQuantity',
       label: 'Quantity',
-      render: (row) => `${row}`, 
+      render: (value) => `${value}`, 
     },
     {
       key: 'status',
       label: 'Status',
-      render: (row) => this.getTextByItemStatus(row),
+      render: (value) => this.tenderItemStatusPipe.transform(value),
     },
     {
       key: 'actions',
@@ -86,7 +94,7 @@ export class TendersDetailsComponent implements OnInit {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => this.getTextByProposalStatus(value),
+      render: (value) => this.proposalStatusPipe.transform(value),
     },
     {
       key: 'submissionDate',
@@ -249,23 +257,6 @@ export class TendersDetailsComponent implements OnInit {
       });
   }
 
-
-  
-
-  
-  getTextByTenderStatus(status: TenderStatus): string {
-    const statusMap = {
-      [TenderStatus.Created]: 'Created',
-      [TenderStatus.Published]: 'Published',
-      [TenderStatus.Closed]: 'Closed',
-      [TenderStatus.Awarded]: 'Awarded',
-      [TenderStatus.Executing]: 'Executing',
-      [TenderStatus.Executed]: 'Executed',
-      [TenderStatus.Cancelled]: 'Cancelled'
-    };
-    return statusMap[status] || 'Unknown';
-  }
-
   getBadgeByTenderStatus(status: TenderStatus): string {
     const baseClasses = 'badge rounded-pill';
     const statusClasses = {
@@ -280,14 +271,6 @@ export class TendersDetailsComponent implements OnInit {
     return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
   }
 
-  getTextByItemStatus(status: TenderItemStatus): string {
-    const statusMap = {
-      [TenderItemStatus.Pending]: 'Pending',
-      [TenderItemStatus.Executed]: 'Executed'
-    };
-    return statusMap[status] || 'Unknown';
-  }
-
   getBadgeByItemStatus(status: TenderItemStatus): string {
     const baseClasses = 'badge rounded-pill';
     const statusClasses = {
@@ -295,15 +278,6 @@ export class TendersDetailsComponent implements OnInit {
       [TenderItemStatus.Executed]: 'bg-success'
     };
     return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
-  }
-
-  getTextByProposalStatus(status: ProposalStatus): string {
-    const statusMap = {
-      [ProposalStatus.Submitted]: 'Submitted',
-      [ProposalStatus.Accepted]: 'Accepted',
-      [ProposalStatus.Rejected]: 'Rejected'
-    };
-    return statusMap[status] || 'Unknown';
   }
 
   getBadgeByProposalStatus(status: ProposalStatus): string {

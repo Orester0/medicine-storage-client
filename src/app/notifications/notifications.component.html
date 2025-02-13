@@ -25,7 +25,8 @@
         <div class="notification-content">
           <strong>{{ notification.title || 'Notification' }}</strong>
           <p>{{ notification.message }}</p>
-          <small>{{ notification.createdAt | date:'short' }}</small>
+          <small>{{ notification.createdAt | localizedDate }}</small>
+
         </div>
         <button *ngIf="!notification.isRead"
                 mat-icon-button

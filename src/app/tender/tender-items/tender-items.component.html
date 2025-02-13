@@ -11,7 +11,7 @@
               <label for="medicineId" class="form-label fw-bold">Medicine</label>
               <select id="medicineId" class="form-control" formControlName="medicineId">
                 <option value="">Select Medicine</option>
-                <option *ngFor="let medicine of medicines" [value]="medicine.id">{{ medicine.name }}</option>
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">{{ medicine | medicineName }}</option>
               </select>
             </div>
             <div class="mb-3">

@@ -11,10 +11,12 @@ import { TemplateDatePickComponent } from '../template-date-pick/template-date-p
 import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 import { CreateTemplateFormComponent } from '../create-template-form/create-template-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { LocalizedDatePipe } from '../_pipes/localized-date.pipe';
+import { TemplateDetailsComponent } from '../template-details/template-details.component';
 
 @Component({
   selector: 'app-template',
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, TemplateDatePickComponent, CreateTemplateFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, TemplateDatePickComponent, CreateTemplateFormComponent, TemplateDetailsComponent],
   templateUrl: './template.component.html',
   styleUrl: './template.component.css'
 })
@@ -132,16 +134,16 @@ export class TemplateComponent {
   
   
   viewTemplateDetails(template: Template): void {
-    
+    this.selectedTemplate = template;
     this.isDetailsVisible = true;
     this.isFormVisible = false;
-    this.selectedTemplate = template;
   }
-
+  
   closeDetails(): void {
     this.isDetailsVisible = false;
     this.selectedTemplate = null;
   }
+  
 
   // OTHER STUFF
 
@@ -157,18 +159,6 @@ export class TemplateComponent {
   tenderTemplates: TenderTemplateDTO[] = [];
   
   selectedTemplate: Template | null = null;
-
-  isMedicineRequest(template: Template | null): template is MedicineRequestTemplateDTO {
-    return template !== null && 'createDTO' in template && 'medicineId' in template.createDTO;
-  }
-
-  isAudit(template: Template | null): template is AuditTemplateDTO {
-    return template !== null && 'createDTO' in template && 'medicineIds' in template.createDTO;
-  }
-
-  isTender(template: Template | null): template is TenderTemplateDTO {
-    return template !== null && 'createDTO' in template && 'title' in template.createDTO;
-  }
 
 
   getCurrentTemplates(): Template[] {
@@ -195,11 +185,6 @@ export class TemplateComponent {
     this.isEditMode = true;
     this.isDetailsVisible = false;
     this.selectedTemplate = template;
-  }
-
-
-  getMedicineName(id: number): string {
-    return this.medicines.find(m => m.id === id)?.name || '';
   }
 
   constructor(

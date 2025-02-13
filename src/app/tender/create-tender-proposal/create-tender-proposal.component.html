@@ -22,7 +22,7 @@
                                 <tbody>
                                     <tr *ngFor="let item of proposalItemsControls; let i = index" [formGroupName]="i">
                                         <td class="align-middle">
-                                            {{tenderItems[i].medicine.name}}
+                                            {{tenderItems[i].medicine | medicineName}}
                                         </td>
                                         
                                         <td class="align-middle">

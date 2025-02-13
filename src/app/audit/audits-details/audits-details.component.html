@@ -21,7 +21,7 @@
                   <dt class="col-sm-4">Status</dt>
                   <dd class="col-sm-8">
                     <span class="badge px-3 py-2" [ngClass]="getAuditStatusBadgeClass(audit.status)">
-                      {{ getAuditStatusText(audit.status) || 'N/A' }}
+                      {{ audit.status | auditStatus }}
                     </span>
                   </dd>
                 </dl>
@@ -29,7 +29,6 @@
             </div>
           </div>
 
-          <!-- Dates -->
           <div class="col-md-6">
             <div class="card h-100">
               <div class="card-header bg-light">
@@ -38,13 +37,15 @@
               <div class="card-body">
                 <dl class="row mb-0">
                   <dt class="col-sm-5">Planned Date</dt>
-                  <dd class="col-sm-7">{{ audit.plannedDate || 'N/A' }}</dd>
+                  <dd class="col-sm-7">{{ audit.plannedDate | localizedDate }}</dd>
                   
                   <dt class="col-sm-5">Start Date</dt>
-                  <dd class="col-sm-7">{{ audit.startDate || 'N/A' }}</dd>
+                  <dd class="col-sm-7">{{ audit.startDate | localizedDate }}</dd>
+
                   
                   <dt class="col-sm-5">End Date</dt>
-                  <dd class="col-sm-7">{{ audit.endDate || 'N/A' }}</dd>
+                  <dd class="col-sm-7">{{ audit.endDate | localizedDate }}</dd>
+
                 </dl>
               </div>
             </div>
@@ -59,12 +60,12 @@
                 <dl class="row mb-0">
                   <dt class="col-sm-2">Planned By</dt>
                   <dd class="col-sm-4">
-                    {{ audit.plannedByUser ? (audit.plannedByUser.lastName + ' ' + audit.plannedByUser.firstName) : 'N/A' }}
+                    {{ audit.plannedByUser | userFullName }}
                   </dd>
                   
                   <dt class="col-sm-2">Closed By</dt>
                   <dd class="col-sm-4">
-                    {{ audit.closedByUser ? (audit.closedByUser.lastName + ' ' + audit.closedByUser.firstName) : 'N/A' }}
+                    {{ audit.closedByUser | userFullName }}
                   </dd>
                 </dl>
               </div>
@@ -89,11 +90,11 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let item of audit.auditItems">
-                        <td>{{ item.medicine.name || 'N/A' }}</td>
+                        <td>{{ item.medicine | medicineName}}</td>
                         <td>{{ item.expectedQuantity || 'N/A' }}</td>
                         <td>{{ item.actualQuantity || 'N/A' }}</td>
                         <td>
-                          {{ item.checkedByUser ? (item.checkedByUser.lastName + ' ' + item.checkedByUser.firstName) : 'N/A' }}
+                          {{ item.checkedByUser | userFullName }}
                         </td>
                       </tr>
                     </tbody>
@@ -112,7 +113,7 @@
                 <div class="list-group list-group-flush">
                   <div *ngFor="let note of audit.notes" class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center">
-                      <small class="text-muted">{{ note.createdAt | date:'dd.MM.yyyy HH:mm' }}</small>
+                      <small class="text-muted">{{ note.createdAt | localizedDate }}</small>
                     </div>
                     <p class="mb-0 mt-1">{{ note.note }}</p>
                   </div>

@@ -51,7 +51,7 @@
   <div class="card shadow mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <h5 class="card-title mb-0">Tender Information</h5>
-      <span [class]="getBadgeByTenderStatus(tender.status)">{{getTextByTenderStatus(tender.status)}}</span>
+      <span [class]="getBadgeByTenderStatus(tender.status)">{{ tender.status | tenderStatus}}</span>
     </div>
     <div class="card-body">
       <div class="row">
@@ -59,24 +59,24 @@
           <ul class="list-group">
             <li class="list-group-item"><strong>Title:</strong> {{tender.title}}</li>
             <li class="list-group-item"><strong>Description:</strong> {{tender.description}}</li>
-            <li class="list-group-item"><strong>Deadline:</strong> {{tender.deadlineDate | date:'medium'}}</li>
-            <li class="list-group-item"><strong>Publish Date:</strong> {{tender.publishDate | date:'medium'}}</li>
-            <li class="list-group-item"><strong>Closing Date:</strong> {{tender.closingDate | date:'medium'}}</li>
+            <li class="list-group-item"><strong>Deadline:</strong> {{tender.deadlineDate | localizedDate}}</li>
+            <li class="list-group-item"><strong>Publish Date:</strong> {{tender.publishDate | localizedDate}}</li>
+            <li class="list-group-item"><strong>Closing Date:</strong> {{tender.closingDate | localizedDate}}</li>
           </ul>
         </div>
         <div class="col-md-6">
           <ul class="list-group">
             <li class="list-group-item">
-              <strong>Created By:</strong> {{tender.createdByUser?.firstName}} {{tender.createdByUser?.lastName}}
+              <strong>Created By:</strong> {{tender.createdByUser | userFullName}}
             </li>
             <li class="list-group-item">
-              <strong>Opened By:</strong> {{tender.openedByUser?.firstName}} {{tender.openedByUser?.lastName}}
+              <strong>Opened By:</strong> {{tender.openedByUser | userFullName}}
             </li>
             <li class="list-group-item">
-              <strong>Closed By:</strong> {{tender.closedByUser?.firstName}} {{tender.closedByUser?.lastName}}
+              <strong>Closed By:</strong> {{tender.closedByUser | userFullName}}
             </li>
             <li class="list-group-item">
-              <strong>Winner Selected By:</strong> {{tender.winnerSelectedByUser?.firstName}} {{tender.winnerSelectedByUser?.lastName}}
+              <strong>Winner Selected By:</strong> {{tender.winnerSelectedByUser | userFullName}}
             </li>
           </ul>
         </div>
