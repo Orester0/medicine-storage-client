@@ -24,7 +24,6 @@ export class MedicineService {
     let httpParams = new HttpParams();
 
     if (params.name) httpParams = httpParams.append('name', params.name);
-    if (params.description) httpParams = httpParams.append('description', params.description);
     if (params.category) httpParams = httpParams.append('category', params.category);
 
     if (params.requiresSpecialApproval !== null && params.requiresSpecialApproval !== undefined) {
@@ -38,23 +37,10 @@ export class MedicineService {
         httpParams = httpParams.append('maxStock', params.maxStock.toString());
     }
 
-    if (params.minMinimumStock !== null && params.minMinimumStock !== undefined && params.minMinimumStock !== 0) {
-        httpParams = httpParams.append('minMinimumStock', params.minMinimumStock.toString());
-    }
-    if (params.maxMinimumStock !== null && params.maxMinimumStock !== undefined && params.maxMinimumStock !== 0) {
-        httpParams = httpParams.append('maxMinimumStock', params.maxMinimumStock.toString());
-    }
-
     if (params.requiresStrictAudit !== null && params.requiresStrictAudit !== undefined) {
         httpParams = httpParams.append('requiresStrictAudit', params.requiresStrictAudit.toString());
     }
 
-    if (params.minAuditFrequencyDays !== null && params.minAuditFrequencyDays !== undefined && params.minAuditFrequencyDays !== 0) {
-        httpParams = httpParams.append('minAuditFrequencyDays', params.minAuditFrequencyDays.toString());
-    }
-    if (params.maxAuditFrequencyDays !== null && params.maxAuditFrequencyDays !== undefined && params.maxAuditFrequencyDays !== 0) {
-        httpParams = httpParams.append('maxAuditFrequencyDays', params.maxAuditFrequencyDays.toString());
-    }
 
     if (params.sortBy) {
         httpParams = httpParams.append('sortBy', params.sortBy);

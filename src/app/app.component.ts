@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from './_services/auth.service';
 import { filter } from 'rxjs/internal/operators/filter';
+import { HasRoleDirective } from './_directives/has-role.directive';
 @Component({
   selector: 'app-root',
   standalone: true,

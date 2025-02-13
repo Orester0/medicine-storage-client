@@ -58,6 +58,11 @@ export class AuthService {
       })
     );
   }
+  userHasRole(requiredRoles: string[]): boolean {
+    const userRoles = this.currentUser()?.roles.map(role => role.toLowerCase().trim()) || [];
+    return requiredRoles.some(role => userRoles.includes(role.toLowerCase().trim()));
+  }
+  
   
   private setUserSession(data: ReturnUserLoginDTO): void {
     if (data.returnUserTokenDTO) {

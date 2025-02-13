@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MedicineService } from '../../_services/medicine.service';
@@ -34,14 +34,14 @@ export class CreateMedicineFormComponent implements OnInit{
       this.patchFormValues();
     }
   }
-
+  
   private initializeForm(): void {
     this.medicineForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), uniqueValidator(this.getMedicineNames(this.allMedicines))]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       category: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       requiresSpecialApproval: [false],
-      minimumStock: [0, [Validators.required, Validators.min(0), Validators.max(Number.MAX_SAFE_INTEGER)]],
+      minimumStock: [1, [Validators.required, Validators.min(1), Validators.max(Number.MAX_SAFE_INTEGER)]],
       requiresStrictAudit: [false],
       auditFrequencyDays: [1, [Validators.required, Validators.min(1), Validators.max(365)]]
     });

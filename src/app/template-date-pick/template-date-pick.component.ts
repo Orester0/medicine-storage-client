@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TemplateType } from '../_models/template.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { futureDateValidator, validDateValidator } from '../_validators/validators';
+import { pastDateValidator, validDateValidator } from '../_validators/validators';
 
 @Component({
   selector: 'app-notification-template-date-pick',
@@ -18,7 +18,7 @@ export class TemplateDatePickComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      date: [new Date().toISOString().split('T')[0], [Validators.required, futureDateValidator, validDateValidator]]
+      date: [new Date().toISOString().split('T')[0], [Validators.required, pastDateValidator, validDateValidator]]
     });
   }
 

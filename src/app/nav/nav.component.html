@@ -18,12 +18,16 @@
                     <li class="nav-item">
                         <a routerLink="/templates" routerLinkActive="active" class="nav-link">Templates</a>
                     </li>
-                    <!-- <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
-                        <a routerLink="/admin" routerLinkActive="active" class="nav-link">Requests</a>
-                    </li> -->
+                    <li *appHasRole="['Doctor', 'Admin']" class="nav-item">
+                        <a routerLink="/admin" routerLinkActive="active" class="nav-link">Admin Page</a>
+                    </li>
+                    
                 }
 
             </ul>
+            
+            <app-notifications class="me-3"></app-notifications>
             <app-user-panel></app-user-panel>
+            
     </div>
 </nav>

@@ -3,7 +3,7 @@ import { CreateAuditDTO } from '../../_models/audit.types';
 import { FormBuilder, FormGroup, MaxLengthValidator, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
-import { futureDateValidator, validDateValidator } from '../../_validators/validators';
+import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 
 @Component({
@@ -28,7 +28,7 @@ export class CreateAuditFormComponent implements OnInit{
 
   private initializeForm(){
     this.auditForm = this.fb.group({
-      plannedDate: [this.initialData.plannedDate || new Date().toISOString().split('T')[0], [Validators.required, validDateValidator, futureDateValidator]],
+      plannedDate: [this.initialData.plannedDate || new Date().toISOString().split('T')[0], [Validators.required, validDateValidator, pastDateValidator]],
       medicineIds: [this.initialData.medicineIds || [], [Validators.required]],
       notes: [this.initialData.notes || '', [Validators.required, Validators.maxLength(500)]]
     });

@@ -58,7 +58,9 @@
   <app-medicines-details
     *ngIf="selectedMedicine && !isCreateModalOpen"
     [medicine]="selectedMedicine"
-    (onClose)="selectedMedicine = null"
+    (onClose)="onCloseFromDetails()"
     (onEdit)="onEditFromDetails($event)"
+    (onCreate)="onCreateRequestFromDetails($event)"
+    (onDelete)="onDeleteFromDetails($event)"
   ></app-medicines-details>
 </div>

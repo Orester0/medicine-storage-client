@@ -52,5 +52,6 @@
   *ngIf="selectedRequest"
   [medicineRequest]="selectedRequest"
   (onClose)="selectedRequest = null"
-  (onAction)="handleOperationAction($event)"
+  (onApprove)="onApproveFromDetails($event)"
+  (onReject)="onRejectFromDetails($event)"
 ></app-medicine-operations-details>

@@ -5,62 +5,150 @@
         <h5 class="modal-title">Audit Details</h5>
         <button type="button" class="btn-close btn-close-white" (click)="closeDetails()" aria-label="Close"></button>
       </div>
+      
       <div class="modal-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <strong>ID:</strong> {{ audit.id || 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>Planned By:</strong> 
-            {{ audit.plannedByUser ? (audit.plannedByUser.lastName + ' ' + audit.plannedByUser.firstName) : 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>Closed By:</strong> 
-            {{ audit.closedByUser ? (audit.closedByUser.lastName + ' ' + audit.closedByUser.firstName) : 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>Planned Date:</strong> 
-            {{ audit.plannedDate ? (audit.plannedDate | date: 'dd.MM.yyyy') : 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>Start Date:</strong> 
-            {{ audit.startDate ? (audit.startDate | date: 'dd.MM.yyyy') : 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>End Date:</strong> 
-            {{ audit.endDate ? (audit.endDate | date: 'dd.MM.yyyy') : 'N/A' }}
-          </li>
-          <li class="list-group-item">
-            <strong>Status:</strong>
-            <span class="badge px-3 py-2 {{ getAuditStatusBadgeClass(audit.status) }}">
-              {{ getAuditStatusText(audit.status) || 'N/A' }}
-            </span>
-          </li>
-          <li class="list-group-item">
-            <strong>Audit Items:</strong>
-            <ul>
-              <li *ngFor="let item of audit.auditItems" class="list-group-item">
-                <strong>Medicine:</strong> {{ item.medicine.name || 'N/A' }}<br />
-                <strong>Expected Quantity:</strong> {{ item.expectedQuantity || 'N/A' }}<br />
-                <strong>Actual Quantity:</strong> {{ item.actualQuantity || 'N/A' }}<br />
-                <strong>Checked By:</strong> 
-                {{ item.checkedByUser ? (item.checkedByUser.lastName + ' ' + item.checkedByUser.firstName) : 'N/A' }}
-              </li>
-            </ul>
-          </li>
-          <li class="list-group-item">
-            <strong>Notes:</strong>
-            <ul>
-              <li *ngFor="let note of audit.notes" class="list-group-item">
-                <strong>{{ note.createdAt | date: 'dd.MM.yyyy HH:mm' }}:</strong> {{ note.note }}
-              </li>
-            </ul>
-          </li>
-        </ul>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">Basic Information</h6>
+              </div>
+              <div class="card-body">
+                <dl class="row mb-0">
+                  <dt class="col-sm-4">ID</dt>
+                  <dd class="col-sm-8">{{ audit.id || 'N/A' }}</dd>
+                  
+                  <dt class="col-sm-4">Status</dt>
+                  <dd class="col-sm-8">
+                    <span class="badge px-3 py-2" [ngClass]="getAuditStatusBadgeClass(audit.status)">
+                      {{ getAuditStatusText(audit.status) || 'N/A' }}
+                    </span>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dates -->
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">Dates</h6>
+              </div>
+              <div class="card-body">
+                <dl class="row mb-0">
+                  <dt class="col-sm-5">Planned Date</dt>
+                  <dd class="col-sm-7">{{ audit.plannedDate || 'N/A' }}</dd>
+                  
+                  <dt class="col-sm-5">Start Date</dt>
+                  <dd class="col-sm-7">{{ audit.startDate || 'N/A' }}</dd>
+                  
+                  <dt class="col-sm-5">End Date</dt>
+                  <dd class="col-sm-7">{{ audit.endDate || 'N/A' }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">Users</h6>
+              </div>
+              <div class="card-body">
+                <dl class="row mb-0">
+                  <dt class="col-sm-2">Planned By</dt>
+                  <dd class="col-sm-4">
+                    {{ audit.plannedByUser ? (audit.plannedByUser.lastName + ' ' + audit.plannedByUser.firstName) : 'N/A' }}
+                  </dd>
+                  
+                  <dt class="col-sm-2">Closed By</dt>
+                  <dd class="col-sm-4">
+                    {{ audit.closedByUser ? (audit.closedByUser.lastName + ' ' + audit.closedByUser.firstName) : 'N/A' }}
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">Audit Items</h6>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Medicine</th>
+                        <th>Expected Qty</th>
+                        <th>Actual Qty</th>
+                        <th>Checked By</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of audit.auditItems">
+                        <td>{{ item.medicine.name || 'N/A' }}</td>
+                        <td>{{ item.expectedQuantity || 'N/A' }}</td>
+                        <td>{{ item.actualQuantity || 'N/A' }}</td>
+                        <td>
+                          {{ item.checkedByUser ? (item.checkedByUser.lastName + ' ' + item.checkedByUser.firstName) : 'N/A' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">Notes</h6>
+              </div>
+              <div class="card-body">
+                <div class="list-group list-group-flush">
+                  <div *ngFor="let note of audit.notes" class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <small class="text-muted">{{ note.createdAt | date:'dd.MM.yyyy HH:mm' }}</small>
+                    </div>
+                    <p class="mb-0 mt-1">{{ note.note }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="modal-footer justify-content-between">
-        <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+      <div class="modal-footer">
+        <div class="d-flex gap-2 flex-wrap justify-content-between w-100">
+          <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+          <div class="d-flex gap-2 flex-wrap">
+            <button *ngIf="audit.status === 2 || audit.status === 4" 
+                    class="btn btn-info btn-sm" 
+                    (click)="updateAudit()">
+              Execute
+            </button>
+            <button *ngIf="audit.status === 1" 
+                    class="btn btn-success btn-sm" 
+                    (click)="startAudit()">
+              Start Audit
+            </button>
+            <button *ngIf="audit.status === 2 || audit.status === 4" 
+                    class="btn btn-danger btn-sm" 
+                    (click)="closeAudit()">
+              Close Audit
+            </button>
+            <button *ngIf="audit.status === 1" 
+                    class="btn btn-danger btn-sm" 
+                    (click)="deleteAudit()">
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

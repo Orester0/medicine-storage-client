@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationTemplateService {
+export class TemplateService {
   private baseUrl = `${environment.apiUrl}templates`;
 
   private urlMap = {

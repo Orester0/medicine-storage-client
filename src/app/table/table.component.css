@@ -20,3 +20,44 @@
     max-width: 0;
     overflow: hidden;
   }
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  table-layout: auto;
+  width: 100%;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  z-index: 2;
+  white-space: nowrap;
+  text-align: left;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.table td,
+.table th {
+  padding: 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.actions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.actions-container button {
+  flex-grow: 1;
+  min-width: 90px;
+  padding: 5px 10px;
+  font-size: 14px;
+}

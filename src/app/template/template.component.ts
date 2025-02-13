@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ReturnMedicineDTO } from '../_models/medicine.types';
 import { AuditTemplateDTO, MedicineRequestTemplateDTO, TenderTemplateDTO, Template, TemplateType, NotificationTemplateBaseDTO, CreateAuditTemplate, CreateMedicineRequestTemplate, CreateTenderTemplate } from '../_models/template.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NotificationTemplateService } from '../_services/notification-template.service';
+import { TemplateService } from '../_services/template.service';
 import { MedicineService } from '../_services/medicine.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { CommonModule } from '@angular/common';
@@ -203,7 +203,7 @@ export class TemplateComponent {
   }
 
   constructor(
-    private templateService: NotificationTemplateService,
+    private templateService: TemplateService,
      private route: ActivatedRoute
   ) {}
 

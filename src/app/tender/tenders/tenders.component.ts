@@ -115,11 +115,7 @@ export class TendersComponent implements OnInit {
 
   filterModel = {
     title: '',
-    publishDateFrom: null as Date | null,
-    publishDateTo: null as Date | null,
     status: null as TenderStatus | null,
-    closingDateFrom: null as Date | null,
-    closingDateTo: null as Date | null,
     deadlineDateFrom: null as Date | null,
     deadlineDateTo: null as Date | null
   };
@@ -152,30 +148,8 @@ export class TendersComponent implements OnInit {
             label: this.getTenderStatusText(status as TenderStatus)
           }))
         },
-    {
-      key: 'publishDateFrom',
-      label: 'Publish Date From',
-      type: 'date',
-      col: 3
-    },
-    {
-      key: 'publishDateTo',
-      label: 'Publish Date To',
-      type: 'date',
-      col: 3
-    },
-    {
-      key: 'closingDateFrom',
-      label: 'Closing Date From',
-      type: 'date',
-      col: 3
-    },
-    {
-      key: 'closingDateTo',
-      label: 'Closing Date To',
-      type: 'date',
-      col: 3
-    },
+    
+    
     {
       key: 'deadlineDateFrom',
       label: 'Deadline Date From',

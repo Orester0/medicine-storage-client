@@ -3,7 +3,7 @@ import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CreateMedicineRequestDTO } from '../../_models/medicine-operations.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { futureDateValidator, validDateValidator } from '../../_validators/validators';
+import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 
 @Component({
@@ -35,19 +35,32 @@ export class CreateMedicineRequestFormComponent implements OnInit{
         medicineId: this.preselectedMedicine?.id || 0
       });
     }
+    if (changes['isOpen'] && !changes['isOpen'].firstChange && !this.isOpen) {
+      this.resetForm(); 
+    }
+  }
+
+  private resetForm() {
+    this.requestForm.reset({
+      medicineId: this.initialData.medicineId || 0,
+      quantity: this.initialData.quantity || 1,
+      requiredByDate: this.initialData.requiredByDate || new Date().toISOString().split('T')[0],
+      justification: this.initialData.justification || ''
+    });
   }
 
   private initializeForm(){
     this.requestForm = this.fb.group({
       medicineId: [this.preselectedMedicine?.id || this.initialData.medicineId || 0, [Validators.required]],
-      quantity: [this.initialData.quantity || 0, [Validators.required, Validators.min(1), Validators.max(Number.MAX_SAFE_INTEGER)]],
-      requiredByDate: [this.initialData.requiredByDate || new Date().toISOString().split('T')[0], [Validators.required, futureDateValidator, validDateValidator]],
-      justification: [this.initialData.justification || '', [Validators.minLength(3), Validators.maxLength(500)]]
+      quantity: [this.initialData.quantity || 1, [Validators.required, Validators.min(1), Validators.max(Number.MAX_SAFE_INTEGER)]],
+      requiredByDate: [this.initialData.requiredByDate || new Date().toISOString().split('T')[0], [Validators.required, pastDateValidator, validDateValidator]],
+      justification: [this.initialData.justification || '', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]]
     });
   }
 
   @HostListener('document:keydown.escape', ['$event'])
   handleEscapeKey(event: KeyboardEvent) {
+    
     this.onCancel();
   }
 
@@ -58,6 +71,7 @@ export class CreateMedicineRequestFormComponent implements OnInit{
   }
 
   onCancel(): void {
+    // this.requestForm.
     this.cancelRequest.emit();
   }
 }

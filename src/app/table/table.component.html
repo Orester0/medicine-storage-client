@@ -3,11 +3,11 @@
     <thead class="table-light">
       <tr>
         <th *ngFor="let column of columns"
-            class="position-sticky top-0 bg-light text-nowrap"
+            class="position-sticky top-0 bg-light text-nowrap px-2"
             [class.user-select-none]="column.sortable"
             [class.cursor-pointer]="column.sortable"
             (click)="column.sortable && column.key !== 'actions' && handleSort(column.key)">
-          <div class="d-flex align-items-center gap-2">
+          <div class="d-flex align-items-center gap-1">
             {{ column.label }}
             <i *ngIf="column.sortable && sortConfig?.key === column.key" 
                class="bi"
@@ -21,7 +21,7 @@
     <tbody>
       <tr *ngFor="let row of data">
         <td *ngFor="let column of columns"
-            class="text-nowrap">
+            class="text-nowrap px-2">
           <ng-container *ngIf="column.key !== 'actions'; else actionsTemplate">
             <div class="text-truncate" 
                  [title]="column.render ? column.render(row[column.key], row).toString() : row[column.key]?.toString()">
@@ -29,10 +29,10 @@
             </div>
           </ng-container>
           <ng-template #actionsTemplate>
-            <div class="d-flex gap-2 flex-nowrap">
+            <div class="actions-container">
               <ng-container *ngIf="actions?.length">
                 <button *ngFor="let action of actions"
-                        [class]="action.class || 'btn btn-outline-secondary btn-sm'"
+                        [class]="action.class || 'btn btn-outline-primary btn-sm rounded px-2'"
                         (click)="action.onClick(row)"
                         [class.d-none]="action.visible && !action.visible(row)">
                   {{ action.label }}

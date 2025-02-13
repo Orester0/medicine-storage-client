@@ -1,74 +1,147 @@
+
 <div *ngIf="medicineRequest" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">Medicine Request Details</h5>
-          <button type="button" class="btn-close" (click)="closeDetails()"></button>
-        </div>
-        
-        <div class="modal-body">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <strong>ID:</strong> 
-              {{ medicineRequest.id || 'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Medicine name:</strong> 
-              {{ medicineRequest.medicine.name || 'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Quantity:</strong> 
-              {{ medicineRequest.quantity || 'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Required By Date:</strong> 
-              {{ medicineRequest.requiredByDate ? (medicineRequest.requiredByDate | date: 'dd.MM.yyyy') : 'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Requested By:</strong> 
-              {{ medicineRequest.requestedByUser ? 
-                (medicineRequest.requestedByUser.firstName + ' ' + medicineRequest.requestedByUser.lastName) : 
-                'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Request Date:</strong> 
-              {{ medicineRequest.requestDate ? (medicineRequest.requestDate | date: 'dd.MM.yyyy') : 'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Justification:</strong>
-              <p class="mb-0">{{ medicineRequest.justification || 'N/A' }}</p>
-            </li>
-            <li class="list-group-item">
-              <strong>Status:</strong>
-              <span class="badge px-3 py-2 {{ getStatusBadgeClass(medicineRequest.status) }}">
-                {{ getStatusText(medicineRequest.status) }}
-              </span>
-            </li>
-            <li class="list-group-item">
-              <strong>Approved By:</strong> 
-              {{ medicineRequest.approvedByUser ? 
-                (medicineRequest.approvedByUser.firstName + ' ' + medicineRequest.approvedByUser.lastName) : 
-                'N/A' }}
-            </li>
-            <li class="list-group-item">
-              <strong>Approval Date:</strong> 
-              {{ medicineRequest.approvalDate ? (medicineRequest.approvalDate | date: 'dd.MM.yyyy') : 'N/A' }}
-            </li>
-            
-          </ul>
+    <div class="modal-content border-0 shadow-lg">
 
-          <div class="modal-footer">
-            <div class="d-flex gap-2" *ngIf="medicineRequest.status === RequestStatus.Pending">
-              <button class="btn btn-success" (click)="performAction('approve')">
-                <i class="bi bi-check-circle"></i> Approve
-              </button>
-              <button class="btn btn-danger" (click)="performAction('reject')">
-                <i class="bi bi-x-circle"></i> Reject
-              </button>
+      <div class="modal-header bg-primary text-white d-flex align-items-center py-3">
+        <h5 class="modal-title d-flex align-items-center gap-2 mb-0">
+          <mat-icon>medical_services</mat-icon>
+          Medicine Request Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDetails()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="row g-4">
+
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-header bg-light py-3">
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>info</mat-icon>
+                  Basic Information
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="text-muted small">ID</label>
+                  <p class="mb-2 fw-medium">{{ medicineRequest.id || 'N/A' }}</p>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Medicine Name</label>
+                  <p class="mb-2 fw-medium">{{ medicineRequest.medicine.name || 'N/A' }}</p>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Quantity</label>
+                  <p class="mb-2 fw-medium">{{ medicineRequest.quantity || 'N/A' }}</p>
+                </div>
+                <div class="mb-0">
+                  <label class="text-muted small">Status</label>
+                  <span class="badge rounded-pill px-3 py-2 {{ getStatusBadgeClass(medicineRequest.status) }}">
+                    <mat-icon class="align-middle me-1" style="font-size: 16px">{{ getStatusIcon(medicineRequest.status) }}</mat-icon>
+                    {{ getStatusText(medicineRequest.status) }}
+                  </span>
+                </div>
+              </div>
             </div>
-            <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-header bg-light py-3">
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>schedule</mat-icon>
+                  Timeline Details
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="text-muted small">Required By Date</label>
+                  <p class="mb-2 fw-medium">
+                    {{ medicineRequest.requiredByDate ? (medicineRequest.requiredByDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                  </p>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Request Date</label>
+                  <p class="mb-2 fw-medium">
+                    {{ medicineRequest.requestDate ? (medicineRequest.requestDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                  </p>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Approval Date</label>
+                  <p class="mb-2 fw-medium">
+                    {{ medicineRequest.approvalDate ? (medicineRequest.approvalDate | date: 'dd.MM.yyyy') : 'N/A' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-light py-3">
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>person</mat-icon>
+                  Users
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="text-muted small">Requested By</label>
+                    <p class="mb-2 fw-medium">
+                      {{ medicineRequest.requestedByUser ?
+                        (medicineRequest.requestedByUser.firstName + ' ' + medicineRequest.requestedByUser.lastName) :
+                        'N/A' }}
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="text-muted small">Approved By</label>
+                    <p class="mb-2 fw-medium">
+                      {{ medicineRequest.approvedByUser ?
+                        (medicineRequest.approvedByUser.firstName + ' ' + medicineRequest.approvedByUser.lastName) :
+                        'N/A' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-light py-3">
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>description</mat-icon>
+                  Justification
+                </h6>
+              </div>
+              <div class="card-body">
+                <p class="mb-0">{{ medicineRequest.justification || 'N/A' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-top bg-light">
+        <div class="d-flex gap-3 w-100 justify-content-between">
+          <button class="btn btn-secondary d-flex align-items-center gap-2" (click)="closeDetails()">
+            <mat-icon>close</mat-icon>
+            Close
+          </button>
+          <div class="d-flex gap-2" *ngIf="medicineRequest.status === RequestStatus.Pending">
+            <button class="btn btn-success d-flex align-items-center gap-2" (click)="performAction('approve')">
+              <mat-icon>check_circle</mat-icon>
+              Approve
+            </button>
+            <button class="btn btn-danger d-flex align-items-center gap-2" (click)="performAction('reject')">
+              <mat-icon>cancel</mat-icon>
+              Reject
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>

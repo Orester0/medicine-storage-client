@@ -23,22 +23,6 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
   
       if (params.title) httpParams = httpParams.append('title', params.title);
   
-      if (params.publishDateFrom) {
-        const fromDate = params.publishDateFrom instanceof Date ? params.publishDateFrom.toISOString() : params.publishDateFrom;
-        httpParams = httpParams.append('publishDateFrom', fromDate);
-      }
-      if (params.publishDateTo) {
-        const toDate = params.publishDateTo instanceof Date ? params.publishDateTo.toISOString() : params.publishDateTo;
-        httpParams = httpParams.append('publishDateTo', toDate);
-      }
-      if (params.closingDateFrom) {
-        const toDate = params.closingDateFrom instanceof Date ? params.closingDateFrom.toISOString() : params.closingDateFrom;
-        httpParams = httpParams.append('closingDateFrom', toDate);
-      }
-      if (params.closingDateTo) {
-        const toDate = params.closingDateTo instanceof Date ? params.closingDateTo.toISOString() : params.closingDateTo;
-        httpParams = httpParams.append('closingDateTo', toDate);
-      }
       if (params.deadlineDateFrom) {
         const toDate = params.deadlineDateFrom instanceof Date ? params.deadlineDateFrom.toISOString() : params.deadlineDateFrom;
         httpParams = httpParams.append('deadlineDateFrom', toDate);

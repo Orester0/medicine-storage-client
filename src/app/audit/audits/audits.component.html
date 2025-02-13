@@ -85,7 +85,11 @@
   <app-audits-details
       *ngIf="selectedAudit && !isModalOpen"
       [audit]="selectedAudit"
-      (onClose)="selectedAudit = null"
+      (onClose)="onCloseDetails()"
+      (onUpdate)="onUpdateAuditFromDetails($event)"
+      (onDelete)="onDeleteAuditFromDetails($event)"
+      (onStartAudit)="onStartAuditFromDetails($event)"
+      (onCloseAudit)="onCloseAuditFromDetails($event)"
   ></app-audits-details>
 
 

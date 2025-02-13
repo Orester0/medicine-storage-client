@@ -9,20 +9,29 @@ import { CommonModule } from '@angular/common';
   styleUrl: './audits-details.component.css'
 })
 export class AuditsDetailsComponent {
-  @Input() audit: ReturnAuditDTO | null = null;
-  @Output() onAction = new EventEmitter<{ action: string; id: number }>();
+  @Input() audit!: ReturnAuditDTO;
   @Output() onClose = new EventEmitter<void>();
+  @Output() onUpdate = new EventEmitter<ReturnAuditDTO>();
+  @Output() onDelete = new EventEmitter<ReturnAuditDTO>();
+  @Output() onStartAudit = new EventEmitter<ReturnAuditDTO>();
+  @Output() onCloseAudit = new EventEmitter<ReturnAuditDTO>();
 
   closeDetails(): void {
     this.onClose.emit();
   }
-
-  
-  performAction(action: string): void {
-    if (this.audit) {
-      this.onAction.emit({ action, id: this.audit.id });
-    }
+  updateAudit(): void {
+    this.onUpdate.emit(this.audit);
   }
+  deleteAudit(): void {
+    this.onDelete.emit(this.audit);
+  }
+  startAudit(): void {
+    this.onStartAudit.emit(this.audit);
+  }
+  closeAudit(): void {
+    this.onCloseAudit.emit(this.audit);
+  }
+
 
 
   getAuditStatusText(status: AuditStatus): string {

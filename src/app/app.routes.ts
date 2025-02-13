@@ -13,6 +13,7 @@ import { usersResolver } from './_resolvers/users.resolver';
 import { TendersDetailsComponent } from './tender/tenders-details/tenders-details.component';
 import { tenderResolver } from './_resolvers/tender.resolver';
 import { TemplateComponent as TemplateComponent } from './template/template.component';
+import { AdminPageComponent } from './admin-page/admin-page.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -28,6 +29,7 @@ export const routes: Routes = [
             {path: 'requests', component: MedicineOperationsComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
             {path: 'user-profile', component: UserProfileComponent},
             {path: 'templates', component: TemplateComponent, resolve: {medicines: medicinesResolver}},
+            {path: 'admin', component: AdminPageComponent},
         ]
     },
     {path: 'not-found', component: NotFoundComponent},

@@ -312,8 +312,32 @@ export class AuditsComponent implements OnInit {
   
   viewAuditDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = audit;
-    console.log(this.selectedAudit);
   }
+
+
+  onCloseDetails() : void{
+    this.selectedAudit = null;
+  }
+
+
+  onUpdateAuditFromDetails(audit: ReturnAuditDTO) : void{
+    this.selectedAudit = null;
+    this.updateAudit(audit.id);
+  }
+
+  onDeleteAuditFromDetails(audit: ReturnAuditDTO) : void{
+    this.selectedAudit = null;
+    this.deleteAuditPrompt(audit);
+  }
+  onStartAuditFromDetails(audit: ReturnAuditDTO) : void{
+    this.selectedAudit = null;
+    this.startAudit(audit.id)
+  }
+  onCloseAuditFromDetails(audit: ReturnAuditDTO) : void{
+    this.selectedAudit = null;
+    this.closeAudit(audit.id)
+  }
+
 
   getAuditStatusText(status: AuditStatus): string {
     const statusMap: Record<AuditStatus, string> = {
@@ -336,8 +360,6 @@ export class AuditsComponent implements OnInit {
     };
     return classMap[status] ?? 'bg-secondary';
   }
-
-
 
 
 }

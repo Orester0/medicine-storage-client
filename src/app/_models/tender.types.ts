@@ -72,10 +72,6 @@ export interface CreateTenderProposalItem {
 }
 export interface TenderParams {
    title?: string | null;
-   publishDateFrom?: Date | null;
-   publishDateTo?: Date | null;
-   closingDateFrom?: Date | null;
-   closingDateTo?: Date | null;
    deadlineDateFrom?: Date | null;
    deadlineDateTo?: Date | null;
    status?: TenderStatus | null;

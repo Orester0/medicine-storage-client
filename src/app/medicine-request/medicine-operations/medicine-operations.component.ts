@@ -109,14 +109,14 @@ export class MedicineOperationsComponent implements OnInit {
         sortable: true,
     },
     {
-        key: 'quantity',
-        label: 'Quantity',
-    },
-    {
       key: 'status',
       label: 'Status',
       render: (value) => this.getRequestStatusText(value as RequestStatus),
       sortable: true,
+    },
+    {
+        key: 'quantity',
+        label: 'Quantity',
     },
     {
       key: 'requiredByDate',
@@ -180,7 +180,6 @@ export class MedicineOperationsComponent implements OnInit {
   
   
   constructor(
-    private fb: FormBuilder,
     private requestService: MedicineRequestService,
     private route: ActivatedRoute
   ) {}
@@ -196,7 +195,6 @@ export class MedicineOperationsComponent implements OnInit {
           label: medicine.name
         }))
       },
-      ...this.filterConfig,
       {
         key: 'requestedByUserId',
         label: 'Requested By',
@@ -206,7 +204,7 @@ export class MedicineOperationsComponent implements OnInit {
           label: `${user.firstName} ${user.lastName}`
         }))
       },
-      
+      ...this.filterConfig,
     ];
   }
 
@@ -255,17 +253,15 @@ export class MedicineOperationsComponent implements OnInit {
     this.selectedRequest = request;
   }
 
-  handleOperationAction(event: { action: string; id: number }): void {
-    if (event.action === 'approve') {
-      this.approveRequest(event.id);
-    } else if (event.action === 'reject') {
-      this.rejectRequest(event.id);
-    }
+  onApproveFromDetails(requestId: number) : void {
+    this.approveRequest(requestId);
     this.selectedRequest = null;
   }
 
-
-
+  onRejectFromDetails(requestId: number) : void {
+    this.approveRequest(requestId);
+    this.selectedRequest = null;
+  }
 
     onSortChange(sortConfig: { key: keyof ReturnMedicineRequestDTO; isDescending: boolean }): void {
         this.sortColumn = sortConfig.key as string;

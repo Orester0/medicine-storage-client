@@ -22,16 +22,11 @@ export interface CreateMedicineDTO {
   
 export interface MedicineParams {
   name?: string | null;
-  description?: string | null;
   category?: string | null; 
   requiresSpecialApproval?: boolean | null;
   minStock?: number | null;
   maxStock?: number | null;
-  minMinimumStock?: number | null;
-  maxMinimumStock?: number | null;
   requiresStrictAudit?: boolean | null;
-  minAuditFrequencyDays?: number | null;
-  maxAuditFrequencyDays?: number | null;
   sortBy?: string;
   isDescending?: boolean;
   pageNumber: number;

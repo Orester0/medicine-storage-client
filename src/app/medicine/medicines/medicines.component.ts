@@ -29,11 +29,12 @@ export class MedicinesComponent implements OnInit {
       type: 'text',
       col: 3
     },
-    { 
-      key: 'description', 
-      label: 'Description', 
-      type: 'text',
-      col: 3
+    {
+      key: 'category',
+      label: 'Category',
+      type: 'select',
+      col: 3,
+      options: []
     },
     { 
       key: 'minStock', 
@@ -47,18 +48,7 @@ export class MedicinesComponent implements OnInit {
       type: 'number',
       col: 3
     },
-    { 
-      key: 'minMinimumStock', 
-      label: 'Min Minimum Stock', 
-      type: 'number',
-      col: 3
-    },
-    { 
-      key: 'maxMinimumStock', 
-      label: 'Max Minimum Stock', 
-      type: 'number',
-      col: 3
-    },
+    
     { 
       key: 'requiresSpecialApproval', 
       label: 'Special Approval', 
@@ -79,34 +69,18 @@ export class MedicinesComponent implements OnInit {
       ],
       col: 3
     },
-    { 
-      key: 'minAuditFrequencyDays', 
-      label: 'Min Audit Days', 
-      type: 'number',
-      col: 3
-    },
-    { 
-      key: 'maxAuditFrequencyDays', 
-      label: 'Max Audit Days', 
-      type: 'number',
-      col: 3
-    }
+    
   ];
   
 
 
   filterModel: MedicineParams = {
     name: null,
-    description: null,
     category: null,
     requiresSpecialApproval: null,
     minStock: null,
     maxStock: null,
-    minMinimumStock: null,
-    maxMinimumStock: null,
     requiresStrictAudit: null,
-    minAuditFrequencyDays: null,
-    maxAuditFrequencyDays: null,
     sortBy: 'name',
     isDescending: false,
     pageNumber: 1,
@@ -197,7 +171,11 @@ export class MedicinesComponent implements OnInit {
   totalItems = 0;
 
 
-  constructor(private medicineService: MedicineService, private fb: FormBuilder, private route: ActivatedRoute, private medicineRequestService: MedicineRequestService ) {
+  constructor(private medicineService: MedicineService, 
+              private route: ActivatedRoute, 
+              private medicineRequestService: MedicineRequestService 
+            ) 
+  {
 
   }
 
@@ -231,24 +209,12 @@ export class MedicinesComponent implements OnInit {
 
 
   private initializeFilter(): void {
-    const uniqueCategories = Array.from(
+    this.filterConfig[1].options = Array.from(
       new Set(this.allMedicines.map(medicine => medicine.category))
-    );
-    this.filterConfig = [
-      ...this.filterConfig.slice(0, 2),
-      {
-        key: 'category',
-        label: 'Category',
-        type: 'select',
-        col: 3,
-        options: uniqueCategories.map(category => ({
-          value: category,
-          label: category
-        }))
-      },
-      ...this.filterConfig.slice(2), 
-    ];
-    
+    ).map(category => ({
+      value: category,
+      label: category
+    }));
   }
 
 
@@ -339,10 +305,23 @@ export class MedicinesComponent implements OnInit {
     this.selectedMedicine = medicine;
   }
 
+  onCloseFromDetails(): void {
+    this.selectedMedicine = null;
+  }
+
   onEditFromDetails(medicine: ReturnMedicineDTO): void {
     this.selectedMedicine = medicine;
     this.isCreateModalOpen = true;
   }
 
+  onCreateRequestFromDetails(medicine: ReturnMedicineDTO): void {
+    this.selectedMedicine = null;
+    this.openCreateRequestModal(medicine);
+  }
+
+  onDeleteFromDetails(medicine: ReturnMedicineDTO): void {
+    this.selectedMedicine = null;
+    this.deleteMedicinePrompt(medicine);
+  }
 
 }

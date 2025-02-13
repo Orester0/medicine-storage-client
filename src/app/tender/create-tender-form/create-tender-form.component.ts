@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnTenderDTO, CreateTenderDTO } from '../../_models/tender.types';
 import { CommonModule } from '@angular/common';
-import { futureDateValidator, validDateValidator } from '../../_validators/validators';
+import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 
 @Component({
@@ -28,7 +28,7 @@ export class CreateTenderFormComponent {
     this.tenderForm = this.fb.group({
       title: [this.tender?.title || '', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       description: [this.tender?.description || '', [Validators.required, Validators.minLength(5), Validators.maxLength(2000)]],
-      deadlineDate: [this.tender?.deadlineDate || new Date().toISOString().split('T')[0], [Validators.required, futureDateValidator, validDateValidator]]
+      deadlineDate: [this.tender?.deadlineDate || new Date().toISOString().split('T')[0], [Validators.required, pastDateValidator, validDateValidator]]
     });
   }
 
