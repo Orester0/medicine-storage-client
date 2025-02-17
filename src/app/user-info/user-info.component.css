@@ -1,0 +1,14 @@
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  .avatar-icon {
+    transform: scale(2);
+    color: #6c757d;
+  }

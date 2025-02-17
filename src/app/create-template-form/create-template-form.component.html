@@ -40,6 +40,12 @@
   
             <ng-container *ngIf="activeTab === 'audit'">
               <div class="mb-3">
+                <label for="title" class="form-label fw-bold">Title</label>
+                <input type="text" id="title" class="form-control" formControlName="title" required />
+                
+                <app-validation-errors [control]="getActiveForm().get('title')!"></app-validation-errors>
+              </div>
+              <div class="mb-3">
                 <label class="form-label">Medicines</label>
                 <select multiple formControlName="medicineIds" class="form-select form-select-sm">
                   <option *ngFor="let medicine of medicines" [value]="medicine.id">

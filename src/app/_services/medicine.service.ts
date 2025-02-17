@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams} from '../_models/medicine.types';
@@ -9,16 +9,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class MedicineService {
+  private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}medicines`;
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  getAllMedicines(): Observable<PagedList<ReturnMedicineDTO>> {
-    let httpParams = new HttpParams();
-    httpParams = httpParams.append('sortBy', 'name');
-    httpParams = httpParams.append('pageNumber', 1);
-    httpParams = httpParams.append('pageSize', 999);
-    return this.http.get<PagedList<ReturnMedicineDTO>>(this.baseUrl, { params: httpParams });
-  } 
+  getAllMedicines(): Observable<ReturnMedicineDTO[]> {
+    return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrl}/all`);
+}
 
   getMedicinesWithFilter(params: MedicineParams): Observable<PagedList<ReturnMedicineDTO>> {
     let httpParams = new HttpParams();

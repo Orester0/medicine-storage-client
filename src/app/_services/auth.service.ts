@@ -3,6 +3,9 @@ import { map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ChangePasswordDTO, ReturnUserDTO, UserRefreshTokenDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO } from '../_models/user.types';
 import { HttpClient } from '@angular/common/http';
+import { ReturnTenderDTO, ReturnTenderProposal } from '../_models/tender.types';
+import { ReturnMedicineRequestDTO, ReturnMedicineUsageDTO } from '../_models/medicine-operations.types';
+import { ReturnAuditDTO } from '../_models/audit.types';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +45,37 @@ export class AuthService {
     }
   }
 
+
+
+  ////
+  getAuditsPlanned(): Observable<ReturnAuditDTO[]> {
+    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/planned`);
+  }
+
+  getAuditsExecuted(): Observable<ReturnAuditDTO[]> {
+    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/executed`);
+  }
+
+  getRequestsRequested(): Observable<ReturnMedicineRequestDTO[]> {
+    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/requested`);
+  }
+
+  getUsagesCreated(): Observable<ReturnMedicineUsageDTO[]> {
+    return this.http.get<ReturnMedicineUsageDTO[]>(`${this.baseUrlAccount}/usages/created`);
+  }
+
+  getRequestsApproved(): Observable<ReturnMedicineRequestDTO[]> {
+    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/approved`);
+  }
+
+  getTendersAwarded(): Observable<ReturnTenderDTO[]> {
+    return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlAccount}/tenders/awarded`);
+  }
+
+  getProposalsCreated(): Observable<ReturnTenderProposal[]> {
+    return this.http.get<ReturnTenderProposal[]>(`${this.baseUrlAccount}/proposals/created`);
+  }
+  /////
 
   login(model: UserLoginDTO): Observable<ReturnUserLoginDTO> {
     return this.http.post<ReturnUserLoginDTO>(`${this.baseUrlAccount}/login`, model).pipe(

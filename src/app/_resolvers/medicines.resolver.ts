@@ -8,7 +8,6 @@ import { catchError, of } from 'rxjs';
 export const medicinesResolver: ResolveFn<ReturnMedicineDTO[]> = (route, state) => {
   const medicineService = inject(MedicineService);
   return medicineService.getAllMedicines().pipe(
-    map(response => response.items),
     catchError(error => {
       console.error('Failed to fetch medicines', error);
       return of([]);

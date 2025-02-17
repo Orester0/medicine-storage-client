@@ -24,7 +24,7 @@ export class AuditUpdateItemsComponent {
 
   ngOnInit() {
     this.auditForm = this.fb.group({
-      notes: [''],
+      notes: ['', [Validators.maxLength(500), Validators.minLength(5)]]
     });
 
     this.auditItems.forEach((item) => {

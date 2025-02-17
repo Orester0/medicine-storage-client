@@ -6,7 +6,7 @@ import { AuditsComponent } from './audit/audits/audits.component';
 import { authGuard } from './_guards/auth.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { InternalServerErrorComponent } from './internal-server-error/internal-server-error.component';
-import { MedicineOperationsComponent } from './medicine-request/medicine-operations/medicine-operations.component';
+import { MedicineRequestComponent } from './medicine-request/medicine-request/medicine-request.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { medicinesResolver } from './_resolvers/medicines.resolver';
 import { usersResolver } from './_resolvers/users.resolver';
@@ -25,11 +25,11 @@ export const routes: Routes = [
             {path: 'medicines', component: MedicinesComponent, resolve: {medicines: medicinesResolver}},
             {path: 'tenders', component: TendersComponent, resolve: {medicines: medicinesResolver}},
             {path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderResolver, medicines: medicinesResolver } },
-            {path: 'audits', component: AuditsComponent,  resolve: {medicines: medicinesResolver}},
-            {path: 'requests', component: MedicineOperationsComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
+            {path: 'audits', component: AuditsComponent,  resolve: {medicines: medicinesResolver, users: usersResolver}},
+            {path: 'requests', component: MedicineRequestComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
             {path: 'user-profile', component: UserProfileComponent},
             {path: 'templates', component: TemplateComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'admin', component: AdminPageComponent},
+            {path: 'admin', component: AdminPageComponent, resolve: {users: usersResolver}},
         ]
     },
     {path: 'not-found', component: NotFoundComponent},

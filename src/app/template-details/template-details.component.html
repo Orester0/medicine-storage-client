@@ -34,6 +34,8 @@
 
             <ng-container *ngSwitchCase="'audit'">
               <ng-container *ngIf="isAudit(template)">
+                <dt class="col-sm-4">Title</dt>
+                <dd class="col-sm-8">{{ template.createDTO.title }}</dd>
                 <dt class="col-sm-4">Medicines</dt>
                 <dd class="col-sm-8">
                   <ul class="list-unstyled mb-0">

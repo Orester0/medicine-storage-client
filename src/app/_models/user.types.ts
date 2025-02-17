@@ -23,17 +23,18 @@
    company?: string | null; 
    email?: string | null;
  }
+
  export interface ReturnUserDTO {
-    id: number;
-    firstName: string;
-    lastName: string;
-    userName: string;
-    position?: string | null;
-    company?: string | null;
-    email: string;
-    roles: string[];
- }
- 
+  id: number;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  position?: string | null;
+  company?: string | null;
+  email: string;
+  roles: string[];
+}
+
  
  export interface ReturnUserTokenDTO{
    accessToken: string;

@@ -14,16 +14,18 @@ import { DeleteConfirmationModalComponent } from '../../delete-confirmation-moda
 import { CreateTenderFormComponent } from '../create-tender-form/create-tender-form.component';
 import { TenderItemsComponent } from '../tender-items/tender-items.component';
 import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
+import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 
 @Component({
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
   imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
-  providers: [TenderStatusPipe],
+  providers: [TenderStatusPipe, MedicineNamePipe],
 })
 export class TendersComponent implements OnInit {
   tenderStatusPipe = inject(TenderStatusPipe);
+  medicineNamePipe = inject(MedicineNamePipe);
   
   constructor(
     private tenderService: TenderService,
@@ -34,8 +36,25 @@ export class TendersComponent implements OnInit {
   
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
+    this.initializeFilter();
     this.loadTenders();
-}
+  }
+
+  
+  private initializeFilter(): void {
+    this.filterConfig = [
+      ...this.filterConfig,
+      {
+        key: 'medicineId',
+        label: 'Medicine',
+        type: 'select',
+        options: this.allMedicines.map(medicine => ({
+          value: medicine.id,
+          label: this.medicineNamePipe.transform(medicine)
+        }))
+      }
+    ];
+  }
 
   // delete 
   tenderToDelete: ReturnTenderDTO | null = null;

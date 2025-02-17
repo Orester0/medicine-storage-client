@@ -10,8 +10,8 @@ import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
 @Component({
   selector: 'app-medicine-operations-details',
   imports: [CommonModule, MatIconModule, MedicineNamePipe, UserFullNamePipe, LocalizedDatePipe, RequestStatusPipe],
-  templateUrl: './medicine-operations-details.component.html',
-  styleUrl: './medicine-operations-details.component.css'
+  templateUrl: './medicine-request-details.component.html',
+  styleUrl: './medicine-request-details.component.css'
 })
 export class MedicineOperationsDetailsComponent {
   @Input() medicineRequest!: ReturnMedicineRequestDTO;

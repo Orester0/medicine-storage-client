@@ -9,6 +9,6 @@ export class UserFullNamePipe implements PipeTransform {
     if (!user) return 'N/A';
 
     const { lastName, firstName } = user;
-    return `${lastName} ${firstName}`.trim();
+    return `${firstName} ${lastName}`.trim();
   }
 }

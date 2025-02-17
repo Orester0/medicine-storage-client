@@ -19,7 +19,7 @@ export class AuditNotesComponent implements OnInit {
 
   ngOnInit() {
     const formGroup: any = {
-      note: ['', Validators.required]
+      note: ['', [Validators.maxLength(500), Validators.minLength(5)]]
     };
     this.form = this.fb.group(formGroup);
   }

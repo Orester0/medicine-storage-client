@@ -25,17 +25,13 @@ export interface CreateMedicineRequestDTO {
    id: number;
    quantity: number;
    usageDate: Date;
-   notes?: string;
    medicine: ReturnMedicineDTO;
-   medicineRequest: ReturnMedicineRequestDTO;
    usedByUser: ReturnUserDTO;
 }
  
 export interface CreateMedicineUsageDTO {
    medicineId: number;
-   medicineRequestId: number;
    quantity: number;
-   notes?: string;
 }
  
  export enum RequestStatus {

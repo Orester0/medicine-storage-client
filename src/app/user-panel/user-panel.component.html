@@ -1,9 +1,10 @@
-<div class="dropdown d-flex align-items-center" *ngIf="currentUser()" dropdown>
+<ng-container *ngIf="isAuthenticated(); else loginForm">
+  <div class="dropdown d-flex align-items-center" dropdown>
     <a dropdownToggle class="dropdown-toggle text-light text-decoration-none d-flex align-items-center">
-      <img [src]="photoUrl()" 
-           alt="Profile Picture" 
-           class="rounded-circle me-2" 
-           width="35" height="35">
+      <img [src]="photoUrl()"
+        alt="Profile Picture"
+        class="rounded-circle me-2"
+        width="35" height="35">
       <span>{{ currentUser() | userFullName }}</span>
     </a>
     <div *dropdownMenu class="dropdown-menu">
@@ -12,10 +13,23 @@
       <a class="dropdown-item" (click)="logout()">Logout</a>
     </div>
   </div>
-  
-  <form *ngIf="!currentUser()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex" autocomplete="off">
-    <input name="username" [(ngModel)]="model.userName" class="form-control me-2" placeholder="Username" required>
-    <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password" type="password" required>
+</ng-container>
+
+<ng-template #loginForm>
+  <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex" autocomplete="off">
+    <input 
+      name="username" 
+      [(ngModel)]="model.userName" 
+      class="form-control me-2" 
+      placeholder="Username" 
+      required>
+    <input 
+      name="password" 
+      [(ngModel)]="model.password" 
+      class="form-control me-2" 
+      placeholder="Password" 
+      type="password" 
+      required>
     <button class="btn btn-success" type="submit">Login</button>
   </form>
-  
+</ng-template>

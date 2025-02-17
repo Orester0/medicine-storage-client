@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -8,49 +8,56 @@ import { ReturnAuditDTO, CreateAuditDTO, UpdateAuditItemsRequest, ReturnAuditNot
   providedIn: 'root'
 })
 export class AuditService {
+  private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}audit`;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  getAllAudits(params: AuditParams): Observable<PagedList<ReturnAuditDTO>> 
-  {
+  getAllAudits(params: AuditParams): Observable<PagedList<ReturnAuditDTO>> {
     let httpParams = new HttpParams();
-    if (params.fromDate) {
-      const fromDate = params.fromDate instanceof Date ? params.fromDate.toISOString() : params.fromDate;
-      httpParams = httpParams.append('fromDate', fromDate);
+  
+    if (params.title) {
+      httpParams = httpParams.append('title', params.title);
     }
-    if (params.toDate) {
-      const toDate = params.toDate instanceof Date ? params.toDate.toISOString() : params.toDate;
-      httpParams = httpParams.append('toDate', toDate);
+  
+    if (params.fromPlannedDate) {
+      const fromPlannedDate = params.fromPlannedDate instanceof Date ? params.fromPlannedDate.toISOString() : params.fromPlannedDate;
+      httpParams = httpParams.append('fromPlannedDate', fromPlannedDate);
     }
-
-    if (params.status !== null && params.status !== undefined) { 
+    if (params.toPlannedDate) {
+      const toPlannedDate = params.toPlannedDate instanceof Date ? params.toPlannedDate.toISOString() : params.toPlannedDate;
+      httpParams = httpParams.append('toPlannedDate', toPlannedDate);
+    }
+  
+  
+  
+    if (params.status !== null && params.status !== undefined) {
       httpParams = httpParams.append('status', params.status.toString());
     }
-    
-    
-    
-    if (params.plannedByUserId !== undefined && params.plannedByUserId !== null) {
+  
+    if (params.plannedByUserId !== null && params.plannedByUserId !== undefined) {
       httpParams = httpParams.append('plannedByUserId', params.plannedByUserId.toString());
     }
-    if (params.executedByUserId !== undefined && params.executedByUserId !== null) {
+    if (params.closedByUserId !== null && params.closedByUserId !== undefined) {
+      httpParams = httpParams.append('closedByUserId', params.closedByUserId.toString());
+    }
+    if (params.executedByUserId !== null && params.executedByUserId !== undefined) {
       httpParams = httpParams.append('executedByUserId', params.executedByUserId.toString());
     }
-    if (params.notes) {
-      httpParams = httpParams.append('notes', params.notes);
-    }
+  
     if (params.sortBy) {
       httpParams = httpParams.append('sortBy', params.sortBy);
     }
     if (params.isDescending !== undefined) {
       httpParams = httpParams.append('isDescending', params.isDescending.toString());
     }
-
+  
     httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
     httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
-
+  
     return this.http.get<PagedList<ReturnAuditDTO>>(this.baseUrl, { params: httpParams });
   }
+  
 
   getAuditById(auditId: number): Observable<ReturnAuditDTO> {
     return this.http.get<ReturnAuditDTO>(`${this.baseUrl}/${auditId}`);

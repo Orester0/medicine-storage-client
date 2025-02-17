@@ -79,6 +79,7 @@ export interface TenderParams {
    openedByUserId?: number | null;
    closedByUserId?: number | null;
    winnerSelectedByUserId?: number | null;
+   medicineId?: number | null; 
    sortBy?: string;
    isDescending?: boolean;
    pageNumber?: number;

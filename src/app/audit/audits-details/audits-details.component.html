@@ -16,8 +16,9 @@
               <div class="card-body">
                 <dl class="row mb-0">
                   <dt class="col-sm-4">ID</dt>
-                  <dd class="col-sm-8">{{ audit.id || 'N/A' }}</dd>
-                  
+                  <dd class="col-sm-8">{{ audit.id }}</dd>
+                  <dt class="col-sm-4">Title</dt>
+                  <dd class="col-sm-8">{{ audit.title  }}</dd>
                   <dt class="col-sm-4">Status</dt>
                   <dd class="col-sm-8">
                     <span class="badge px-3 py-2" [ngClass]="getAuditStatusBadgeClass(audit.status)">

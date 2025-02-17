@@ -15,16 +15,19 @@ import { DeleteConfirmationModalComponent } from '../../delete-confirmation-moda
 import { AuditNotesComponent } from '../audit-notes/audit-notes.component';
 import { AuditUpdateItemsComponent } from "../audit-update-items/audit-update-items.component";
 import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
+import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
+import { ReturnUserDTO } from '../../_models/user.types';
 
 @Component({
   selector: 'app-audits',
   imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
-  providers: [AuditStatusPipe],
+  providers: [AuditStatusPipe, UserFullNamePipe],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
 })
 export class AuditsComponent implements OnInit {
   auditStatusPipe = inject(AuditStatusPipe);
+  userFullNamePipe = inject(UserFullNamePipe);
 
   auditToDelete: ReturnAuditDTO | null = null;
 
@@ -49,48 +52,6 @@ export class AuditsComponent implements OnInit {
     this.auditToDelete = null;
   }
 
-
-  filterConfig: FilterConfig[] = [
-    {
-      key: 'fromDate',
-      label: 'From Date',
-      type: 'date',
-    },
-    {
-      key: 'toDate',
-      label: 'To Date',
-      type: 'date',
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      type: 'select',
-      options: Object.values(AuditStatus)
-      .filter(status => typeof status === 'number') 
-      .map(status => ({
-        value: status as AuditStatus,
-        label: this.auditStatusPipe.transform(status)
-      }))
-    },
-    {
-      key: 'plannedByUserId',
-      label: 'Planned By User ID',
-      type: 'number'
-    },
-    {
-      key: 'executedByUserId',
-      label: 'Executed By User ID',
-      type: 'number'
-    },
-    {
-      key: 'notes',
-      label: 'Notes',
-      type: 'text',
-      col: 6
-    }
-  ];
-  
-
   auditToStart: ReturnAuditDTO | null = null;
   auditToClose: ReturnAuditDTO | null = null;
   auditToUpdate: ReturnAuditDTO | null = null;
@@ -111,7 +72,6 @@ export class AuditsComponent implements OnInit {
   }
 
   handleStartSubmit(data: { note: string }) {
-    console.log('Sending request with:', data); 
     if (!this.auditToStart) return;
     
     this.auditService.startAudit(this.auditToStart.id, { note: data.note }).subscribe({
@@ -124,7 +84,6 @@ export class AuditsComponent implements OnInit {
   }
 
   handleCloseSubmit(data: { note: string }) { 
-    console.log('Sending request with:', data); 
     if (!this.auditToClose) return;
 
     this.auditService.closeAudit(this.auditToClose.id, { note: data.note }).subscribe({
@@ -181,10 +140,18 @@ export class AuditsComponent implements OnInit {
   },
   ];
 
+  
+
+
   auditColumns: TableColumn<ReturnAuditDTO>[] = [
     {
       key: 'id',
       label: 'ID',
+    },
+    {
+      key: 'title',
+      label: 'Title',
+      sortable: true,
     },
     {
       key: 'plannedDate',
@@ -218,6 +185,7 @@ export class AuditsComponent implements OnInit {
   
   audits: ReturnAuditDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
+  allUsers: ReturnUserDTO[] = [];
 
   selectedAudit: ReturnAuditDTO | null = null;
 
@@ -229,18 +197,7 @@ export class AuditsComponent implements OnInit {
   pageSize: number = 10;
   totalItems: number = 0;
 
-  filterModel: AuditParams = {
-    fromDate: null,
-    toDate: null,
-    status: null,
-    plannedByUserId: null,
-    executedByUserId: null,
-    notes: null,
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'plannedDate',
-    isDescending: false,
-  };
+  
 
 
   constructor(
@@ -251,6 +208,8 @@ export class AuditsComponent implements OnInit {
 
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
+    this.allUsers = this.route.snapshot.data['users'];
+    this.initializeFilter();
     this.loadAudits();
   }
 
@@ -351,6 +310,89 @@ export class AuditsComponent implements OnInit {
     };
     return classMap[status] ?? 'bg-secondary';
   }
+
+  filterConfig: FilterConfig[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      type: 'text',
+      col: 6
+    },
+    {
+      key: 'fromPlannedDate',
+      label: 'Planned From Date',
+      type: 'date',
+    },
+    {
+      key: 'toPlannedDate',
+      label: 'Planned To Date',
+      type: 'date',
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: Object.values(AuditStatus)
+        .filter(status => typeof status === 'number')
+        .map(status => ({
+          value: status as AuditStatus,
+          label: this.auditStatusPipe.transform(status)
+        }))
+    },
+    
+  ];
+  
+  private initializeFilter(): void {
+    this.filterConfig = [
+      
+      ...this.filterConfig,
+      {
+        key: 'plannedByUserId',
+        label: 'Planned By User',
+        type: 'select',
+        options: this.allUsers.map(user => ({
+          value: user.id,
+          label: this.userFullNamePipe.transform(user)
+        }))
+      },
+      {
+        key: 'closedByUserId',
+        label: 'Closed By User',
+        type: 'select',
+        options: this.allUsers.map(user => ({
+          value: user.id,
+          label: this.userFullNamePipe.transform(user)
+        }))
+      },
+      {
+        key: 'executedByUserId',
+        label: 'Executed By User',
+        type: 'select',
+        options: this.allUsers.map(user => ({
+          value: user.id,
+          label: this.userFullNamePipe.transform(user)
+        }))
+      }
+    ];
+  }
+  
+  
+
+  filterModel: AuditParams = {
+    title: null,
+    fromPlannedDate: null,
+    toPlannedDate: null,
+    status: null,
+    plannedByUserId: null,
+    closedByUserId: null,
+    executedByUserId: null,
+    pageNumber: 1,
+    pageSize: 10,
+    sortBy: 'plannedDate',
+    isDescending: false
+  };
+  
+
 
 
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { MedicineRequestService, MedicineUsageService } from '../../_services/medicine-ops.service';
+import { MedicineRequestService } from '../../_services/medicine-ops.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateMedicineRequestDTO, CreateMedicineUsageDTO, MedicineRequestParams, RequestStatus, ReturnMedicineRequestDTO } from '../../_models/medicine-operations.types';
@@ -9,7 +9,7 @@ import { ReturnUserDTO } from '../../_models/user.types';
 import { UserService } from '../../_services/user.service';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
-import { MedicineOperationsDetailsComponent } from '../medicine-operations-details/medicine-operations-details.component';
+import { MedicineOperationsDetailsComponent } from '../medicine-request-details/medicine-request-details.component';
 import { FilterComponent, FilterConfig } from '../../filter/filter.component';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { CreateMedicineRequestFormComponent } from '../create-medicine-request-form/create-medicine-request-form.component';
@@ -21,10 +21,10 @@ import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
   selector: 'app-medicine-operations',
   imports: [DeleteConfirmationModalComponent, CreateMedicineRequestFormComponent ,FilterComponent, CommonModule, FormsModule, TableComponent, PaginationComponent, MedicineOperationsDetailsComponent, ReactiveFormsModule],
   providers: [RequestStatusPipe],
-  templateUrl: './medicine-operations.component.html',
-  styleUrl: './medicine-operations.component.css'
+  templateUrl: './medicine-request.component.html',
+  styleUrl: './medicine-request.component.css'
 })
-export class MedicineOperationsComponent implements OnInit {
+export class MedicineRequestComponent implements OnInit {
   
   requestStatusPipe = inject(RequestStatusPipe);
 

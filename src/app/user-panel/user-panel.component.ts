@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,11 +18,13 @@ export class UserPanelComponent{
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-  
+
   model: UserLoginDTO = { userName: '', password: '' };
-  currentUser = this.authService.currentUser;
-  photoUrl = this.authService.currentUserPhoto;
   
+  currentUser = computed(() => this.authService.currentUser());
+  photoUrl = computed(() => this.authService.currentUserPhoto());
+  isAuthenticated = computed(() => !!this.authService.currentUser());
+
   login() {
     this.authService.login(this.model).subscribe({
       next: () => {

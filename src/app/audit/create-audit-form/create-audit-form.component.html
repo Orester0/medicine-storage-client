@@ -1,4 +1,11 @@
 <form [formGroup]="auditForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="title" class="form-label fw-bold">Title</label>
+    <input type="text" id="title" class="form-control" formControlName="title" required />
+    
+    <app-validation-errors [control]="auditForm.get('title')!"></app-validation-errors>
+  </div>
+
     <div class="mb-3">
       <label for="plannedDate" class="form-label fw-bold">Planned Date</label>
       <input

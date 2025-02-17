@@ -40,6 +40,7 @@ export class CreateTemplateFormComponent {
     this.auditForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(200), Validators.minLength(5)]],
       recurrenceInterval: [1, [Validators.required, Validators.min(1)]],
+      title: ['', [Validators.required, Validators.maxLength(200), Validators.minLength(5)]],
       medicineIds: [[], Validators.required],
       notes: ['', [Validators.maxLength(500), Validators.minLength(3)]],
     });
@@ -69,6 +70,7 @@ export class CreateTemplateFormComponent {
       this.auditForm.patchValue({
         name: this.selectedTemplate.name,
         recurrenceInterval: this.selectedTemplate.recurrenceInterval,
+        title: createDTO.title || '',
         medicineIds: createDTO.medicineIds || [],
         notes: createDTO.notes || '',
       });
@@ -82,7 +84,7 @@ export class CreateTemplateFormComponent {
         justification: createDTO.justification || '',
       });
     } 
-    else if (this.activeTab === 'tender' && 'title' in createDTO) {
+    else if (this.activeTab === 'tender' && 'description' in createDTO) {
       this.tenderForm.patchValue({
         name: this.selectedTemplate.name,
         recurrenceInterval: this.selectedTemplate.recurrenceInterval,

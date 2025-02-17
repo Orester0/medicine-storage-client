@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -9,9 +9,10 @@ import { MedicineUsageParams, MedicineRequestParams, ReturnMedicineRequestDTO, R
   providedIn: 'root'
 })
 export class MedicineRequestService {
+  private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}request`;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   getRequests(params: MedicineRequestParams): Observable<PagedList<ReturnMedicineRequestDTO>> {
     let httpParams = new HttpParams();
@@ -74,45 +75,5 @@ export class MedicineRequestService {
 
   deleteRequest(requestId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${requestId}`);
-  }
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class MedicineUsageService {
-  private baseUrl = `${environment.apiUrl}usage`;
-
-  constructor(private http: HttpClient) {}
-
-  getUsages(params: MedicineUsageParams): Observable<PagedList<ReturnMedicineUsageDTO>> {
-    let httpParams = new HttpParams();
-    
-    if (params.fromDate) httpParams = httpParams.append('fromDate', params.fromDate.toISOString());
-    if (params.toDate) httpParams = httpParams.append('toDate', params.toDate.toISOString());
-    if (params.medicineId) httpParams = httpParams.append('medicineId', params.medicineId.toString());
-    if (params.usedByUserId) httpParams = httpParams.append('usedByUserId', params.usedByUserId.toString());
-    if (params.medicineRequestId) httpParams = httpParams.append('medicineRequestId', params.medicineRequestId.toString());
-    if (params.minQuantity) httpParams = httpParams.append('minQuantity', params.minQuantity.toString());
-    if (params.maxQuantity) httpParams = httpParams.append('maxQuantity', params.maxQuantity.toString());
-    if (params.notes) httpParams = httpParams.append('notes', params.notes);
-    if (params.sortBy) httpParams = httpParams.append('sortBy', params.sortBy);
-    if (params.isDescending !== undefined) httpParams = httpParams.append('isDescending', params.isDescending.toString());
-    if (params.pageNumber) httpParams = httpParams.append('pageNumber', params.pageNumber.toString());
-    if (params.pageSize) httpParams = httpParams.append('pageSize', params.pageSize.toString());
- 
-    return this.http.get<PagedList<ReturnMedicineUsageDTO>>(this.baseUrl, { params: httpParams });
-  }
-
-  getUsageById(usageId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${usageId}`);
-  }
-
-  getUsagesByRequestId(requestId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/from-request/${requestId}`);
-  }
-
-  createUsage(usage: any): Observable<any> {
-    return this.http.post<any>(this.baseUrl, usage);
   }
 }

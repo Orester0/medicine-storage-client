@@ -38,6 +38,7 @@ export class TemplateComponent {
     switch (type) {
       case 'audit':
         return {
+          title: formValue.title || '',
           medicineIds: formValue.medicineIds || [],
           notes: formValue.notes || null
         };

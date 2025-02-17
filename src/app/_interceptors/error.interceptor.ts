@@ -15,8 +15,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error instanceof HttpErrorResponse) {
         return handleHttpError(error, router, toastr);
       }
-
-      //toastr.error('An unexpected error occurred');
       return throwError(() => error);
     })
   );
@@ -28,6 +26,7 @@ function handleHttpError(
   toastr: ToastrService
 ): Observable<never> {
   toastr.clear();
+
 
 
   if (error.status === 400) {
@@ -55,8 +54,6 @@ function handleHttpError(
     router.navigate(['/internal-server-error']);
     return throwError(() => error);
   }
-
-  // toastr.error('An unexpected error occurred');
   return throwError(() => error);
 }
 

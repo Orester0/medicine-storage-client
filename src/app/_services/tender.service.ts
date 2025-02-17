@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedList } from '../_models/service.types';
@@ -12,10 +12,10 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
     providedIn: 'root'
   })
   export class TenderService {
+    private http = inject(HttpClient);
     private tenderUrl = `${environment.apiUrl}tender`;
-    private proposalUrl = `${environment.apiUrl}tenderproposal`;
   
-    constructor(private http: HttpClient) {}
+    constructor() {}
   
     // Tender endpoints
     getTenders(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
@@ -76,9 +76,6 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       return this.http.get<ReturnTenderDTO>(`${this.tenderUrl}/${tenderId}`).pipe();
     }
   
-    getTenderItems(tenderId: number): Observable<ReturnTenderItem[]> {
-      return this.http.get<ReturnTenderItem[]>(`${this.tenderUrl}/${tenderId}/tender-items`).pipe();
-    }
   
     getProposalsByTenderId(tenderId: number): Observable<ReturnTenderProposal[]> {
       return this.http.get<ReturnTenderProposal[]>(`${this.tenderUrl}/${tenderId}/proposals`).pipe();
@@ -96,33 +93,12 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       return this.http.put<ReturnTenderDTO>(`${this.tenderUrl}/close/${tenderId}`, {}).pipe();
     }
   
-    // Proposal endpoints
-    getProposalById(proposalId: number): Observable<ReturnTenderProposal> {
-      return this.http.get<ReturnTenderProposal>(`${this.proposalUrl}/${proposalId}`).pipe();
-    }
-  
-    getProposalItems(proposalId: number): Observable<ReturnTenderProposalItem[]> {
-      return this.http.get<ReturnTenderProposalItem[]>(`${this.proposalUrl}/${proposalId}/proposal-items`).pipe();
-    }
-  
-    submitProposal(tenderId: number, proposal: CreateTenderProposal): Observable<ReturnTenderProposal> {
-      return this.http.post<ReturnTenderProposal>(`${this.proposalUrl}/submit/${tenderId}`, proposal).pipe();
-    }
-  
-    executeTenderProposalItem(tenderItemId: number, proposalId: number): Observable<ReturnTenderProposal> {
-      return this.http.put<ReturnTenderProposal>(
-        `${this.proposalUrl}/execute/${proposalId}/${tenderItemId}`, {}).pipe();
-    }
-    
     selectWinningProposal(tenderId: number, proposalId: number): Observable<ReturnTenderDTO> {
       return this.http.put<ReturnTenderDTO>(
         `${this.tenderUrl}/${tenderId}/select-winning-proposal/${proposalId}`, {}).pipe();
     }
   
-  
-    executeTenderProposal(proposalId: number): Observable<ReturnTenderProposal> {
-      return this.http.put<ReturnTenderProposal>(`${this.proposalUrl}/execute/${proposalId}`, {}).pipe();
-    }
+    
 
     addTenderItem(tenderId: number, tenderItem: CreateTenderItem): Observable<ReturnTenderItem> {
       return this.http.post<ReturnTenderItem>(`${this.tenderUrl}/add-tender-item/${tenderId}`, tenderItem).pipe();
@@ -130,5 +106,21 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
 
     deleteTender(tenderId: number): Observable<void> {
       return this.http.delete<void>(`${this.tenderUrl}/${tenderId}`);
+
+    }
+
+    // Proposal endpoints
+
+
+    submitProposal(tenderId: number, proposal: CreateTenderProposal): Observable<ReturnTenderProposal> {
+      return this.http.post<ReturnTenderProposal>(`${this.tenderUrl}/proposals/submit/${tenderId}`, proposal).pipe();
+    }
+
+    executeTenderProposalItem(tenderItemId: number, proposalId: number): Observable<ReturnTenderProposal> {
+      return this.http.put<ReturnTenderProposal>(`${this.tenderUrl}/proposals/execute/${proposalId}/${tenderItemId}`, {}).pipe();
+    }
+
+    executeTenderProposal(proposalId: number): Observable<ReturnTenderProposal> {
+      return this.http.put<ReturnTenderProposal>(`${this.tenderUrl}/proposals/execute/${proposalId}`, {}).pipe();
     }
   }

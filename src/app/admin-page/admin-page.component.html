@@ -1,1 +1,50 @@
-<p>admin-page works!</p>
+<div class="container-fluid py-3">
+  <h2>Users Management</h2>
+  <app-table 
+    [columns]="columns" 
+    [data]="users" 
+    [actions]="actions">
+  </app-table>
+</div>
+
+<div class="modal fade show d-block" *ngIf="isModalOpen" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Manage User Roles</h5>
+        <button type="button" class="btn-close" (click)="closeRolesModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>User: {{ selectedUser?.userName }}</p>
+
+        <form [formGroup]="rolesForm">
+          <div class="d-flex flex-wrap gap-2">
+            <div *ngFor="let role of availableRoles; let i = index" class="form-check">
+              <input class="form-check-input" 
+                     type="checkbox" 
+                     [id]="'role-' + i"
+                     [value]="role"
+                     (change)="toggleRole($event, role)"
+                     [checked]="rolesForm.value.roles.includes(role)">
+              <label class="form-check-label" [for]="'role-' + i">
+                {{ role }}
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRolesModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveRoles()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-user-info
+  [user]="selectedUserForInfo"
+  [isOpen]="showUserInfoModal"
+  [onClose]="closeUserInfoModal.bind(this)">
+</app-user-info>
+
+<div class="modal-backdrop fade show" *ngIf="isModalOpen"></div>

@@ -29,9 +29,10 @@ export class CreateAuditFormComponent implements OnInit{
 
   private initializeForm(){
     this.auditForm = this.fb.group({
+      title: [this.initialData.title || '', [Validators.required, Validators.maxLength(200), Validators.minLength(5)]],
       plannedDate: [this.initialData.plannedDate || new Date().toISOString().split('T')[0], [Validators.required, validDateValidator, pastDateValidator]],
       medicineIds: [this.initialData.medicineIds || [], [Validators.required]],
-      notes: [this.initialData.notes || '', [Validators.required, Validators.maxLength(500)]]
+      notes: [this.initialData.notes || '', [Validators.maxLength(500)]]
     });
   }
 

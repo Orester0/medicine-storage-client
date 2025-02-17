@@ -15,6 +15,7 @@ export type TemplateType = 'medicine-request' | 'audit' | 'tender';
 export type Template = AuditTemplateDTO | TenderTemplateDTO |MedicineRequestTemplateDTO;
 
 export interface CreateAuditTemplate {
+    title: string;
     medicineIds: number[];
     notes?: string | null;
  }
