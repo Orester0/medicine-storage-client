@@ -6,8 +6,8 @@ export interface ReturnMedicineDTO {
   requiresSpecialApproval: boolean;
   minimumStock: number;
   stock: number;
-  requiresStrictAudit: boolean;
   auditFrequencyDays: number;
+  lastAuditDate?: Date;
 }
 
 export interface CreateMedicineDTO {
@@ -16,7 +16,6 @@ export interface CreateMedicineDTO {
   category: string;
   requiresSpecialApproval: boolean;
   minimumStock: number;
-  requiresStrictAudit: boolean;
   auditFrequencyDays: number;
 }
   
@@ -26,7 +25,6 @@ export interface MedicineParams {
   requiresSpecialApproval?: boolean | null;
   minStock?: number | null;
   maxStock?: number | null;
-  requiresStrictAudit?: boolean | null;
   sortBy?: string;
   isDescending?: boolean;
   pageNumber: number;

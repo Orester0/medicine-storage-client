@@ -1,0 +1,13 @@
+.notification-btn {
+    width: 40px;
+    height: 40px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .notification-panel {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    z-index: 1000;
+    width: 300px;
+  }

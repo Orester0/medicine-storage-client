@@ -9,7 +9,7 @@ import { HasRoleDirective } from '../_directives/has-role.directive';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive, UserPanelComponent, NotificationsComponent, HasRoleDirective],
+  imports: [BsDropdownModule, RouterLink, RouterLinkActive, UserPanelComponent, NotificationsComponent, HasRoleDirective],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })

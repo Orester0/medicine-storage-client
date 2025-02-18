@@ -20,7 +20,7 @@ export class HasRoleDirective {
   }
 
   private updateView() {
-    console.log('User roles:', this.authService.currentUser()?.roles);
+    console.log(this.authService.currentUser()?.roles);
     if (this.authService.userHasRole(this.roles)) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     } else {

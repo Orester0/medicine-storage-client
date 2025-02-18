@@ -1,0 +1,97 @@
+
+<div *ngIf="medicine" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+
+      <div class="modal-header bg-primary bg-gradient text-white">
+        <h5 class="modal-title d-flex align-items-center">
+          <mat-icon class="me-2">medical_services</mat-icon>
+          Medicine Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="onCloseDetails()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="mb-4">
+              <label class="text-muted small">Name</label>
+              <h4>{{ medicine.name }}</h4>
+            </div>
+            <div class="mb-4">
+              <label class="text-muted small">Description</label>
+              <p class="mb-0">{{ medicine.description }}</p>
+            </div>
+            <div class="mb-4">
+              <label class="text-muted small">Category</label>
+              <p class="mb-0 d-flex align-items-center">
+                <mat-icon class="me-2 text-primary">category</mat-icon>
+                {{ medicine.category }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card bg-light border-0 mb-3">
+              <div class="card-body">
+                <h6 class="card-title d-flex align-items-center mb-3">
+                  <mat-icon class="me-2 text-primary">inventory</mat-icon>
+                  Stock Information
+                </h6>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Current Stock:</span>
+                  <span class="fw-bold">{{ medicine.stock }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Minimum Stock:</span>
+                  <span class="fw-bold">{{ medicine.minimumStock }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Audit Frequency:</span>
+                  <span class="fw-bold">{{ medicine.auditFrequencyDays }} days</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Last audit date:</span>
+                  <span class="fw-bold">{{ medicine.lastAuditDate | localizedDate }} days</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 mb-3">
+              <div class="flex-grow-1">
+                <label class="text-muted small d-block mb-1">Special Approval</label>
+                <span class="badge rounded-pill" [ngClass]="medicine.requiresSpecialApproval ? 'bg-success' : 'bg-secondary'">
+                  <mat-icon class="me-1" style="font-size: 16px">{{ medicine.requiresSpecialApproval ? 'check_circle' : 'cancel' }}</mat-icon>
+                  {{ medicine.requiresSpecialApproval ? 'Required' : 'Not Required' }}
+                </span>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0">
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary d-flex align-items-center" (click)="onCloseDetails()">
+            <mat-icon class="me-1">close</mat-icon>
+            Close
+          </button>
+          <button class="btn btn-outline-primary d-flex align-items-center" (click)="onEditMedicine()">
+            <mat-icon class="me-1">edit</mat-icon>
+            Edit
+          </button>
+          <button class="btn btn-primary d-flex align-items-center" (click)="onCreateRequest()">
+            <mat-icon class="me-1">add_circle</mat-icon>
+            Create Request
+          </button>
+          <button class="btn btn-danger d-flex align-items-center" (click)="onDeleteMedicine()">
+            <mat-icon class="me-1">delete</mat-icon>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

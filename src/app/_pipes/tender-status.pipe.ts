@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { RequestStatus } from '../_models/medicine-operations.types';
+import { RequestStatus } from '../_models/medicine-request.types';
 import { TenderStatus } from '../_models/tender.types';
 
 @Pipe({

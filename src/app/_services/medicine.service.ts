@@ -34,11 +34,6 @@ export class MedicineService {
         httpParams = httpParams.append('maxStock', params.maxStock.toString());
     }
 
-    if (params.requiresStrictAudit !== null && params.requiresStrictAudit !== undefined) {
-        httpParams = httpParams.append('requiresStrictAudit', params.requiresStrictAudit.toString());
-    }
-
-
     if (params.sortBy) {
         httpParams = httpParams.append('sortBy', params.sortBy);
     }

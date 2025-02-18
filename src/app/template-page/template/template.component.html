@@ -1,0 +1,99 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Templates</h2>
+  <button class="btn btn-success mb-3" (click)="showCreateForm()">
+    <i class="bi bi-plus-circle"></i> Create Template
+  </button>
+
+  <div class="mb-4">
+    <ul class="nav nav-tabs nav-fill">
+      <li class="nav-item">
+        <a class="nav-link"
+           [class.active]="activeTab === 'medicine-request'"
+           [class.needs-execution]="tabsNeedingExecution['medicine-request']"
+           (click)="setActiveTab('medicine-request')">
+          Medicine Request <i class="bi"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [class.active]="activeTab === 'audit'" 
+           [class.needs-execution]="tabsNeedingExecution['audit']"
+           (click)="setActiveTab('audit')">
+          Audit <i class="bi"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [class.active]="activeTab === 'tender'"
+           [class.needs-execution]="tabsNeedingExecution['tender']"
+           (click)="setActiveTab('tender')">
+          Tender <i class="bi"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <div *ngIf="!isFormVisible && !isDetailsVisible"> -->
+    <div class="list-group">
+      <div *ngFor="let template of getCurrentTemplates()" 
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <i *ngIf="templatesNeedingExecution[activeTab + '-' + template.id]" 
+             class="bi bi-exclamation-circle-fill text-warning me-2">
+          </i>
+          <span>{{ template.name }}</span>
+        </div>
+
+        <div class="btn-group btn-group-sm">
+          <button mat-button class="btn btn-outline-secondary" (click)="viewTemplateDetails(template)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-button class="btn btn-outline-secondary" (click)="editTemplate(template)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-button class="btn btn-outline-primary" *ngIf="template.isActive" 
+                  (click)="onExecuteClick(activeTab, template.id)">
+            <mat-icon>bolt</mat-icon>
+          </button>
+          <button mat-button class="btn btn-outline-secondary" 
+                  (click)="toggleTemplateStatus(activeTab, template.id, !template.isActive)">
+            <mat-icon [ngStyle]="{'color': template.isActive ? '#22c55e' : '#ef4444'}">
+              {{ template.isActive ? 'toggle_off' : 'toggle_on' }}
+            </mat-icon>
+          </button>
+          <button mat-button class="btn btn-outline-danger" (click)="deleteTemplate(activeTab, template.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+  
+  <!-- Form View -->
+  <app-create-template-form 
+    [activeTab]="activeTab" 
+    [isEditMode]="isEditMode" 
+    [selectedTemplate]="selectedTemplate"
+    [medicines]="medicines"
+    [showModal]="isFormVisible"
+    (submitForm)="submitForm($event)"
+    (cancel)="cancelForm()">
+  </app-create-template-form>
+
+  <!-- Details View -->
+  <app-template-details
+    [template]="selectedTemplate!"
+    [type]="activeTab"
+    [medicines]="medicines"
+    [isOpen]="isDetailsVisible"
+    (close)="closeDetails()">
+  </app-template-details>
+
+  <!-- Date Picker Modal for Execution -->
+  <app-notification-template-date-pick
+    *ngIf="showExecuteDateModal"
+    [templateType]="selectedTemplateForExecution?.type!"
+    (confirmed)="onExecuteDateConfirmed($event)"
+    (cancelled)="onExecuteDateCancelled()">
+  </app-notification-template-date-pick>
+</div>

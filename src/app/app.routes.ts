@@ -1,19 +1,18 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { MedicinesComponent } from './medicine/medicines/medicines.component';
-import { TendersComponent } from './tender/tenders/tenders.component';
-import { AuditsComponent } from './audit/audits/audits.component';
 import { authGuard } from './_guards/auth.guard';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { InternalServerErrorComponent } from './internal-server-error/internal-server-error.component';
-import { MedicineRequestComponent } from './medicine-request/medicine-request/medicine-request.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { medicinesResolver } from './_resolvers/medicines.resolver';
 import { usersResolver } from './_resolvers/users.resolver';
-import { TendersDetailsComponent } from './tender/tenders-details/tenders-details.component';
 import { tenderResolver } from './_resolvers/tender.resolver';
-import { TemplateComponent as TemplateComponent } from './template/template.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
+import { AuditsComponent } from './audit-page/audits/audits.component';
+import { HomeComponent } from './home-page/home/home.component';
+import { MedicinesComponent } from './medicine-page/medicines/medicines.component';
+import { MedicineRequestComponent } from './medicine-request-page/medicine-request/medicine-request.component';
+import { TemplateComponent } from './template-page/template/template.component';
+import { TendersDetailsComponent } from './tender-page/tenders-details/tenders-details.component';
+import { TendersComponent } from './tender-page/tenders/tenders.component';
+import { ErrorTemplateComponent } from './error-template/error-template.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -32,7 +31,28 @@ export const routes: Routes = [
             {path: 'admin', component: AdminPageComponent, resolve: {users: usersResolver}},
         ]
     },
-    {path: 'not-found', component: NotFoundComponent},
-    {path: 'internal-server-error', component: InternalServerErrorComponent},
-    { path: '**', component: NotFoundComponent }
+    { 
+        path: 'not-found', 
+        component: ErrorTemplateComponent, 
+        data: { 
+          title: '404 - Not Found', 
+          message: 'The requested page was not found.' 
+        } 
+    },
+    { 
+        path: 'internal-server-error', 
+        component: ErrorTemplateComponent, 
+        data: { 
+          title: '500 - Internal Server Error', 
+          message: 'Something went wrong.' 
+        } 
+    },
+    { 
+        path: '**', 
+        component: ErrorTemplateComponent, 
+        data: { 
+          title: '404 - Not Found', 
+          message: 'The requested page was not found.' 
+        } 
+    },
 ];

@@ -25,8 +25,9 @@
                 }
 
             </ul>
-            
+            @if (authService.currentUserToken()){
             <app-notifications class="me-3"></app-notifications>
+            }
             <app-user-panel></app-user-panel>
             
     </div>

@@ -1,0 +1,70 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Medicine List</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  
+  <app-medicine-notifications 
+  [allMedicines]="allMedicines">
+  </app-medicine-notifications>
+
+  <button class="btn btn-success mb-3" (click)="openCreateModal()">
+    <i class="bi bi-plus-circle"></i> Add Medicine
+  </button>
+
+  <app-filter 
+  [config]="filterConfig"
+  [title]="'Filters'"
+  (filterChange)="onFilterChange($event)">
+  </app-filter>
+  
+  <div class="table-responsive">
+    <app-table
+    [columns]="medicineColumns"
+    [data]="medicines"
+    [actions]="tableActions"
+    (sort)="onSortChange($event)"
+    ></app-table>
+  </div>
+
+  <app-pagination
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>  
+
+  
+  <app-create-medicine-request-form
+  [isOpen]="isCreateRequestModalOpen"
+  [medicines]="allMedicines"
+  [preselectedMedicine]="selectedMedicineForRequest"
+  (submitRequest)="handleRequestSubmit($event)"
+  (cancelRequest)="closeCreateRequestModal()"
+  ></app-create-medicine-request-form>
+
+  
+  <app-delete-confirmation-modal
+  *ngIf="medicineToDelete"
+  [isOpen]="!!medicineToDelete"
+  [name]="medicineToDelete.name"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
+
+  <app-create-medicine-form
+  *ngIf="isCreateModalOpen"
+  [medicine]="selectedMedicine"
+  [allMedicines]="allMedicines"
+  (save)="saveMedicine($event)"
+  (close)="closeModal()">
+  </app-create-medicine-form>
+
+  <app-medicines-details
+    *ngIf="selectedMedicine && !isCreateModalOpen"
+    [medicine]="selectedMedicine"
+    (onClose)="onCloseFromDetails()"
+    (onEdit)="onEditFromDetails($event)"
+    (onCreate)="onCreateRequestFromDetails($event)"
+    (onDelete)="onDeleteFromDetails($event)"
+  ></app-medicines-details>
+</div>

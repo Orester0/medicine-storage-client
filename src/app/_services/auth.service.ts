@@ -1,11 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ChangePasswordDTO, ReturnUserDTO, UserRefreshTokenDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO } from '../_models/user.types';
 import { HttpClient } from '@angular/common/http';
 import { ReturnTenderDTO, ReturnTenderProposal } from '../_models/tender.types';
-import { ReturnMedicineRequestDTO, ReturnMedicineUsageDTO } from '../_models/medicine-operations.types';
+import { ReturnMedicineRequestDTO } from '../_models/medicine-request.types';
 import { ReturnAuditDTO } from '../_models/audit.types';
+import { ReturnMedicineUsageDTO } from '../_models/medicine-usage.types';
 
 @Injectable({
   providedIn: 'root'

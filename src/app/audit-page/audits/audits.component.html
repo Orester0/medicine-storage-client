@@ -1,0 +1,97 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Audit List</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <button class="btn btn-success mb-3" (click)="openCreateModal()">
+    <i class="bi bi-plus-circle"></i> Create Audit
+  </button>
+
+
+  <app-filter 
+  [config]="filterConfig"
+  [title]="'Filters'"
+  (filterChange)="onFilterChange($event)">
+  </app-filter>
+
+  <div class="table-responsive">
+    <app-table
+    [columns]="auditColumns"
+    [data]="audits"
+    [actions]="tableActions"
+    (sort)="onSortChange($event)"
+    ></app-table>
+  </div>
+
+  <app-pagination
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>  
+    
+  <div *ngIf="isModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">{{'Create Audit'}}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeCreateAuditModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-body">
+            <app-create-audit-form
+              [medicines]="allMedicines"
+              (submitRequest)="saveAudit($event)"
+              (cancelRequest)="closeCreateAuditModal()"
+            ></app-create-audit-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <app-audit-notes
+  *ngIf="auditToStart"
+  [title]="'Start Audit'"
+  (submit)="handleStartSubmit($event)"
+  (cancel)="auditToStart = null">
+  </app-audit-notes>
+
+  <app-audit-notes
+    *ngIf="auditToClose"
+    [title]="'Close Audit'"
+    (submit)="handleCloseSubmit($event)"
+    (cancel)="auditToClose = null">
+  </app-audit-notes>
+
+  <app-audit-update-items
+  *ngIf="auditToUpdate"
+  [title]="'Update Audit Items'"
+  [auditItems]="auditToUpdate.auditItems || []"
+  [showQuantities]="true"
+  (submit)="handleUpdateSubmit($event)"
+  (cancel)="auditToUpdate = null"
+  ></app-audit-update-items>  
+
+  <app-delete-confirmation-modal
+  *ngIf="auditToDelete"
+  [isOpen]="!!auditToDelete"
+  [name]="auditToDelete.title"
+  (confirm)="handleDeleteConfirm()"
+  (cancel)="handleDeleteCancel()"
+  ></app-delete-confirmation-modal>
+
+  
+  <app-audits-details
+      *ngIf="selectedAudit && !isModalOpen"
+      [audit]="selectedAudit"
+      (onClose)="onCloseDetails()"
+      (onUpdate)="onUpdateAuditFromDetails($event)"
+      (onDelete)="onDeleteAuditFromDetails($event)"
+      (onStartAudit)="onStartAuditFromDetails($event)"
+      (onCloseAudit)="onCloseAuditFromDetails($event)"
+  ></app-audits-details>
+
+
+
+</div>
