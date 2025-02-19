@@ -1,11 +1,8 @@
 import { Component, inject, OnInit} from '@angular/core';
-import { NavComponent } from "./nav/nav.component";
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from './_services/auth.service';
-import { filter } from 'rxjs/internal/operators/filter';
-import { HasRoleDirective } from './_directives/has-role.directive';
+import { NavComponent } from './header/nav/nav.component';
 @Component({
   selector: 'app-root',
   standalone: true,

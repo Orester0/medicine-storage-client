@@ -1,11 +1,12 @@
 <div class="container mt-5">
-  <h2 class="mb-4">Medicine List</h2>
-
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-  
+  <h2 class="mb-4">Medicines</h2> 
   <app-medicine-notifications 
   [allMedicines]="allMedicines">
   </app-medicine-notifications>
+  
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  
 
   <button class="btn btn-success mb-3" (click)="openCreateModal()">
     <i class="bi bi-plus-circle"></i> Add Medicine

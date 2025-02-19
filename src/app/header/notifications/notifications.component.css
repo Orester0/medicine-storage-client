@@ -1,0 +1,57 @@
+.notification-container {
+  position: relative;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.notification-dropdown.show {
+  display: block;
+}
+
+.notification-item {
+  transition: background-color 0.2s ease;
+}
+
+.notification-item.unread {
+  background-color: #f8f9fa; 
+}
+
+.notification-item:hover {
+  background-color: #e9ecef; 
+}
+
+.mark-read-btn {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.mark-read-btn:hover {
+  opacity: 1;
+}
+
+.notification-dropdown::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.notification-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 4px; 
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 4px; 
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

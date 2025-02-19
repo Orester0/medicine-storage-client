@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ReturnUserDTO } from '../_models/user.types';
-import { AdminService } from '../_services/admin.service';
+import { ReturnUserDTO } from '../../_models/user.types';
+import { AdminService } from '../../_services/admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TableAction, TableColumn, TableComponent } from '../table/table.component';
+import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { UserInfoComponent } from '../user-info/user-info.component';
 
 @Component({
-  selector: 'app-admin-page',
+  selector: 'app-users',
   imports: [TableComponent, ReactiveFormsModule, CommonModule, UserInfoComponent],
-  templateUrl: './admin-page.component.html',
-  styleUrl: './admin-page.component.css'
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.css'
 })
-export class AdminPageComponent implements OnInit {
+export class UsersComponent implements OnInit {
   users: ReturnUserDTO[] = [];
   selectedUser: ReturnUserDTO | null = null;
 
@@ -44,11 +44,13 @@ export class AdminPageComponent implements OnInit {
   actions: TableAction<ReturnUserDTO>[] = [
     {
       label: 'Details',
+      icon: 'visibility',
       class: 'btn btn-outline-info btn-sm',
       onClick: (user) => this.openUserInfoModal(user)
     },    
     {
       label: 'Manage Roles',
+   icon: 'manage_accounts',
       class: 'btn btn-outline-secondary btn-sm',
       onClick: (user) => this.openRolesModal(user)
     }

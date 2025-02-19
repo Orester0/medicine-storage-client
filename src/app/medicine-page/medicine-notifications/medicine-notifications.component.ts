@@ -11,21 +11,17 @@ import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
   templateUrl: './medicine-notifications.component.html',
   styleUrl: './medicine-notifications.component.css',
   animations: [
-    trigger('togglePanel', [
-      transition(':enter', [
-        style({ height: 0, opacity: 0 }),
-        animate('300ms ease-out', style({ height: '*', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ height: 0, opacity: 0 }))
-      ])
-    ]),
     trigger('blink', [
-      state('true', style({ backgroundColor: '#ffc107' })), 
-      state('false', style({ backgroundColor: '#ffffff' })),
-      transition('false <=> true', animate('300ms ease-in-out'))
-    ])
-  ]
+      state('true', style({ opacity: 1 })),
+      state('false', style({ opacity: 0.2 })), 
+      transition('true <=> false', animate('1000ms ease-in-out')), 
+    ]),
+    trigger('togglePanel', [
+      state('void', style({ opacity: 0, transform: 'translateY(-10px)' })), 
+      state('*', style({ opacity: 1, transform: 'translateY(0)' })), 
+      transition('void <=> *', animate('300ms ease-in-out')), 
+    ]),
+  ],
 })
 export class MedicineNotificationsComponent {
   @Input() allMedicines: ReturnMedicineDTO[] = [];
@@ -71,11 +67,4 @@ export class MedicineNotificationsComponent {
     this.isOpen = !this.isOpen;
   }
 
-  onCreateTender(medicine: ReturnMedicineDTO) {
-    console.log('ZXC', medicine);
-  }
-
-  onCreateAudit(medicine: ReturnMedicineDTO) {
-    console.log('ZXC', medicine);
-  }
 }

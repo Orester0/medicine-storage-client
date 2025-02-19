@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export interface TableColumn<T> {
   key: keyof T | 'actions';
@@ -10,15 +12,15 @@ export interface TableColumn<T> {
 
 export interface TableAction<T> {
   label: string;
+  icon: string;
   class?: string;
   onClick: (row: T) => void;
   visible?: (row: T) => boolean;
 }
-
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule, MatTooltipModule],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })

@@ -10,7 +10,7 @@ import { MedicineRequestParams, ReturnMedicineRequestDTO } from '../_models/medi
 })
 export class MedicineRequestService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}request`;
+  private baseUrl = `${environment.apiUrl}medicine-request`;
 
   constructor() {}
 

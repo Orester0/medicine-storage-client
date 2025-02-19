@@ -49,6 +49,7 @@ export class MedicineRequestComponent implements OnInit {
   tableActions: TableAction<ReturnMedicineRequestDTO>[] = [
     {
         label: 'Approve Request',
+        icon: 'check_circle',
         class: 'btn btn-success btn-sm me-2',
         onClick: (row) => this.approveRequest(row.id),
         visible: (row) => row.status === 1 || row.status === 2,
@@ -56,17 +57,20 @@ export class MedicineRequestComponent implements OnInit {
     
     {
         label: 'Reject Request',
+        icon: 'cancel',
         class: 'btn btn-danger btn-sm me-2',
         onClick: (row) => this.rejectRequest(row.id),
         visible: (row) => row.status === 1 || row.status === 2,
     },
     {
       label: 'View Details',
+      icon: 'visibility',
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewOperationDetails(row),
     },
     {
       label: 'Delete',
+      icon: 'delete',
       class: 'btn btn-danger btn-sm me-2',
       onClick: (row) => this.deleteTenderPrompt(row),
       visible: (row) => {

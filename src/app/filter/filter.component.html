@@ -1,38 +1,36 @@
-<div class="card mb-4">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-title mb-0">{{ title }}</h5>
-    <button class="btn btn-link" (click)="toggleFilters()">
-      <i class="bi" [class.bi-chevron-down]="!isVisible" [class.bi-chevron-up]="isVisible"></i>
-    </button>
-  </div>
-  <div class="card-body" *ngIf="isVisible">
+<div class="position-relative">
+  <button class="btn btn-primary btn-lg rounded-circle p-3 mb-3" (click)="toggleFilters()">
+    <mat-icon>filter_list</mat-icon>
+  </button>
+
+  <div *ngIf="isVisible" class="card-body">
     <form [formGroup]="form">
-      <div class="row mb-3">
+      <div class="row row-cols-auto g-2">
         <div *ngFor="let field of config" [class]="'col-md-' + (field.col || 3)">
-          <label [for]="field.key" class="form-label">{{ field.label }}</label>
-          
+          <label [for]="field.key" class="form-label small mb-1">{{ field.label }}</label>
+
           <ng-container [ngSwitch]="field.type">
             <input *ngSwitchCase="'text'"
               [id]="field.key"
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               [formControlName]="field.key">
 
             <input *ngSwitchCase="'number'"
               [id]="field.key"
               type="number"
-              class="form-control"
+              class="form-control form-control-sm"
               [formControlName]="field.key">
 
             <input *ngSwitchCase="'date'"
               [id]="field.key"
               type="date"
-              class="form-control"
+              class="form-control form-control-sm"
               [formControlName]="field.key">
 
             <select *ngSwitchCase="'select'"
               [id]="field.key"
-              class="form-select"
+              class="form-select form-select-sm"
               [formControlName]="field.key">
               <option [ngValue]="null">All</option>
               <option *ngFor="let opt of field.options" [value]="opt.value">
@@ -42,12 +40,10 @@
           </ng-container>
         </div>
       </div>
-      
-      <div class="row">
-        <div class="col d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset</button>
-          <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply</button>
-        </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">Reset</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="applyFilters()">Apply</button>
       </div>
     </form>
   </div>

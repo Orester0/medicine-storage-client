@@ -1,15 +1,15 @@
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown'
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { UserPanelComponent } from '../user-panel/user-panel.component';
-import { AuthService } from '../_services/auth.service';
 import { NotificationsComponent } from '../notifications/notifications.component';
-import { HasRoleDirective } from '../_directives/has-role.directive';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
+import { AuthService } from '../../_services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-nav',
-  imports: [BsDropdownModule, RouterLink, RouterLinkActive, UserPanelComponent, NotificationsComponent, HasRoleDirective],
+  imports: [MatIconModule, BsDropdownModule, RouterLink, RouterLinkActive, UserPanelComponent, NotificationsComponent, HasRoleDirective],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })

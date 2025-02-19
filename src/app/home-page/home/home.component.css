@@ -1,0 +1,18 @@
+.card {
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .list-group-item {
+    border: 1px solid #dee2e6; 
+    margin-bottom: 8px; 
+    border-radius: 8px;
+  }
+  
+  .list-group-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  .list-group-item mat-icon {
+    color: #007bff; 
+  }

@@ -1,18 +1,18 @@
-<div *ngIf="shouldShowErrors && errors" class="text-danger small">
-  <div *ngIf="errors['required']">Field is required.</div>
-  <div *ngIf="errors['minlength']">Minimal length: {{ errors['minlength'].requiredLength }}.</div>
-  <div *ngIf="errors['maxlength']">Max length: {{ errors['maxlength'].requiredLength }}.</div>
-  <div *ngIf="errors['min']">Minimal value is {{ errors['min'].min }}.</div>
-  <div *ngIf="errors['max']">Maximum value is {{ errors['max'].max }}.</div>
+<div *ngIf="shouldShowErrors && errors" class="text-danger small mt-2">
+  <div *ngIf="errors['required']" class="mb-1 fw-medium">Field is required.</div>
+  <div *ngIf="errors['minlength']" class="mb-1 fw-medium">Minimal length: {{ errors['minlength'].requiredLength }}.</div>
+  <div *ngIf="errors['maxlength']" class="mb-1 fw-medium">Max length: {{ errors['maxlength'].requiredLength }}.</div>
+  <div *ngIf="errors['min']" class="mb-1 fw-medium">Minimal value is {{ errors['min'].min }}.</div>
+  <div *ngIf="errors['max']" class="mb-1 fw-medium">Maximum value is {{ errors['max'].max }}.</div>
   
-  <div *ngIf="errors['invalidDate']">Invalid date format.</div>
-  <div *ngIf="errors['pastDate']">Date cannot be in the past.</div>
-  <div *ngIf="errors['futureDate']">Date cannot be in the future.</div>
+  <div *ngIf="errors['invalidDate']" class="mb-1 fw-medium">Invalid date format.</div>
+  <div *ngIf="errors['pastDate']" class="mb-1 fw-medium">Date cannot be in the past.</div>
+  <div *ngIf="errors['futureDate']" class="mb-1 fw-medium">Date cannot be in the future.</div>
 
-  <div *ngIf="errors['unique']">This value must be unique.</div>
+  <div *ngIf="errors['unique']" class="mb-1 fw-medium">This value must be unique.</div>
   
-  <div *ngIf="errors['mismatch']">Passwords do not match.</div>
+  <div *ngIf="errors['mismatch']" class="mb-1 fw-medium">Passwords do not match.</div>
 
-  <div *ngIf="errors['email']">Please enter a valid email address.</div>
-  <div *ngIf="errors['serverError']">{{ errors['serverError'] }}</div>
+  <div *ngIf="errors['email']" class="mb-1 fw-medium">Please enter a valid email address.</div>
+  <div *ngIf="errors['serverError']" class="mb-1 fw-medium">{{ errors['serverError'] }}</div>
 </div>

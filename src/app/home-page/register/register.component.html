@@ -1,9 +1,9 @@
 <div class="modal fade show d-block" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-primary">Sign Up</h5>
-        <button type="button" class="btn-close" (click)="cancel()"></button>
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Sign Up</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cancel()"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
@@ -17,7 +17,6 @@
               [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
               placeholder="Enter first name"
             />
-
             <app-validation-errors [control]="registerForm.get('firstName')!"></app-validation-errors>
           </div>
 
@@ -30,7 +29,6 @@
               formControlName="lastName"
               placeholder="Enter last name"
             />
-            
             <app-validation-errors [control]="registerForm.get('lastName')!"></app-validation-errors>
           </div>
 
@@ -43,7 +41,6 @@
               formControlName="username"
               placeholder="Enter username"
             />
-            
             <app-validation-errors [control]="registerForm.get('username')!"></app-validation-errors>
           </div>
 
@@ -56,7 +53,6 @@
               formControlName="email"
               placeholder="Enter email"
             />
-            
             <app-validation-errors [control]="registerForm.get('email')!"></app-validation-errors>
           </div>
 
@@ -69,7 +65,6 @@
               formControlName="password"
               placeholder="Enter password"
             />
-            
             <app-validation-errors [control]="registerForm.get('password')!"></app-validation-errors>
           </div>
 
@@ -82,7 +77,7 @@
               formControlName="confirmPassword"
               placeholder="Confirm password"
             />
-            <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class="text-danger">
+            <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class=" text-danger small mt-2 mb-1 fw-medium">
               Passwords do not match.
             </div>
           </div>

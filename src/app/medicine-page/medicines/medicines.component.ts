@@ -80,20 +80,22 @@ export class MedicinesComponent implements OnInit {
   tableActions: TableAction<ReturnMedicineDTO>[] = [
     {
       label: 'View Details',
+      icon: 'visibility',
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewMedicineDetails(row),
     },
     {
       label: 'Create Request',
-      class: 'btn btn-primary btn-sm me-2',
+      icon: 'add_circle',
+      class: 'btn btn-primary btn-sm',
       onClick: (row) => this.openCreateRequestModal(row),
     },
     {
       label: 'Delete',
-      class: 'btn btn-danger btn-sm me-2',
+      icon: 'delete',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.deleteMedicinePrompt(row)
     },
-    
   ];
 
   isCreateRequestModalOpen = false;

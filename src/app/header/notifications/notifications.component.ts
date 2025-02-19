@@ -1,15 +1,14 @@
 import { Component, HostListener } from '@angular/core';
-import { NotificationService } from '../_services/notification.service';
-import { AppNotification as AppNotification} from '../_models/notification.types';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { interval } from 'rxjs/internal/observable/interval';
-import { AuthService } from '../_services/auth.service';
-import { LocalizedDatePipe } from '../_pipes/localized-date.pipe';
+import { AppNotification } from '../../_models/notification.types';
+import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { AuthService } from '../../_services/auth.service';
+import { NotificationService } from '../../_services/notification.service';
 
 @Component({
   selector: 'app-notifications',

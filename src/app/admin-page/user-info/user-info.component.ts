@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { ReturnUserDTO } from '../_models/user.types';
 import { CommonModule } from '@angular/common';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { UserFullNamePipe } from '../_pipes/user-full-name.pipe';
+import { ReturnUserDTO } from '../../_models/user.types';
+import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 
 @Component({
   selector: 'app-user-info',

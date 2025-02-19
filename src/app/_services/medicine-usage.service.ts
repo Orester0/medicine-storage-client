@@ -10,7 +10,7 @@ import { CreateMedicineUsageDTO, MedicineUsageParams, ReturnMedicineUsageDTO } f
 })
 export class MedicineUsageService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}usages`;
+  private baseUrl = `${environment.apiUrl}medicine-usage`;
 
   constructor() {}
 

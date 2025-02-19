@@ -1,12 +1,14 @@
 <div class="container mt-5">
   <div *ngIf="!currentUser(); else loggedInTemplate">
-    <h2 class="text-center text-primary fw-bold">Welcome to the Medicine Storage Service</h2>
-    <p class="text-center">To get started, please sign up.</p>
-
+    <h2 class="text-center text-primary fw-bold mb-4">Welcome to the Medicine Storage Service</h2>
+    <p class="text-center text-muted fs-5 mb-4">To get started, please sign up.</p>
+  
     <div class="text-center">
-      <button class="btn btn-primary" (click)="registerToggle()">Register</button>
+      <button class="btn btn-primary btn-lg" (click)="registerToggle()">
+        Register
+      </button>
     </div>
-
+  
     <app-register 
       *ngIf="registerMode" 
       (cancelRegister)="registerToggle()">
@@ -15,14 +17,21 @@
 
   <ng-template #loggedInTemplate>
     <div class="card shadow-sm p-4">
-      <h4 class="text-success">Welcome, {{ currentUser()?.firstName }}!</h4>
-      <p>Here is the general information about the system:</p>
+      <h4 class="text-success mb-4">
+        <mat-icon>waving_hand</mat-icon> Welcome, {{ currentUser()?.firstName }}!
+      </h4>
+      <p class="text-muted mb-4">Here is the general information about the system:</p>
       
-      <!-- Додайте корисну інформацію -->
       <ul class="list-group">
-        <li class="list-group-item">🛠 Manage your medicine inventory</li>
-        <li class="list-group-item">📊 View audit reports and logs</li>
-        <li class="list-group-item">📦 Submit tender proposals</li>
+        <li class="list-group-item d-flex align-items-center">
+          <mat-icon class="me-2">inventory</mat-icon> Manage your medicine inventory
+        </li>
+        <li class="list-group-item d-flex align-items-center">
+          <mat-icon class="me-2">assessment</mat-icon> View audit reports and logs
+        </li>
+        <li class="list-group-item d-flex align-items-center">
+          <mat-icon class="me-2">description</mat-icon> Submit tender proposals
+        </li>
       </ul>
     </div>
   </ng-template>

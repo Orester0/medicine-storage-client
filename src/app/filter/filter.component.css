@@ -1,12 +1,51 @@
-.filter-form {
-    overflow-y: auto;
-  }
-  
-  .modal-header {
-    background-color: #f8f9fa;
-  }
-  
-  .modal-footer {
-    background-color: #f8f9fa;
-  }
-  
+
+.card-body {
+  border: 1px solid rgba(0, 0, 0, 0.125); 
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0; 
+  padding: 1rem 1.5rem;
+  background: #f9f9f9;  
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.row.mb-3.g-2 {
+  gap: 0.4rem; 
+  margin-bottom: 0.5rem !important; 
+}
+
+.form-control-sm,
+.form-select-sm {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.6rem;
+  width: 100%;
+  max-width: 230px; 
+}
+
+
+
+.btn-lg.rounded-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+}
+
+.d-flex.justify-content-end {
+  margin-top: 0.5rem;
+}
+
+.card-body {
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.card-body.ng-leave {
+  opacity: 0;
+  transform: translateY(-10px);
+}

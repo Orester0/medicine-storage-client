@@ -1,11 +1,10 @@
-import { Component, OnInit, output, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { UserService } from '../_services/user.service';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../_services/auth.service';
-import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-import { passwordMatchValidator } from '../_validators/validators';
+import { Component, OnInit, output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
+import { AuthService } from '../../_services/auth.service';
+import { passwordMatchValidator } from '../../_validators/validators';
+import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',

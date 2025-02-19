@@ -3,13 +3,14 @@
     <thead class="table-light">
       <tr>
         <th *ngFor="let column of columns"
-            class="position-sticky top-0 bg-light text-nowrap px-2"
-            [class.user-select-none]="column.sortable"
+            class="sortable-header"
             [class.cursor-pointer]="column.sortable"
+            [class.actions-header]="column.key === 'actions'"
+            [class.id-column]="column.label === 'ID'" 
             (click)="column.sortable && column.key !== 'actions' && handleSort(column.key)">
-          <div class="d-flex align-items-center gap-1">
+          <div class="d-flex align-items-center">
             {{ column.label }}
-            <i *ngIf="column.sortable && sortConfig?.key === column.key" 
+            <i *ngIf="column.sortable && sortConfig?.key === column.key"
                class="bi"
                [class.bi-sort-up]="!sortConfig?.isDescending"
                [class.bi-sort-down]="sortConfig?.isDescending">
@@ -21,9 +22,11 @@
     <tbody>
       <tr *ngFor="let row of data">
         <td *ngFor="let column of columns"
-            class="text-nowrap px-2">
+            [class.actions-column]="column.key === 'actions'"  
+            class="text-nowrap px-2"
+            [class.id-column]="column.label === 'ID'"> 
           <ng-container *ngIf="column.key !== 'actions'; else actionsTemplate">
-            <div class="text-truncate" 
+            <div class="text-truncate"
                  [title]="column.render ? column.render(row[column.key], row).toString() : row[column.key]?.toString()">
               {{ column.render ? column.render(row[column.key], row) : row[column.key] }}
             </div>
@@ -32,10 +35,11 @@
             <div class="actions-container">
               <ng-container *ngIf="actions?.length">
                 <button *ngFor="let action of actions"
-                        [class]="action.class || 'btn btn-outline-primary btn-sm rounded px-2'"
+                        [class]="action.class || 'btn btn-outline-primary btn-sm rounded'"
+                        [matTooltip]="action.label"
                         (click)="action.onClick(row)"
                         [class.d-none]="action.visible && !action.visible(row)">
-                  {{ action.label }}
+                  <mat-icon>{{action.icon}}</mat-icon>
                 </button>
               </ng-container>
             </div>

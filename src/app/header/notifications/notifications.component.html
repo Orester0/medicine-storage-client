@@ -1,0 +1,49 @@
+<div class="notification-container position-relative">
+  <button mat-icon-button 
+          [matBadge]="unreadCount" 
+          [matBadgeHidden]="unreadCount === 0"
+          matBadgeColor="warn" 
+          (click)="toggleDropdown($event)">
+    <mat-icon>notifications</mat-icon>
+  </button>
+
+  <div class="notification-dropdown shadow-sm bg-white rounded" [class.show]="showDropdown">
+    <div class="notification-header d-flex justify-content-between align-items-center p-2 border-bottom">
+      <h6 class="mb-0 fw-medium">Notifications</h6>
+      <mat-slide-toggle
+        [checked]="showReadNotifications"
+        (click)="toggleReadNotifications($event)"
+        color="primary"
+        class="small-toggle">
+        Show Read
+      </mat-slide-toggle>
+    </div>
+
+    <div class="notification-list p-2" *ngIf="filteredNotifications.length > 0; else noNotifications">
+      <div *ngFor="let notification of filteredNotifications"
+           class="notification-item d-flex justify-content-between align-items-center p-1 mb-1 rounded"
+           [class.unread]="!notification.isRead"
+           [class.bg-light]="!notification.isRead">
+        <div class="notification-content">
+          <strong class="d-block small">{{ notification.title || 'Notification' }}</strong>
+          <p class="mb-0 small text-muted">{{ notification.message }}</p>
+          <small class="text-muted">{{ notification.createdAt | localizedDate }}</small>
+        </div>
+
+        <button *ngIf="!notification.isRead"
+                mat-icon-button
+                color="primary"
+                class="mark-read-btn"
+                (click)="markAsRead(notification.id)">
+          <mat-icon class="small-icon">done</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <ng-template #noNotifications>
+      <div class="no-notifications p-2 text-center text-muted small">
+        No notifications
+      </div>
+    </ng-template>
+  </div>
+</div>

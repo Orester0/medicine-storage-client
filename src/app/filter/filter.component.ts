@@ -1,6 +1,8 @@
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface FilterConfig {
   key: string;
@@ -12,7 +14,20 @@ export interface FilterConfig {
 
 @Component({
   selector: 'app-filter',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule],
+  animations: [
+    trigger('slideInOut', [
+      state('void', style({
+        opacity: 0,
+        transform: 'translateY(-10px)',
+      })),
+      state('*', style({
+        opacity: 1,
+        transform: 'translateY(0)',
+      })),
+      transition('void <=> *', animate('300ms ease-in-out')),
+    ]),
+  ],
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })

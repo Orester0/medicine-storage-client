@@ -1,19 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';
 import { CommonModule } from '@angular/common';
-import { ReturnUserDTO, UserUpdateDTO } from '../_models/user.types';
+import { UserUpdateDTO } from '../../_models/user.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../_services/auth.service';
-import { combineLatest } from 'rxjs';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
-  selector: 'app-user-profile',
+  selector: 'app-user-profile-info',
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css'
+  templateUrl: './user-profile-info.component.html',
+  styleUrl: './user-profile-info.component.css'
 })
-export class UserProfileComponent implements OnInit  {
+export class UserProfileInfoComponent implements OnInit  {
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
   private fb = inject(FormBuilder);

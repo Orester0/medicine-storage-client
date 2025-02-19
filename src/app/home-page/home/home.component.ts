@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RegisterComponent } from "../../register/register.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
-import { RouterLinkActive, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { RegisterComponent } from '../register/register.component';
 @Component({
   selector: 'app-home',
-  imports: [RegisterComponent, CommonModule, RouterLinkActive, RouterLink],
+  imports: [RegisterComponent, CommonModule, MatIconModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

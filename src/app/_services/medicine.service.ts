@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 })
 export class MedicineService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}medicines`;
+  private baseUrl = `${environment.apiUrl}medicine`;
   constructor() {}
 
   getAllMedicines(): Observable<ReturnMedicineDTO[]> {

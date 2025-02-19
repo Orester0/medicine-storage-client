@@ -29,6 +29,7 @@ export class TendersDetailsComponent implements OnInit {
  itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
     {
       label: 'Execute',
+      icon: 'play_arrow',
       class: 'btn btn-primary btn-sm',
       onClick: (row) => {
         const winningProposal = this.proposals.find(p => p.status === ProposalStatus.Accepted);
@@ -67,12 +68,16 @@ export class TendersDetailsComponent implements OnInit {
   proposalTableActions: TableAction<ReturnTenderProposalDTO>[] = [
     {
       label: 'Select Winner',
+
+   icon: 'emoji_events',
       class: 'btn btn-success btn-sm me-1',
       onClick: (row) => this.selectWinner(row.id),
       visible: (row) => row.status === ProposalStatus.Submitted && this.tender.status === TenderStatus.Closed,
     },
     {
       label: 'Execute',
+
+   icon: 'play_arrow',
       class: 'btn btn-primary btn-sm',
       onClick: (row) => this.executeProposal(row.id),
       visible: (row) => this.tender.status === TenderStatus.Awarded,

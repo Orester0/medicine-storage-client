@@ -1,0 +1,58 @@
+<div class="card">
+    <div class="card-body">
+      <h3 class="card-title">Medicine Inventory</h3>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Remaining Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let medicine of medicineList()">
+              <td>{{medicine.medicineName}}</td>
+              <td>{{medicine.remainingQuantity}}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="openUsageForm(medicine)">
+                  Record Usage
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="modal fade" [class.show]="showUsageModal()" [style.display]="showUsageModal() ? 'block' : 'none'">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Record Medicine Usage</h5>
+              <button type="button" class="btn-close" (click)="closeUsageForm()"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="usageForm" (ngSubmit)="submitUsage()">
+                <div class="mb-3">
+                  <label class="form-label">Medicine</label>
+                  <input type="text" class="form-control" [value]="selectedMedicine()?.medicineName" readonly>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Quantity</label>
+                  <input type="number" class="form-control" formControlName="quantity">
+                  <div class="text-danger" *ngIf="usageForm.get('quantity')?.errors?.['max']">
+                    Cannot exceed available quantity
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="closeUsageForm()">Cancel</button>
+                  <button type="submit" class="btn btn-primary" [disabled]="!usageForm.valid">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show" *ngIf="showUsageModal()"></div>
+    </div>
+  </div>

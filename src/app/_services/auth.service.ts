@@ -3,11 +3,6 @@ import { Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ChangePasswordDTO, ReturnUserDTO, UserRefreshTokenDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO } from '../_models/user.types';
 import { HttpClient } from '@angular/common/http';
-import { ReturnTenderDTO, ReturnTenderProposal } from '../_models/tender.types';
-import { ReturnMedicineRequestDTO } from '../_models/medicine-request.types';
-import { ReturnAuditDTO } from '../_models/audit.types';
-import { ReturnMedicineUsageDTO } from '../_models/medicine-usage.types';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -35,48 +30,25 @@ export class AuthService {
     const storedUser = localStorage.getItem(this.USER_DATA_KEY);
     const storedPhotoBase64 = localStorage.getItem(this.USER_PHOTO_KEY);
 
-    if (storedToken) {
-      this.currentUserToken.set(JSON.parse(storedToken));
-    }
+    // if (storedToken) {
+    //   this.currentUserToken.set(JSON.parse(storedToken));
+    // }
     if (storedUser) {
       this.currentUser.set(JSON.parse(storedUser));
     }
     if (storedPhotoBase64) {
       this.currentUserPhoto.set(storedPhotoBase64);
     }
+
+    if (storedToken) {
+      const tokenData: ReturnUserTokenDTO = JSON.parse(storedToken);
+      this.currentUserToken.set(tokenData);
+      this.getCurrentUserInfo(true).subscribe();
+      this.getCurrentUserPhoto(true).subscribe();
+    }
   }
 
-
-
-  ////
-  getAuditsPlanned(): Observable<ReturnAuditDTO[]> {
-    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/planned`);
-  }
-
-  getAuditsExecuted(): Observable<ReturnAuditDTO[]> {
-    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/executed`);
-  }
-
-  getRequestsRequested(): Observable<ReturnMedicineRequestDTO[]> {
-    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/requested`);
-  }
-
-  getUsagesCreated(): Observable<ReturnMedicineUsageDTO[]> {
-    return this.http.get<ReturnMedicineUsageDTO[]>(`${this.baseUrlAccount}/usages/created`);
-  }
-
-  getRequestsApproved(): Observable<ReturnMedicineRequestDTO[]> {
-    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/approved`);
-  }
-
-  getTendersAwarded(): Observable<ReturnTenderDTO[]> {
-    return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlAccount}/tenders/awarded`);
-  }
-
-  getProposalsCreated(): Observable<ReturnTenderProposal[]> {
-    return this.http.get<ReturnTenderProposal[]>(`${this.baseUrlAccount}/proposals/created`);
-  }
-  /////
+  /////////////////////////////////
 
   login(model: UserLoginDTO): Observable<ReturnUserLoginDTO> {
     return this.http.post<ReturnUserLoginDTO>(`${this.baseUrlAccount}/login`, model).pipe(

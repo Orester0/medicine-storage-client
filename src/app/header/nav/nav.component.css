@@ -1,0 +1,35 @@
+.dropdown-toggle, .dropdown-item{
+    cursor: pointer
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+.navbar-brand mat-icon {
+    font-size: 1.5rem; 
+    margin-right: 5px; 
+    color: #ffc107;
+}
+
+.nav-link {
+    color: #ffffff;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #ffc107;
+}
+
+.nav-link.active {
+    color: #ffc107;
+    border-bottom: 2px solid #ffc107;
+}

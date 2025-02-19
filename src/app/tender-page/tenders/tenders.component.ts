@@ -94,12 +94,14 @@ export class TendersComponent implements OnInit {
   tableActions: TableAction<ReturnTenderDTO>[] = [
     {
         label: 'View Details',
+        icon: 'visibility',
         class: 'btn btn-info btn-sm',
         onClick: (row) => this.viewTenderDetails(row),
       },
       
     {
       label: 'Delete',
+      icon: 'delete',
       class: 'btn btn-danger btn-sm me-2',
       onClick: (row) => this.deleteTenderPrompt(row),
       visible: (row) => {

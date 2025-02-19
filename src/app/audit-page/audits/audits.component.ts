@@ -112,30 +112,35 @@ export class AuditsComponent implements OnInit {
 
   tableActions: TableAction<ReturnAuditDTO>[] = [
     {
-      label: 'View',
+      label: 'View Details',
+      icon: 'visibility',
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.viewAuditDetails(row),
     },
     {
       label: 'Execute',
+      icon: 'play_arrow', 
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.updateAudit(row.id),
       visible: (row) => row.status === 2 ||  row.status === 4,
     },
     {
       label: 'Start Audit',
+      icon: 'play_circle',
       class: 'btn btn-success btn-sm me-2',
       onClick: (row) => this.startAudit(row.id),
       visible: (row) => row.status === 1,
     },
     {
       label: 'Close Audit',
+      icon: 'stop_circle',
       class: 'btn btn-danger btn-sm me-2',
       onClick: (row) => this.closeAudit(row.id),
       visible: (row) => row.status === 2 ||  row.status === 4,
   },
   {
     label: 'Delete',
+    icon: 'delete',
     class: 'btn btn-danger btn-sm me-2',
     onClick: (row) => this.deleteAuditPrompt(row),
     visible: (row) => {
