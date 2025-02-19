@@ -1,0 +1,47 @@
+<div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Create New Supply</h2>
+        <button class="close-btn" (click)="onClose()">&times;</button>
+      </div>
+
+      <form [formGroup]="supplyForm!" (ngSubmit)="onSubmit()" class="modal-form">
+        <div class="form-group">
+          <label for="medicine">Medicine</label>
+          <select id="medicine" formControlName="medicineId" class="form-control">
+            <option value="">Select Medicine</option>
+            <option *ngFor="let medicine of medicines" [value]="medicine.id">
+              {{medicine | medicineName}}
+            </option>
+          </select>
+          <div *ngIf="supplyForm.get('medicineId')?.errors?.['required'] && supplyForm.get('medicineId')?.touched" 
+               class="error-message">
+            Medicine is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input id="quantity" 
+                 type="number" 
+                 formControlName="quantity" 
+                 class="form-control">
+          <div *ngIf="supplyForm.get('quantity')?.errors?.['required'] && supplyForm.get('quantity')?.touched" 
+               class="error-message">
+            Quantity is required
+          </div>
+          <div *ngIf="supplyForm.get('quantity')?.errors?.['min'] && supplyForm.get('quantity')?.touched" 
+               class="error-message">
+            Quantity must be greater than 0
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!supplyForm.valid">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  

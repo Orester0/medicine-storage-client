@@ -1,33 +1,38 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-    <div class="container">
-      <a class="navbar-brand" routerLink="/" routerLinkActive="active">
-        <mat-icon>local_hospital</mat-icon> Medicine Storage
-      </a>
-      <ul class="navbar-nav me-auto mb-2 mb-md-0">
-        @if (authService.currentUserToken()) {
-          <li class="nav-item">
-            <a routerLink="/medicines" routerLinkActive="active" class="nav-link">Medicines</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/tenders" routerLinkActive="active" class="nav-link">Tenders</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/audits" routerLinkActive="active" class="nav-link">Audits</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/requests" routerLinkActive="active" class="nav-link">Requests</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/templates" routerLinkActive="active" class="nav-link">Templates</a>
-          </li>
-          <li *appHasRole="['Doctor', 'Admin']" class="nav-item">
-            <a routerLink="/admin" routerLinkActive="active" class="nav-link">Admin Page</a>
-          </li>
-        }
-      </ul>
+  <div class="container">
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active">
+      <mat-icon>local_hospital</mat-icon> Medicine Storage
+    </a>
+    <ul class="navbar-nav me-auto mb-2 mb-md-0">
       @if (authService.currentUserToken()) {
-        <app-notifications class="me-3"></app-notifications>
+        <li class="nav-item">
+          <a routerLink="/medicines" routerLinkActive="active" class="nav-link">Medicines</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/tenders" routerLinkActive="active" class="nav-link">Tenders</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/audits" routerLinkActive="active" class="nav-link">Audits</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/requests" routerLinkActive="active" class="nav-link">Requests</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/templates" routerLinkActive="active" class="nav-link">Templates</a>
+        </li>
+        <li *appHasRole="['Admin']" class="nav-item dropdown" (mouseenter)="showAdminDropdown = true" (mouseleave)="showAdminDropdown = false">
+          <a routerLink="/admin" routerLinkActive="active" class="nav-link dropdown-toggle">Admin Page</a>
+          <ul class="dropdown-menu" [class.show]="showAdminDropdown">
+            <li><a routerLink="/admin/users" class="dropdown-item">Users</a></li>
+            <li><a routerLink="/admin/supplies" class="dropdown-item">Supplies</a></li>
+            <li><a routerLink="/admin/usages" class="dropdown-item">Usages</a></li>
+          </ul>
+        </li>
       }
-      <app-user-panel></app-user-panel>
-    </div>
-  </nav>
+    </ul>
+    @if (authService.currentUserToken()) {
+      <app-notifications class="me-3"></app-notifications>
+    }
+    <app-user-panel></app-user-panel>
+  </div>
+</nav>

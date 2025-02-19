@@ -4,7 +4,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { ReturnTenderDTO } from '../_models/tender.types';
 import { TenderService } from '../_services/tender.service';
 
-export const tenderResolver: ResolveFn<ReturnTenderDTO> = (route, state) => {
+export const tenderInfoResolver: ResolveFn<ReturnTenderDTO> = (route, state) => {
   const tenderService = inject(TenderService);
   const tenderId = Number(route.paramMap.get('id'));
 

@@ -1,0 +1,23 @@
+<div class="p-4">
+    <app-filter 
+    [config]="usageFilters" 
+    [title]="'Filters'"
+    (filterChange)="onFilterChange($event)">
+    </app-filter>
+    
+  <div class="table-responsive">
+    <app-table 
+      [columns]="totalItems" 
+      [data]="usages"
+      (sort)="onSortChange($event)">
+    </app-table>
+    
+  </div>
+    
+    <app-pagination
+      [totalItems]="totalUsages"
+      [pageSize]="usageParams.pageSize || 10"
+      [currentPage]="usageParams.pageNumber || 1"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+</div>

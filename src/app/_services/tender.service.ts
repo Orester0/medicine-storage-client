@@ -17,8 +17,12 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
   
     constructor() {}
   
-    // Tender endpoints
-    getTenders(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
+    
+      getAllTenders(): Observable<ReturnTenderDTO[]> {
+        return this.http.get<ReturnTenderDTO[]>(`${this.tenderUrl}/all`);
+    }
+
+    getTendersWithFilter(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
       let httpParams = new HttpParams();
   
       if (params.title) httpParams = httpParams.append('title', params.title);

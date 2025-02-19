@@ -1,0 +1,39 @@
+<div class="p-4">
+    <div class="mb-4 flex justify-between items-center">
+      <app-filter 
+      [config]="supplyFilters" 
+      [title]="'Filters'"
+      (filterChange)="onSupplyFilterChange($event)">
+      </app-filter>
+
+      <button class="btn btn-success mb-3" (click)="showCreateSupplyForm()">
+        <i class="bi bi-plus-circle"></i> Create Supply
+      </button>
+
+    </div>
+    
+  <div class="table-responsive">
+    <app-table 
+      [columns]="supplyColumns" 
+      [data]="supplies" 
+      (sort)="onSupplySort($event)">
+    </app-table>
+  </div>
+    
+
+    <app-pagination
+      [totalItems]="totalItems"
+      [currentPage]="supplyParams.pageNumber || 1"
+      [pageSize]="supplyParams.pageSize || 10"
+      (pageChange)="onSupplyPageChange($event)">
+    </app-pagination>
+  </div>
+
+  
+
+<app-create-supply-manual-form
+*ngIf="isCreateSupplyFormVisible"
+[medicines]="allMedicines"
+(submit)="onCreateSupply($event)"
+(close)="hideCreateSupplyForm()">
+</app-create-supply-manual-form>

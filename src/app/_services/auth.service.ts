@@ -41,8 +41,7 @@ export class AuthService {
     }
 
     if (storedToken) {
-      const tokenData: ReturnUserTokenDTO = JSON.parse(storedToken);
-      this.currentUserToken.set(tokenData);
+      this.currentUserToken.set(JSON.parse(storedToken));
       this.getCurrentUserInfo(true).subscribe();
       this.getCurrentUserPhoto(true).subscribe();
     }

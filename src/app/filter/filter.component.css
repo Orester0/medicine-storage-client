@@ -22,14 +22,17 @@
 }
 
 
-
-.btn-lg.rounded-circle {
-  width: 3.5rem;
-  height: 3.5rem;
+.btn.rounded-circle {
+  width: 3rem; 
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0.4rem;
 }
+
+
+
 
 .btn-sm {
   padding: 0.6rem 1.2rem;

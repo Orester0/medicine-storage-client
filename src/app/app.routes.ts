@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './_guards/auth.guard';
 import { medicinesResolver } from './_resolvers/medicines.resolver';
 import { usersResolver } from './_resolvers/users.resolver';
-import { tenderResolver } from './_resolvers/tender.resolver';
+import { tenderInfoResolver } from './_resolvers/tender-info.resolver';
 import { AuditsComponent } from './audit-page/audits/audits.component';
 import { HomeComponent } from './home-page/home/home.component';
 import { MedicinesComponent } from './medicine-page/medicines/medicines.component';
@@ -13,6 +13,10 @@ import { TendersComponent } from './tender-page/tenders/tenders.component';
 import { ErrorTemplateComponent } from './error-template/error-template.component';
 import { UsersComponent } from './admin-page/users/users.component';
 import { UserProfileComponent } from './user-profile-page/user-profile/user-profile.component';
+import { AdminPanelComponent } from './admin-page/admin-panel/admin-panel.component';
+import { MedicineSuppliesComponent } from './admin-page/medicine-supplies/medicine-supplies.component';
+import { MedicineUsagesComponent } from './admin-page/medicine-usages/medicine-usages.component';
+import { tendersResolver } from './_resolvers/tenders.resolver';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -23,12 +27,42 @@ export const routes: Routes = [
         children: [
             {path: 'medicines', component: MedicinesComponent, resolve: {medicines: medicinesResolver}},
             {path: 'tenders', component: TendersComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderResolver, medicines: medicinesResolver } },
+            {path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver } },
             {path: 'audits', component: AuditsComponent,  resolve: {medicines: medicinesResolver, users: usersResolver}},
             {path: 'requests', component: MedicineRequestComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
             {path: 'user-profile', component: UserProfileComponent},
             {path: 'templates', component: TemplateComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'admin', component: UsersComponent, resolve: {users: usersResolver}},
+            {path: 'admin',
+              // component: AdminPanelComponent,
+              children: [
+                {
+                  path: 'users',
+                  component: UsersComponent
+                },
+                {
+                  path: 'supplies',
+                  component: MedicineSuppliesComponent,
+                  resolve: {
+                    users: usersResolver,
+                    medicines: medicinesResolver,
+                    tenders: tendersResolver
+                  },
+                },
+                {
+                  path: 'usages', 
+                  component: MedicineUsagesComponent,
+                  resolve: {
+                    users: usersResolver,
+                    medicines: medicinesResolver
+                  },
+                },
+                {
+                  path: '',
+                  pathMatch: 'full',
+                  redirectTo: 'users',
+                },
+              ],
+            },
         ]
     },
     { 

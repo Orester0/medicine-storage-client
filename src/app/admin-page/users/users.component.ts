@@ -50,7 +50,7 @@ export class UsersComponent implements OnInit {
     },    
     {
       label: 'Manage Roles',
-   icon: 'manage_accounts',
+      icon: 'manage_accounts',
       class: 'btn btn-outline-secondary btn-sm',
       onClick: (user) => this.openRolesModal(user)
     }

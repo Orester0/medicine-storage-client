@@ -1,35 +1,73 @@
-.dropdown-toggle, .dropdown-item{
-    cursor: pointer
-}
-
-.navbar {
+.dropdown-toggle, .dropdown-item {
+    cursor: pointer;
+  }
+  
+  .navbar {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-brand {
+  }
+  
+  .navbar-brand {
     display: flex;
     align-items: center;
     font-size: 1.5rem;
     font-weight: bold;
   }
   
-.navbar-brand mat-icon {
-    font-size: 1.5rem; 
-    margin-right: 5px; 
+  .navbar-brand mat-icon {
+    font-size: 1.5rem;
+    margin-right: 5px;
     color: #ffc107;
-}
-
-.nav-link {
+  }
+  
+  .nav-link {
     color: #ffffff;
     font-weight: 500;
     transition: color 0.3s ease;
-}
-
-.nav-link:hover {
+  }
+  
+  .nav-link:hover {
     color: #ffc107;
-}
-
-.nav-link.active {
+  }
+  
+  .nav-link.active {
     color: #ffc107;
     border-bottom: 2px solid #ffc107;
-}
+  }
+  
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 0.5rem 0;
+    border-radius: 4px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+  
+  .dropdown-item {
+    color: #333333;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

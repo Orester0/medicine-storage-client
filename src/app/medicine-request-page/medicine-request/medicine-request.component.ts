@@ -137,7 +137,6 @@ export class MedicineRequestComponent implements OnInit {
     {
       key: 'requiredByDate',
       label: 'Required By',
-
       render: (value) => new Date(value).toLocaleDateString(),
       sortable: true,
     },
@@ -190,7 +189,7 @@ export class MedicineRequestComponent implements OnInit {
     medicineId: null as number | null,
     pageNumber: 1,
     pageSize: 10,
-    sortBy: 'plannedDate',
+    sortBy: 'id',
     isDescending: false,
   };
   

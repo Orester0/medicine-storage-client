@@ -14,5 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
+  showAdminDropdown = false;
   authService = inject(AuthService);
 }

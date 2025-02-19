@@ -226,7 +226,7 @@ export class TendersComponent implements OnInit {
     };
 
     
-    this.tenderService.getTenders(queryParams).subscribe({
+    this.tenderService.getTendersWithFilter(queryParams).subscribe({
       next: (response) => {
         this.tenders = response.items || [];
         this.totalItems = response.totalCount || 0;

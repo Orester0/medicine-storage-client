@@ -8,8 +8,8 @@ export interface ReturnMedicineSupplyDTO
    quantity: number;
    transactionDate: Date; 
    medicine: ReturnMedicineDTO;
-   createdByUser?: ReturnUserDTO;
-   tender?: ReturnTenderDTO;
+   createdByUser?: ReturnUserDTO | null;
+   tender?: ReturnTenderDTO | null;
 }
 
 export interface CreateMedicineSupplyDTO
