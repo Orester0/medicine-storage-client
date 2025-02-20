@@ -36,12 +36,21 @@
 
   
   <app-create-medicine-request-form
-  [isOpen]="isCreateRequestModalOpen"
+  *ngIf="isCreateRequestOpen"
   [medicines]="allMedicines"
   [preselectedMedicine]="selectedMedicineForRequest"
   (submitRequest)="handleRequestSubmit($event)"
   (cancelRequest)="closeCreateRequestModal()"
   ></app-create-medicine-request-form>
+
+  
+  <app-create-medicine-form
+  *ngIf="isCreateMedicineOpen"
+  [medicine]="selectedMedicine"
+  [allMedicines]="allMedicines"
+  (save)="saveMedicine($event)"
+  (close)="closeModal()">
+  </app-create-medicine-form>
 
   
   <app-delete-confirmation-modal
@@ -52,16 +61,9 @@
   (cancel)="handleDeleteCancel()"
   ></app-delete-confirmation-modal>
 
-  <app-create-medicine-form
-  *ngIf="isCreateModalOpen"
-  [medicine]="selectedMedicine"
-  [allMedicines]="allMedicines"
-  (save)="saveMedicine($event)"
-  (close)="closeModal()">
-  </app-create-medicine-form>
 
   <app-medicines-details
-    *ngIf="selectedMedicine && !isCreateModalOpen"
+    *ngIf="selectedMedicine && !isCreateMedicineOpen"
     [medicine]="selectedMedicine"
     (onClose)="onCloseFromDetails()"
     (onEdit)="onEditFromDetails($event)"

@@ -98,29 +98,19 @@ export class MedicinesComponent implements OnInit {
     },
   ];
 
-  isCreateRequestModalOpen = false;
+  isCreateRequestOpen = false;
   selectedMedicineForRequest: ReturnMedicineDTO | null = null;
 
   openCreateRequestModal(medicine: ReturnMedicineDTO): void {
     this.selectedMedicineForRequest = medicine;
-    this.isCreateRequestModalOpen = true;
+    this.isCreateRequestOpen = true;
   }
 
   closeCreateRequestModal(): void {
-    this.isCreateRequestModalOpen = false;
+    this.isCreateRequestOpen = false;
     this.selectedMedicineForRequest = null;
   }
 
-  handleRequestSubmit(request: CreateMedicineRequestDTO): void {
-    this.medicineRequestService.createRequest(request).subscribe({
-      next: () => {
-        this.closeCreateRequestModal();
-      },
-      error: () => {
-        this.error = 'Failed to create request';
-      }
-    });
-  }
 
   medicineColumns: TableColumn<ReturnMedicineDTO>[] = [
     {
@@ -225,7 +215,19 @@ export class MedicinesComponent implements OnInit {
     this.loadMedicines();
   }
 
-  isCreateModalOpen = false;
+
+  handleRequestSubmit(request: CreateMedicineRequestDTO): void {
+    this.medicineRequestService.createRequest(request).subscribe({
+      next: () => {
+        this.closeCreateRequestModal();
+      },
+      error: () => {
+        this.error = 'Failed to create request';
+      }
+    });
+  }
+
+  isCreateMedicineOpen = false;
   saveMedicine(medicine: ReturnMedicineDTO): void {
     let request$ = this.selectedMedicine
       ? this.medicineService.updateMedicine(this.selectedMedicine.id, medicine)
@@ -233,7 +235,7 @@ export class MedicinesComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.isCreateModalOpen = false;
+        this.isCreateMedicineOpen = false;
         this.loadMedicines();
       },
 
@@ -261,11 +263,11 @@ export class MedicinesComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.isCreateModalOpen = true;
+    this.isCreateMedicineOpen = true;
   }
 
   closeModal(): void {
-    this.isCreateModalOpen = false;
+    this.isCreateMedicineOpen = false;
     this.selectedMedicine = null;
   }
 
@@ -303,7 +305,7 @@ export class MedicinesComponent implements OnInit {
 
   onEditFromDetails(medicine: ReturnMedicineDTO): void {
     this.selectedMedicine = medicine;
-    this.isCreateModalOpen = true;
+    this.isCreateMedicineOpen = true;
   }
 
   onCreateRequestFromDetails(medicine: ReturnMedicineDTO): void {

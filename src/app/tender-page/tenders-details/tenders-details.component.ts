@@ -44,6 +44,11 @@ export class TendersDetailsComponent implements OnInit {
   
   itemsTableColumns: TableColumn<ReturnTenderItemDTO>[] = [
     {
+      key: 'id',
+      label: 'ID',
+      render: (value) => `#`,
+    },
+    {
       key: 'medicine',
       label: 'Medicine',
       render: (value) => `${value.name}`,

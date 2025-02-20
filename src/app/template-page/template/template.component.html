@@ -33,7 +33,6 @@
     </ul>
   </div>
 
-  <!-- <div *ngIf="!isFormVisible && !isDetailsVisible"> -->
     <div class="list-group">
       <div *ngFor="let template of getCurrentTemplates()" 
            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -67,9 +66,7 @@
         </div>
       </div>
     </div>
-  <!-- </div> -->
   
-  <!-- Form View -->
   <app-create-template-form 
     [activeTab]="activeTab" 
     [isEditMode]="isEditMode" 
@@ -80,16 +77,18 @@
     (cancel)="cancelForm()">
   </app-create-template-form>
 
-  <!-- Details View -->
   <app-template-details
-    [template]="selectedTemplate!"
-    [type]="activeTab"
-    [medicines]="medicines"
-    [isOpen]="isDetailsVisible"
-    (close)="closeDetails()">
-  </app-template-details>
+  [isOpen]="isDetailsVisible"
+  [template]="selectedTemplate!"
+  [type]="activeTab"
+  [medicines]="medicines"
+  (close)="closeDetails()"
+  (edit)="editTemplate($event)"
+  (execute)="onExecuteClick(activeTab, $event.id)"
+  (delete)="deleteTemplate(activeTab, $event.id)">
+</app-template-details>
 
-  <!-- Date Picker Modal for Execution -->
+
   <app-notification-template-date-pick
     *ngIf="showExecuteDateModal"
     [templateType]="selectedTemplateForExecution?.type!"

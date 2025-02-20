@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-supply-manual-form',
-  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe, ValidationErrorsComponent, MatIconModule],
   templateUrl: './create-supply-manual-form.component.html',
   styleUrl: './create-supply-manual-form.component.css'
 })
@@ -27,7 +29,7 @@ export class CreateSupplyManualFormComponent {
     this.initializeForm();
   }
 
-  initializeForm(){
+  private initializeForm(){
     this.supplyForm = this.fb.group({
       medicineId: ['', Validators.required],
       quantity: ['', [Validators.required, Validators.min(1)]]
@@ -40,16 +42,12 @@ export class CreateSupplyManualFormComponent {
       event.stopPropagation();
     }
     if (this.supplyForm.valid) {
-      const formValue = this.supplyForm.value;
-      const supply = {
-        medicineId: formValue.medicineId,
-        quantity: formValue.quantity
-      };
-      this.submit.emit(supply);
+      this.submit.emit(this.supplyForm.value);
     }
   }
 
   onClose() {
+    this.supplyForm.reset();
     this.close.emit();
   }
 }

@@ -1,59 +1,52 @@
 <div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="isOpen">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">User Details</h5>
-          <button type="button" class="btn-close" (click)="close()"></button>
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-primary text-white" style="border-bottom: 2px solid #ffc107;">
+        <h5 class="modal-title">User Details</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+      </div>
+      <div class="modal-body px-4 py-3">
+        <div class="text-center mb-3">
+          <div class="avatar-circle"></div>
         </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row mb-3">
-              <div class="col-12 text-center mb-4">
-                <div class="avatar-circle">
-                  <mat-icon class="avatar-icon">person</mat-icon>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <h6 class="text-muted">Personal Information</h6>
-                <div class="mb-2">
-                  <label class="fw-bold">Full Name:</label>
-                  <p> {{ user | userFullName }} </p>
-                </div>
-                <div class="mb-2">
-                  <label class="fw-bold">Username:</label>
-                  <p>{{user?.userName}}</p>
-                </div>
-                <div class="mb-2">
-                  <label class="fw-bold">Email:</label>
-                  <p>{{user?.email}}</p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <h6 class="text-muted">Professional Information</h6>
-                <div class="mb-2">
-                  <label class="fw-bold">Position:</label>
-                  <p>{{user?.position || 'Not specified'}}</p>
-                </div>
-                <div class="mb-2">
-                  <label class="fw-bold">Company:</label>
-                  <p>{{user?.company || 'Not specified'}}</p>
-                </div>
-                <div class="mb-2">
-                  <label class="fw-bold">Roles:</label>
-                  <div class="d-flex flex-wrap gap-2">
-                    <span class="badge bg-primary" *ngFor="let role of user?.roles">
-                      {{role}}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <small class="fw-bold text-muted d-block mb-2">Personal Information</small>
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="fw-bold">Full Name:</span>
+          <span>{{ user | userFullName }}</span>
+        </div>
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="fw-bold">Username:</span>
+          <span>{{user?.userName}}</span>
+        </div>
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="fw-bold">Email:</span>
+          <span>{{user?.email}}</span>
+        </div>
+        <small class="fw-bold text-muted d-block mt-3 mb-2">Professional Information</small>
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="fw-bold">Position:</span>
+          <span>{{user?.position || 'Not specified'}}</span>
+        </div>
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="fw-bold">Company:</span>
+          <span>{{user?.company || 'Not specified'}}</span>
+        </div>
+        <div class="mb-2">
+          <span class="fw-bold">Roles:</span>
+          <div class="d-flex flex-wrap gap-2 mt-1">
+            <span class="badge bg-primary" *ngFor="let role of user?.roles">{{ role }}</span>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="close()">Close</button>
+        
+        <div class="modal-footer border-top-0 px-0 pt-2 pb-0 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center" (click)="close()">
+            <mat-icon class="me-1">close</mat-icon> Close
+          </button>
         </div>
       </div>
+
+     
     </div>
   </div>
-  <div class="modal-backdrop fade show" *ngIf="isOpen"></div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="isOpen"></div>

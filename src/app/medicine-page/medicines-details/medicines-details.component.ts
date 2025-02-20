@@ -3,10 +3,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MatIconModule } from '@angular/material/icon';
 import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-medicines-details',
-  imports: [CommonModule, MatIconModule, LocalizedDatePipe],
+  imports: [CommonModule, MatIconModule, LocalizedDatePipe, MatTooltip],
   templateUrl: './medicines-details.component.html',
   styleUrl: './medicines-details.component.css'
 })

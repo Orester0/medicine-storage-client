@@ -44,7 +44,6 @@ export class MedicineRequestComponent implements OnInit {
   isDescending: boolean = false;
   
   isCreateRequestModalOpen = false;
-  isUsageModalOpen = false;
 
   tableActions: TableAction<ReturnMedicineRequestDTO>[] = [
     {

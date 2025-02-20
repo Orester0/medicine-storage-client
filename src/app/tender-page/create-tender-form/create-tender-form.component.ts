@@ -4,10 +4,11 @@ import { ReturnTenderDTO, CreateTenderDTO } from '../../_models/tender.types';
 import { CommonModule } from '@angular/common';
 import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-tender-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MatIconModule],
   templateUrl: './create-tender-form.component.html',
   styleUrl: './create-tender-form.component.css'
 })

@@ -5,10 +5,11 @@ import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-audits-details',
-  imports: [CommonModule, LocalizedDatePipe, UserFullNamePipe, MedicineNamePipe, AuditStatusPipe],
+  imports: [CommonModule, LocalizedDatePipe, UserFullNamePipe, MedicineNamePipe, AuditStatusPipe, MatIconModule],
   templateUrl: './audits-details.component.html',
   styleUrl: './audits-details.component.css'
 })
@@ -46,4 +47,15 @@ export class AuditsDetailsComponent {
     };
     return classMap[status] ?? 'bg-secondary';
   }
+  getAuditStatusIcon(status: AuditStatus): string {
+    const iconMap: Record<AuditStatus, string> = {
+      [AuditStatus.Planned]: 'event_note', 
+      [AuditStatus.InProgress]: 'play_arrow', 
+      [AuditStatus.Completed]: 'check_circle', 
+      [AuditStatus.RequiresFollowUp]: 'warning',
+      [AuditStatus.Cancelled]: 'cancel',
+    };
+    return iconMap[status] ?? 'help'; 
+  }
+  
 }

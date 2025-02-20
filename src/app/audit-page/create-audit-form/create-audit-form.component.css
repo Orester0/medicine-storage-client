@@ -1,0 +1,29 @@
+
+.modal-header {
+    border-bottom: 2px solid #ffc107;
+  }
+  
+  .btn-sm {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  
+  .btn {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .btn:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .form-control-sm {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+  
+  .border.rounded {
+    max-height: 180px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  

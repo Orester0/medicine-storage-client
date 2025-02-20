@@ -30,25 +30,12 @@
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
     
-  <div *ngIf="isModalOpen" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content shadow-lg border-0">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">{{'Create Audit'}}</h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeCreateAuditModal()"></button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-body">
-            <app-create-audit-form
-              [medicines]="allMedicines"
-              (submitRequest)="saveAudit($event)"
-              (cancelRequest)="closeCreateAuditModal()"
-            ></app-create-audit-form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-create-audit-form
+  *ngIf="isCreateAuditModalOpen"
+  [medicines]="allMedicines"
+  (submitRequest)="saveAudit($event)"
+  (cancelRequest)="closeCreateAuditModal()"
+></app-create-audit-form>
   
   <app-audit-notes
   *ngIf="auditToStart"
@@ -83,7 +70,7 @@
 
   
   <app-audits-details
-      *ngIf="selectedAudit && !isModalOpen"
+      *ngIf="selectedAudit && !isCreateAuditModalOpen"
       [audit]="selectedAudit"
       (onClose)="onCloseDetails()"
       (onUpdate)="onUpdateAuditFromDetails($event)"

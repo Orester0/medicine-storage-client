@@ -6,10 +6,11 @@ import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-audit-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe, MatIconModule],
   templateUrl: './create-audit-form.component.html',
   styleUrl: './create-audit-form.component.css'
 })
@@ -19,7 +20,9 @@ export class CreateAuditFormComponent implements OnInit{
   @Output() submitRequest = new EventEmitter<CreateAuditDTO>();
   @Output() cancelRequest = new EventEmitter<void>();
 
+
   auditForm!: FormGroup;
+
 
   constructor(private fb: FormBuilder) {}
 
@@ -48,6 +51,7 @@ export class CreateAuditFormComponent implements OnInit{
   }
 
   onCancel(): void {
+    this.auditForm.reset();
     this.cancelRequest.emit();
   }
 

@@ -5,11 +5,12 @@ import { AuthService } from '../../_services/auth.service';
 import { passwordMatchValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MatIconModule],
   templateUrl: './register.component.html',
 })
 

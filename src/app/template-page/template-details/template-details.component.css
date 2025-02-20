@@ -1,12 +1,43 @@
 :host {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1050;
-    pointer-events: none;
-  }
-  :host .modal, :host .modal-backdrop {
-    pointer-events: auto;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1050;
+  pointer-events: none;
+}
+
+:host .modal, 
+:host .modal-backdrop {
+  pointer-events: auto;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.list-unstyled li {
+  padding: 0.25rem 0;
+}
+
+.overflow-auto {
+  min-height: 50px;
+}

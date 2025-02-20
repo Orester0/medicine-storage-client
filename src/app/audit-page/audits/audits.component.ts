@@ -36,6 +36,8 @@ export class AuditsComponent implements OnInit {
   deleteAuditPrompt(audit: ReturnAuditDTO): void {
     this.auditToDelete = audit;
   }
+  isCreateAuditModalOpen = false;
+
 
   handleDeleteConfirm(): void {
     if (!this.auditToDelete) return;
@@ -202,7 +204,6 @@ export class AuditsComponent implements OnInit {
 
   selectedAudit: ReturnAuditDTO | null = null;
 
-  isModalOpen = false;
   error: string | null = null;
   sortColumn: string = 'plannedDate';
   isDescending: boolean = false;
@@ -277,11 +278,11 @@ export class AuditsComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.isModalOpen = true;
+    this.isCreateAuditModalOpen = true;
   }
 
   closeCreateAuditModal(): void {
-    this.isModalOpen = false;
+    this.isCreateAuditModalOpen = false;
   }
   
   viewAuditDetails(audit: ReturnAuditDTO): void {

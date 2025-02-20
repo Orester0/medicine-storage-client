@@ -4,10 +4,11 @@ import { Template, TemplateType, MedicineRequestTemplateDTO, AuditTemplateDTO, T
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-template-details',
-  imports: [CommonModule, ReactiveFormsModule, LocalizedDatePipe],
+  imports: [CommonModule, ReactiveFormsModule, LocalizedDatePipe, MatIconModule],
   templateUrl: './template-details.component.html',
   styleUrl: './template-details.component.css'
 })
@@ -17,6 +18,9 @@ export class TemplateDetailsComponent {
   @Input() medicines: ReturnMedicineDTO[] = [];
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<Template>();
+  @Output() execute = new EventEmitter<Template>();
+  @Output() delete = new EventEmitter<Template>();
 
   getMedicineName(id: number): string {
     return this.medicines.find(m => m.id === id)?.name || '';

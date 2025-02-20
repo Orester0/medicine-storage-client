@@ -1,71 +1,138 @@
-<div class="modal" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Template Details</h5>
-        <button type="button" class="btn-close" (click)="close.emit()"></button>
+<div *ngIf="template" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title d-flex align-items-center">
+          <mat-icon class="me-2">description</mat-icon>
+          Template Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="close.emit()" aria-label="Close"></button>
       </div>
-      <div class="modal-body" *ngIf="template">
-        <dl class="row mb-0">
-          <dt class="col-sm-4">Name</dt>
-          <dd class="col-sm-8">{{ template.name }}</dd>
 
-          <dt class="col-sm-4">Recurrence Interval</dt>
-          <dd class="col-sm-8">{{ template.recurrenceInterval }}</dd>
+      <div class="modal-body p-4">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="fw-bold text-primary mb-0">{{ template.name }}</h4>
+              <div class="d-flex align-items-center">
+                <mat-icon class="me-2 text-primary">schedule</mat-icon>
+                <span>Every {{ template.recurrenceInterval }} days</span>
+              </div>
+            </div>
 
-          <dt class="col-sm-4">Last Execution</dt>
-          <dd class="col-sm-8">
-            {{ template.lastExecutedDate ? (template.lastExecutedDate | localizedDate ) : 'Nan' }}
-          </dd>
+            <ng-container [ngSwitch]="type">
+              <ng-container *ngSwitchCase="'medicine-request'" >
+                <ng-container *ngIf="isMedicineRequest(template)">
+                  <div class="card bg-light border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center text-primary mb-3">
+                        <mat-icon class="me-2">medical_services</mat-icon>
+                        Medicine Request Details
+                      </h6>
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <label class="text-muted small">Medicine</label>
+                          <p class="mb-2 fw-medium">{{ getMedicineName(template.createDTO.medicineId) }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                          <label class="text-muted small">Quantity</label>
+                          <p class="mb-2 fw-medium">{{ template.createDTO.quantity }}</p>
+                        </div>
+                        <div class="col-12">
+                          <label class="text-muted small">Justification</label>
+                          <p class="text-secondary">{{ template.createDTO.justification }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
 
-          <ng-container [ngSwitch]="type">
-            <ng-container *ngSwitchCase="'medicine-request'">
-              <ng-container *ngIf="isMedicineRequest(template)">
-                <dt class="col-sm-4">Medicine</dt>
-                <dd class="col-sm-8">{{ getMedicineName(template.createDTO.medicineId) }}</dd>
+              <ng-container *ngSwitchCase="'audit'">
+                <ng-container *ngIf="isAudit(template)">
+                  <div class="card bg-light border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center text-primary mb-3">
+                        <mat-icon class="me-2">checklist</mat-icon>
+                        Audit Details
+                      </h6>
+                      <div class="mb-2">
+                        <label class="text-muted small">Title</label>
+                        <p class="mb-2 fw-medium">{{ template.createDTO.title }}</p>
+                      </div>
+                      <div class="mb-2">
+                        <label class="text-muted small">Medicines</label>
+                        <ul class="list-unstyled mb-2">
+                          <li *ngFor="let id of template.createDTO.medicineIds" class="fw-medium">
+                            {{ getMedicineName(id) }}
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <label class="text-muted small">Notes</label>
+                        <p class="text-secondary">{{ template.createDTO.notes }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
 
-                <dt class="col-sm-4">Quantity</dt>
-                <dd class="col-sm-8">{{ template.createDTO.quantity }}</dd>
-
-                <dt class="col-sm-4">Justification</dt>
-                <dd class="col-sm-8">{{ template.createDTO.justification }}</dd>
+              <ng-container *ngSwitchCase="'tender'">
+                <ng-container *ngIf="isTender(template)">
+                  <div class="card bg-light border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center text-primary mb-3">
+                        <mat-icon class="me-2">gavel</mat-icon>
+                        Tender Details
+                      </h6>
+                      <div class="mb-2">
+                        <label class="text-muted small">Title</label>
+                        <p class="mb-2 fw-medium">{{ template.createDTO.title }}</p>
+                      </div>
+                      <div>
+                        <label class="text-muted small">Description</label>
+                        <p class="text-secondary">{{ template.createDTO.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
               </ng-container>
             </ng-container>
 
-            <ng-container *ngSwitchCase="'audit'">
-              <ng-container *ngIf="isAudit(template)">
-                <dt class="col-sm-4">Title</dt>
-                <dd class="col-sm-8">{{ template.createDTO.title }}</dd>
-                <dt class="col-sm-4">Medicines</dt>
-                <dd class="col-sm-8">
-                  <ul class="list-unstyled mb-0">
-                    <li *ngFor="let id of template.createDTO.medicineIds">
-                      {{ getMedicineName(id) }}
-                    </li>
-                  </ul>
-                </dd>
-
-                <dt class="col-sm-4">Notes</dt>
-                <dd class="col-sm-8">{{ template.createDTO.notes }}</dd>
-              </ng-container>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'tender'">
-              <ng-container *ngIf="isTender(template)">
-                <dt class="col-sm-4">Title</dt>
-                <dd class="col-sm-8">{{ template.createDTO.title }}</dd>
-
-                <dt class="col-sm-4">Description</dt>
-                <dd class="col-sm-8">{{ template.createDTO.description }}</dd>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-        </dl>
+            <div class="bg-light rounded p-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Last Execution:</span>
+                <span class="fw-medium">
+                  {{ template.lastExecutedDate ? (template.lastExecutedDate | localizedDate) : 'N/A' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="close.emit()">Close</button>
+
+      <div class="modal-footer border-0 bg-light pt-3">
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary d-flex align-items-center" (click)="close.emit()">
+            <mat-icon class="me-1">close</mat-icon>
+            Close
+          </button>
+          <button class="btn btn-outline-primary d-flex align-items-center" (click)="edit.emit(template)">
+            <mat-icon class="me-1">edit</mat-icon>
+            Edit
+          </button>
+          <button class="btn btn-primary d-flex align-items-center" (click)="execute.emit(template)">
+            <mat-icon class="me-1">play_circle</mat-icon>
+            Execute Now
+          </button>
+          <button class="btn btn-danger d-flex align-items-center" (click)="delete.emit(template)">
+            <mat-icon class="me-1">delete</mat-icon>
+            Delete
+          </button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
-<div class="modal-backdrop fade show" *ngIf="isOpen"></div>

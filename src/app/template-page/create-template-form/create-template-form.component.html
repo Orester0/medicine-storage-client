@@ -1,82 +1,90 @@
-<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h6 class="mb-3">{{ isEditMode ? 'Edit' : 'Create' }} Template</h6>
-          <button type="button" class="btn-close" (click)="cancel.emit()"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="getActiveForm()" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label class="form-label">Name</label>
-              <input formControlName="name" class="form-control form-control-sm" />
-              <app-validation-errors [control]="getActiveForm().get('name')!"></app-validation-errors>
+<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title d-flex align-items-center">
+          <mat-icon class="me-2">edit_note</mat-icon>
+          {{ isEditMode ? 'Edit' : 'Create' }} Template
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
+      </div>
+
+      <div class="modal-body p-3">
+        <form [formGroup]="getActiveForm()" (ngSubmit)="onSubmit()">
+          <div class="mb-2">
+            <label class="form-label">Name</label>
+            <input formControlName="name" class="form-control form-control-sm">
+            <app-validation-errors [control]="getActiveForm().get('name')!"></app-validation-errors>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Recurrence Interval</label>
+            <input type="number" formControlName="recurrenceInterval" class="form-control form-control-sm">
+            <app-validation-errors [control]="getActiveForm().get('recurrenceInterval')!"></app-validation-errors>
+          </div>
+
+          <ng-container *ngIf="activeTab === 'medicine-request'">
+            <div class="mb-2">
+              <label class="form-label">Medicine</label>
+              <select formControlName="medicineId" class="form-select form-select-sm">
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                  {{ medicine | medicineName }}
+                </option>
+              </select>
             </div>
-  
-            <div class="mb-3">
-              <label class="form-label">Recurrence Interval</label>
-              <input type="number" formControlName="recurrenceInterval" class="form-control form-control-sm" />
-              <app-validation-errors [control]="getActiveForm().get('recurrenceInterval')!"></app-validation-errors>
+            <div class="mb-2">
+              <label class="form-label">Quantity</label>
+              <input type="number" formControlName="quantity" class="form-control form-control-sm">
             </div>
-  
-            <ng-container *ngIf="activeTab === 'medicine-request'">
-              <div class="mb-3">
-                <label class="form-label">Medicine</label>
-                <select formControlName="medicineId" class="form-select form-select-sm">
-                  <option *ngFor="let medicine of medicines" [value]="medicine.id">
-                    {{ medicine | medicineName }}
-                  </option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Quantity</label>
-                <input type="number" formControlName="quantity" class="form-control form-control-sm" />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Justification</label>
-                <textarea formControlName="justification" class="form-control form-control-sm" rows="3"></textarea>
-              </div>
-            </ng-container>
-  
-            <ng-container *ngIf="activeTab === 'audit'">
-              <div class="mb-3">
-                <label for="title" class="form-label fw-bold">Title</label>
-                <input type="text" id="title" class="form-control" formControlName="title" required />
-                
-                <app-validation-errors [control]="getActiveForm().get('title')!"></app-validation-errors>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Medicines</label>
-                <select multiple formControlName="medicineIds" class="form-select form-select-sm">
-                  <option *ngFor="let medicine of medicines" [value]="medicine.id">
-                    {{ medicine | medicineName }}
-                  </option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Notes</label>
-                <textarea formControlName="notes" class="form-control form-control-sm" rows="3"></textarea>
-              </div>
-            </ng-container>
-  
-            <ng-container *ngIf="activeTab === 'tender'">
-              <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input formControlName="title" class="form-control form-control-sm" />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea formControlName="description" class="form-control form-control-sm" rows="3"></textarea>
-              </div>
-            </ng-container>
-  
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary btn-sm">Save</button>
-              <button type="button" class="btn btn-light btn-sm" (click)="cancel.emit()">Cancel</button>
+            <div class="mb-2">
+              <label class="form-label">Justification</label>
+              <textarea formControlName="justification" class="form-control form-control-sm" rows="2"></textarea>
             </div>
-          </form>
-        </div>
+          </ng-container>
+
+          <ng-container *ngIf="activeTab === 'audit'">
+            <div class="mb-2">
+              <label for="title" class="form-label fw-bold">Title</label>
+              <input type="text" id="title" class="form-control form-control-sm" formControlName="title" required>
+              <app-validation-errors [control]="getActiveForm().get('title')!"></app-validation-errors>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Medicines</label>
+              <select multiple formControlName="medicineIds" class="form-select form-select-sm">
+                <option *ngFor="let medicine of medicines" [value]="medicine.id">
+                  {{ medicine | medicineName }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Notes</label>
+              <textarea formControlName="notes" class="form-control form-control-sm" rows="2"></textarea>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="activeTab === 'tender'">
+            <div class="mb-2">
+              <label class="form-label">Title</label>
+              <input formControlName="title" class="form-control form-control-sm">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Description</label>
+              <textarea formControlName="description" class="form-control form-control-sm" rows="2"></textarea>
+            </div>
+          </ng-container>
+
+          <div class="modal-footer border-top-0 px-0 pt-2 pb-0 d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center">
+              <mat-icon class="me-1">check</mat-icon> Save
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center" (click)="onCancel()">
+              <mat-icon class="me-1">close</mat-icon> Cancel
+            </button>
+          </div>
+
+        </form>
       </div>
     </div>
   </div>
-  
+</div>

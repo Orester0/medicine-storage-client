@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, OnInit, signal } from '@angular/core';
 import { Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ChangePasswordDTO, ReturnUserDTO, UserRefreshTokenDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO } from '../_models/user.types';
@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService{
   private http = inject(HttpClient);
   private baseUrlAccount = `${environment.apiUrl}account`;
 
@@ -24,6 +24,7 @@ export class AuthService {
   constructor() {
     this.loadStoredUser();
   }
+
   
   private loadStoredUser(): void {
     const storedToken = localStorage.getItem(this.TOKEN_KEY);
@@ -39,11 +40,23 @@ export class AuthService {
     if (storedPhotoBase64) {
       this.currentUserPhoto.set(storedPhotoBase64);
     }
-
     if (storedToken) {
       this.currentUserToken.set(JSON.parse(storedToken));
-      this.getCurrentUserInfo(true).subscribe();
-      this.getCurrentUserPhoto(true).subscribe();
+
+      this.http.get<ReturnUserDTO>(`${this.baseUrlAccount}/info`).pipe(
+        tap(user => {
+          this.currentUser.set(user);
+          this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(user));
+        })
+      );
+
+      this.http.get(`${this.baseUrlAccount}/photo`, { responseType: 'blob' }).pipe(
+        switchMap(blob => this.blobToBase64(blob)),
+        tap(base64 => {
+          this.currentUserPhoto.set(base64);
+          this.setStorageItem(this.USER_PHOTO_KEY, base64);
+        })
+      );
     }
   }
 
@@ -138,6 +151,7 @@ export class AuthService {
         this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(user));
       })
     );
+    
   }
 
   getCurrentUserPhoto(force: boolean = false): Observable<string> {

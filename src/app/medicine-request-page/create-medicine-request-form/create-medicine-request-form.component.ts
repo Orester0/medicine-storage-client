@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { pastDateValidator, validDateValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-medicine-request-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe, MatIconModule],
   templateUrl: './create-medicine-request-form.component.html',
   styleUrl: './create-medicine-request-form.component.css'
 })
@@ -19,7 +20,6 @@ export class CreateMedicineRequestFormComponent implements OnInit{
   @Input() preselectedMedicine: ReturnMedicineDTO | null = null;
   @Output() submitRequest = new EventEmitter<CreateMedicineRequestDTO>();
   @Output() cancelRequest = new EventEmitter<void>();
-  @Input() isOpen: boolean = false;
 
 
   requestForm!: FormGroup;
@@ -36,7 +36,7 @@ export class CreateMedicineRequestFormComponent implements OnInit{
         medicineId: this.preselectedMedicine?.id || 0
       });
     }
-    if (changes['isOpen'] && !changes['isOpen'].firstChange && !this.isOpen) {
+    if (changes['isOpen'] && !changes['isOpen'].firstChange) {
       this.resetForm(); 
     }
   }

@@ -78,7 +78,6 @@ export class MedicineSuppliesComponent implements OnInit{
   }
 
   onCreateSupply(supply: any) {
-    console.log('Supply Created:', supply);
     this.medicineSupplyService.createSupply(supply).subscribe(() => {
       this.loadSupplies();
       this.hideCreateSupplyForm();

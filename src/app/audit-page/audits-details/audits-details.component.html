@@ -1,27 +1,36 @@
 <div *ngIf="audit" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
+    <div class="modal-content border-0 shadow-lg">
+
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Audit Details</h5>
+        <h5 class="modal-title d-flex align-items-center gap-2">
+          <mat-icon>assignment</mat-icon>
+          Audit Details
+        </h5>
         <button type="button" class="btn-close btn-close-white" (click)="closeDetails()" aria-label="Close"></button>
       </div>
-      
+
       <div class="modal-body">
-        <div class="row g-3">
+        <div class="row g-4">
+
           <div class="col-md-6">
-            <div class="card h-100">
+            <div class="card h-100 border-0 shadow-sm">
               <div class="card-header bg-light">
-                <h6 class="mb-0">Basic Information</h6>
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>info</mat-icon>
+                  Basic Information
+                </h6>
               </div>
               <div class="card-body">
                 <dl class="row mb-0">
                   <dt class="col-sm-4">ID</dt>
                   <dd class="col-sm-8">{{ audit.id }}</dd>
                   <dt class="col-sm-4">Title</dt>
-                  <dd class="col-sm-8">{{ audit.title  }}</dd>
+                  <dd class="col-sm-8">{{ audit.title }}</dd>
                   <dt class="col-sm-4">Status</dt>
                   <dd class="col-sm-8">
-                    <span class="badge px-3 py-2" [ngClass]="getAuditStatusBadgeClass(audit.status)">
+                    <span class="badge status-badge" [ngClass]="getAuditStatusBadgeClass(audit.status)">
+                      <mat-icon class="status-icon">{{ getAuditStatusIcon(audit.status) }}</mat-icon>
                       {{ audit.status | auditStatus }}
                     </span>
                   </dd>
@@ -30,53 +39,54 @@
             </div>
           </div>
 
+          <!-- 🗓 Дати -->
           <div class="col-md-6">
-            <div class="card h-100">
+            <div class="card h-100 border-0 shadow-sm">
               <div class="card-header bg-light">
-                <h6 class="mb-0">Dates</h6>
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>event</mat-icon>
+                  Dates
+                </h6>
               </div>
               <div class="card-body">
                 <dl class="row mb-0">
                   <dt class="col-sm-5">Planned Date</dt>
                   <dd class="col-sm-7">{{ audit.plannedDate | localizedDate }}</dd>
-                  
                   <dt class="col-sm-5">Start Date</dt>
                   <dd class="col-sm-7">{{ audit.startDate | localizedDate }}</dd>
-
-                  
                   <dt class="col-sm-5">End Date</dt>
                   <dd class="col-sm-7">{{ audit.endDate | localizedDate }}</dd>
-
                 </dl>
               </div>
             </div>
           </div>
 
           <div class="col-12">
-            <div class="card">
+            <div class="card border-0 shadow-sm">
               <div class="card-header bg-light">
-                <h6 class="mb-0">Users</h6>
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>person</mat-icon>
+                  Users
+                </h6>
               </div>
               <div class="card-body">
                 <dl class="row mb-0">
-                  <dt class="col-sm-2">Planned By</dt>
-                  <dd class="col-sm-4">
-                    {{ audit.plannedByUser | userFullName }}
-                  </dd>
-                  
-                  <dt class="col-sm-2">Closed By</dt>
-                  <dd class="col-sm-4">
-                    {{ audit.closedByUser | userFullName }}
-                  </dd>
+                  <dt class="col-sm-3">Planned By</dt>
+                  <dd class="col-sm-9">{{ audit.plannedByUser | userFullName }}</dd>
+                  <dt class="col-sm-3">Closed By</dt>
+                  <dd class="col-sm-9">{{ audit.closedByUser | userFullName }}</dd>
                 </dl>
               </div>
             </div>
           </div>
 
           <div class="col-12">
-            <div class="card">
+            <div class="card border-0 shadow-sm">
               <div class="card-header bg-light">
-                <h6 class="mb-0">Audit Items</h6>
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>list</mat-icon>
+                  Audit Items
+                </h6>
               </div>
               <div class="card-body p-0">
                 <div class="table-responsive">
@@ -91,12 +101,10 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let item of audit.auditItems">
-                        <td>{{ item.medicine | medicineName}}</td>
+                        <td>{{ item.medicine | medicineName }}</td>
                         <td>{{ item.expectedQuantity || 'N/A' }}</td>
                         <td>{{ item.actualQuantity || 'N/A' }}</td>
-                        <td>
-                          {{ item.checkedByUser | userFullName }}
-                        </td>
+                        <td>{{ item.checkedByUser | userFullName }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -106,52 +114,54 @@
           </div>
 
           <div class="col-12">
-            <div class="card">
+            <div class="card border-0 shadow-sm">
               <div class="card-header bg-light">
-                <h6 class="mb-0">Notes</h6>
+                <h6 class="mb-0 d-flex align-items-center gap-2">
+                  <mat-icon>note</mat-icon>
+                  Notes
+                </h6>
               </div>
               <div class="card-body">
                 <div class="list-group list-group-flush">
                   <div *ngFor="let note of audit.notes" class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <small class="text-muted">{{ note.createdAt | localizedDate }}</small>
-                    </div>
+                    <small class="text-muted">{{ note.createdAt | localizedDate }}</small>
                     <p class="mb-0 mt-1">{{ note.note }}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
-      <div class="modal-footer">
-        <div class="d-flex gap-2 flex-wrap justify-content-between w-100">
-          <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
-          <div class="d-flex gap-2 flex-wrap">
-            <button *ngIf="audit.status === 2 || audit.status === 4" 
-                    class="btn btn-info btn-sm" 
-                    (click)="updateAudit()">
+      <div class="modal-footer border-0 bg-light pt-3">
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary d-flex align-items-center" (click)="closeDetails()">
+            <mat-icon class="me-1">close</mat-icon>
+            Close
+          </button>
+          <div class="ms-auto d-flex gap-2">
+            <button *ngIf="audit.status === 2 || audit.status === 4" class="btn btn-primary d-flex align-items-center" (click)="updateAudit()">
+              <mat-icon class="me-1">play_arrow</mat-icon>
               Execute
             </button>
-            <button *ngIf="audit.status === 1" 
-                    class="btn btn-success btn-sm" 
-                    (click)="startAudit()">
+            <button *ngIf="audit.status === 1" class="btn btn-success d-flex align-items-center" (click)="startAudit()">
+              <mat-icon class="me-1">play_circle</mat-icon>
               Start Audit
             </button>
-            <button *ngIf="audit.status === 2 || audit.status === 4" 
-                    class="btn btn-danger btn-sm" 
-                    (click)="closeAudit()">
+            <button *ngIf="audit.status === 2 || audit.status === 4" class="btn btn-danger d-flex align-items-center" (click)="closeAudit()">
+              <mat-icon class="me-1">stop</mat-icon>
               Close Audit
             </button>
-            <button *ngIf="audit.status === 1" 
-                    class="btn btn-danger btn-sm" 
-                    (click)="deleteAudit()">
+            <button *ngIf="audit.status === 1" class="btn btn-danger d-flex align-items-center" (click)="deleteAudit()">
+              <mat-icon class="me-1">delete</mat-icon>
               Delete
             </button>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

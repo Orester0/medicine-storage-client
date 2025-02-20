@@ -40,7 +40,7 @@
     
 
   <app-create-medicine-request-form
-  [isOpen]="isCreateRequestModalOpen"
+  *ngIf="isCreateRequestModalOpen"
   [medicines]="allMedicines"
   (submitRequest)="saveRequest($event)"
   (cancelRequest)="closeCreateRequestModal()"

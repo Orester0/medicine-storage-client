@@ -1,0 +1,28 @@
+.modal-header {
+  border-bottom: 2px solid #ffc107;
+}
+
+h4 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+.btn {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.mat-tooltip {
+  z-index: 10000 !important;
+}

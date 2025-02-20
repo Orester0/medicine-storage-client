@@ -1,7 +1,7 @@
 <div class="modal fade show d-block" tabindex="-1">
   <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-primary text-white" style="border-bottom: 2px solid #ffc107;">
         <h5 class="modal-title">Sign Up</h5>
         <button type="button" class="btn-close btn-close-white" (click)="cancel()"></button>
       </div>
@@ -9,86 +9,45 @@
         <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
           <div class="mb-3">
             <label for="firstName" class="form-label fw-bold">First Name</label>
-            <input 
-              type="text" 
-              id="firstName" 
-              class="form-control" 
-              formControlName="firstName"
-              [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
-              placeholder="Enter first name"
-            />
+            <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="Enter first name" />
             <app-validation-errors [control]="registerForm.get('firstName')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
             <label for="lastName" class="form-label fw-bold">Last Name</label>
-            <input 
-              type="text" 
-              id="lastName" 
-              class="form-control" 
-              formControlName="lastName"
-              placeholder="Enter last name"
-            />
+            <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Enter last name" />
             <app-validation-errors [control]="registerForm.get('lastName')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
             <label for="username" class="form-label fw-bold">Username</label>
-            <input 
-              type="text" 
-              id="username" 
-              class="form-control" 
-              formControlName="username"
-              placeholder="Enter username"
-            />
+            <input type="text" id="username" class="form-control" formControlName="username" placeholder="Enter username" />
             <app-validation-errors [control]="registerForm.get('username')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label fw-bold">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              class="form-control" 
-              formControlName="email"
-              placeholder="Enter email"
-            />
+            <input type="email" id="email" class="form-control" formControlName="email" placeholder="Enter email" />
             <app-validation-errors [control]="registerForm.get('email')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
             <label for="password" class="form-label fw-bold">Password</label>
-            <input 
-              type="password" 
-              id="password" 
-              class="form-control" 
-              formControlName="password"
-              placeholder="Enter password"
-            />
+            <input type="password" id="password" class="form-control" formControlName="password" placeholder="Enter password" />
             <app-validation-errors [control]="registerForm.get('password')!"></app-validation-errors>
           </div>
 
           <div class="mb-3">
             <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
-            <input 
-              type="password" 
-              id="confirmPassword" 
-              class="form-control" 
-              formControlName="confirmPassword"
-              placeholder="Confirm password"
-            />
-            <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class=" text-danger small mt-2 mb-1 fw-medium">
+            <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" placeholder="Confirm password" />
+            <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class="text-danger small mt-2 mb-1 fw-medium">
               Passwords do not match.
             </div>
           </div>
 
           <div class="mb-3">
             <label for="role" class="form-label fw-bold">Role</label>
-            <select 
-              id="role" 
-              class="form-select" 
-              formControlName="role"
-              [class.is-invalid]="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
+            <select id="role" class="form-select" formControlName="role">
               <option value="" disabled selected>Select a role</option>
               <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
             </select>
@@ -104,16 +63,11 @@
           </div>
 
           <div class="text-end">
-            <button 
-              [disabled]="!registerForm.valid || isLoading" 
-              class="btn btn-success me-2" 
-              type="submit">
+            <button [disabled]="!registerForm.valid || isLoading" class="btn btn-success me-2" type="submit">
               <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
               Register
             </button>
-            <button class="btn btn-secondary" (click)="cancel()" type="button" [disabled]="isLoading">
-              Cancel
-            </button>
+            <button class="btn btn-secondary" (click)="cancel()" type="button" [disabled]="isLoading">Cancel</button>
           </div>
         </form>
       </div>

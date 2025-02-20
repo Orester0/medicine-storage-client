@@ -5,10 +5,11 @@ import { MedicineService } from '../../_services/medicine.service';
 import { CommonModule } from '@angular/common';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
 import { uniqueValidator } from '../../_validators/validators';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-medicine-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MatIconModule],
   templateUrl: './create-medicine-form.component.html',
   styleUrl: './create-medicine-form.component.css'
 })

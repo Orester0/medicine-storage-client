@@ -1,0 +1,65 @@
+
+h4 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+.btn {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.mat-tooltip {
+  z-index: 10000 !important;
+}
+
+  .modal-header {
+    border-bottom: 2px solid #ffc107;
+  }
+
+
+
+.status-badge {
+    display: inline-flex; 
+    align-items: center;
+    gap: 6px; 
+    padding: 0.3rem 0.8rem; 
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 15px;
+    margin-left: 10px;
+    text-transform: capitalize;
+    white-space: nowrap; 
+  }
+  
+  
+  .status-icon {
+    font-size: 16px;
+  }
+  
+  .status-badge.pending {
+    background-color: #ffeb3b;
+    color: #856404;
+  }
+  
+  .status-badge.approved {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .status-badge.rejected {
+    background-color: #dc3545;
+    color: white;
+  }
+  

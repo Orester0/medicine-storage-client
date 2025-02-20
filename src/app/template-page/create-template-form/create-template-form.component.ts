@@ -5,10 +5,11 @@ import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { TemplateType, Template } from '../../_models/template.types';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-template-form',
-  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, ValidationErrorsComponent, MedicineNamePipe, MatIconModule],
   templateUrl: './create-template-form.component.html',
   styleUrl: './create-template-form.component.css'
 })
@@ -108,5 +109,10 @@ export class CreateTemplateFormComponent {
     if (this.getActiveForm().valid) {
       this.submitForm.emit(this.getActiveForm().value);
     }
+  }
+
+  onCancel(): void {
+    this.getActiveForm().reset();
+    this.cancel.emit();
   }
 }
