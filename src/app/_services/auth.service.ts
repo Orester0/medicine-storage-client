@@ -12,13 +12,10 @@ export class AuthService{
 
   currentUserToken = signal<ReturnUserTokenDTO | null>(null);
   currentUser = signal<ReturnUserDTO | null>(null);
-  currentUserPhoto = signal<string | null>(null);
 
   
   private readonly TOKEN_KEY = 'token_Data';
   private readonly USER_DATA_KEY = 'USER_Data';
-  private readonly USER_PHOTO_KEY = 'USER_Photo';
-
 
   
   constructor() {
@@ -29,16 +26,10 @@ export class AuthService{
   private loadStoredUser(): void {
     const storedToken = localStorage.getItem(this.TOKEN_KEY);
     const storedUser = localStorage.getItem(this.USER_DATA_KEY);
-    const storedPhotoBase64 = localStorage.getItem(this.USER_PHOTO_KEY);
 
-    // if (storedToken) {
-    //   this.currentUserToken.set(JSON.parse(storedToken));
-    // }
+
     if (storedUser) {
       this.currentUser.set(JSON.parse(storedUser));
-    }
-    if (storedPhotoBase64) {
-      this.currentUserPhoto.set(storedPhotoBase64);
     }
     if (storedToken) {
       this.currentUserToken.set(JSON.parse(storedToken));
@@ -47,14 +38,6 @@ export class AuthService{
         tap(user => {
           this.currentUser.set(user);
           this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(user));
-        })
-      );
-
-      this.http.get(`${this.baseUrlAccount}/photo`, { responseType: 'blob' }).pipe(
-        switchMap(blob => this.blobToBase64(blob)),
-        tap(base64 => {
-          this.currentUserPhoto.set(base64);
-          this.setStorageItem(this.USER_PHOTO_KEY, base64);
         })
       );
     }
@@ -89,7 +72,6 @@ export class AuthService{
       this.currentUser.set(data.returnUserDTO);
       this.setStorageItem(this.TOKEN_KEY, JSON.stringify(data.returnUserTokenDTO));
       this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(data.returnUserDTO));
-      this.getCurrentUserPhoto().subscribe();
     } 
     else 
     {
@@ -113,11 +95,9 @@ export class AuthService{
   
     this.removeStorageItem(this.TOKEN_KEY);
     this.removeStorageItem(this.USER_DATA_KEY);
-    this.removeStorageItem(this.USER_PHOTO_KEY);
     
     this.currentUserToken.set(null);
     this.currentUser.set(null);
-    this.currentUserPhoto.set(null);
   }
 
 
@@ -154,21 +134,6 @@ export class AuthService{
     
   }
 
-  getCurrentUserPhoto(force: boolean = false): Observable<string> {
-    if (this.currentUserPhoto() && !force) {
-      return of(this.currentUserPhoto()!);
-    }
-
-    return this.http.get(`${this.baseUrlAccount}/photo`, { responseType: 'blob' }).pipe(
-      switchMap(blob => this.blobToBase64(blob)),
-      tap(base64 => {
-        this.currentUserPhoto.set(base64);
-        this.setStorageItem(this.USER_PHOTO_KEY, base64);
-      })
-    );
-  }
-
-  
   updateCurrentUserInfo(model: UserUpdateDTO): Observable<void> {
     return this.http.put<void>(`${this.baseUrlAccount}/update`, model).pipe(
       tap(() => {
@@ -184,7 +149,7 @@ export class AuthService{
     
     return this.http.post<void>(`${this.baseUrlAccount}/upload-photo`, formData).pipe(
       tap(() => {
-        this.getCurrentUserPhoto(true).subscribe();
+        this.getCurrentUserInfo(true).subscribe();
       })
     );
   }
@@ -210,18 +175,5 @@ export class AuthService{
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
-
-  private blobToBase64(blob: Blob): Observable<string> {
-    return new Observable<string>(observer => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        observer.next(reader.result as string);
-        observer.complete();
-      };
-      reader.onerror = error => observer.error(error);
-      reader.readAsDataURL(blob);
-    });
-  }
-
 
 }

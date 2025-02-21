@@ -7,7 +7,11 @@
       </div>
       <div class="modal-body px-4 py-3">
         <div class="text-center mb-3">
-          <div class="avatar-circle"></div>
+          <div class="avatar-circle">
+            <img [src]="user?.photoBase64"
+              alt="Profile Picture"
+              class="avatar">
+          </div>
         </div>
         <small class="fw-bold text-muted d-block mb-2">Personal Information</small>
         <div class="mb-2 d-flex justify-content-between">

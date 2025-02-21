@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserUpdateDTO } from '../../_models/user.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -16,8 +16,9 @@ export class UserProfileInfoComponent implements OnInit  {
   private toastr = inject(ToastrService);
   private fb = inject(FormBuilder);
 
-  currentUser = this.authService.currentUser;
-  photoUrl = this.authService.currentUserPhoto;
+  
+  currentUser = computed(() => this.authService.currentUser());
+  photoUrl = computed(() => this.authService.currentUser()?.photoBase64);
   editMode = false;
   userEditForm!: FormGroup;
 
@@ -64,7 +65,7 @@ export class UserProfileInfoComponent implements OnInit  {
       this.authService.uploadCurrentUserPhoto(file).subscribe({
         next: () => {
           this.toastr.success('Photo uploaded successfully');
-          this.authService.getCurrentUserPhoto().subscribe();
+          this.authService.getCurrentUserInfo().subscribe();
         },
         error: () => this.toastr.error('Error uploading photo')
       });

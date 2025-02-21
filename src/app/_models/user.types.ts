@@ -33,6 +33,7 @@
   company?: string | null;
   email: string;
   roles: string[];
+  photoBase64: string;
 }
 
  

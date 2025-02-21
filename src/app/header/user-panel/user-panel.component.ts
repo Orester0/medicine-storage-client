@@ -22,7 +22,7 @@ export class UserPanelComponent{
   model: UserLoginDTO = { userName: '', password: '' };
   
   currentUser = computed(() => this.authService.currentUser());
-  photoUrl = computed(() => this.authService.currentUserPhoto());
+  photoUrl = computed(() => this.authService.currentUser()?.photoBase64);
   isAuthenticated = computed(() => !!this.authService.currentUser());
 
   login() {
