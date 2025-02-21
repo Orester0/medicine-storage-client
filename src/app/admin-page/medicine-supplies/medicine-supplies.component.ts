@@ -29,74 +29,8 @@ export class MedicineSuppliesComponent implements OnInit{
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserDTO[] = [];
   allTenders: ReturnTenderDTO[] = [];
-  
 
-
-
-
-
-  supplyParams: MedicineSupplyParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    isDescending: false
-  };
-
-  totalItems = 0;
-
-  onSupplyFilterChange(filters: Partial<MedicineSupplyParams>) {
-    this.supplyParams = { 
-      ...this.supplyParams, 
-      ...filters, 
-      pageNumber: 1 
-    };
-    this.loadSupplies();
-  }
-
-  onSupplySort(sort: { key: keyof ReturnMedicineSupplyDTO; isDescending: boolean }) {
-    this.supplyParams.sortBy = sort.key as string;
-    this.supplyParams.isDescending = sort.isDescending;
-    this.loadSupplies();
-  }
-
-  onSupplyPageChange(page: number) {
-    this.supplyParams.pageNumber = page;
-    this.loadSupplies();
-  }
-
-
-
-
-
-  isCreateSupplyFormVisible = false;
-
-  showCreateSupplyForm() {
-    this.isCreateSupplyFormVisible = true;
-  }
-
-  hideCreateSupplyForm() {
-    this.isCreateSupplyFormVisible = false;
-  }
-
-  onCreateSupply(supply: any) {
-    this.medicineSupplyService.createSupply(supply).subscribe(() => {
-      this.loadSupplies();
-      this.hideCreateSupplyForm();
-    });
-  }
-
-  onCloseCreateSupplyForm() {
-    this.hideCreateSupplyForm();
-  }
-
-
-
-
-  
-  supplies: ReturnMedicineSupplyDTO[] = [];
-
-  constructor(private medicineSupplyService: MedicineSupplyService, private route: ActivatedRoute){}
-
-  supplyFilters: FilterConfig[] = [
+  filterConfig: FilterConfig[] = [
     { 
       key: 'medicineId', 
       label: 'Medicine', 
@@ -126,32 +60,6 @@ export class MedicineSuppliesComponent implements OnInit{
       options: [] 
     }
   ];
-  
-  private initializeFilter(): void {
-    this.supplyFilters[0].options = this.allMedicines.map(medicine => ({
-      value: medicine.id,
-      label: this.medicineNamePipe.transform(medicine) 
-    }));
-  
-    this.supplyFilters[3].options = this.allTenders.map(tender => ({
-      value: tender.id, 
-      label: tender.title 
-    }));
-  
-    this.supplyFilters[4].options = this.allUsers.map(user => ({
-      value: user.id, 
-      label: this.fullNamePipe.transform(user)
-    }));
-  }
-  
-  ngOnInit(): void {
-    this.allMedicines = this.route.snapshot.data['medicines'];
-    this.allTenders = this.route.snapshot.data['tenders'];
-    this.allUsers = this.route.snapshot.data['users'];
-    this.loadSupplies();
-    this.initializeFilter();
-  }
-
   
   supplyColumns: TableColumn<ReturnMedicineSupplyDTO>[] = [
     { 
@@ -190,6 +98,68 @@ export class MedicineSuppliesComponent implements OnInit{
     
   ];
 
+  supplyParams: MedicineSupplyParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
+
+  totalItems = 0;
+
+  onFilterChange(filters: Partial<MedicineSupplyParams>) {
+    this.supplyParams = { 
+      ...this.supplyParams, 
+      ...filters, 
+      pageNumber: 1 
+    };
+    this.loadSupplies();
+  }
+
+  onSortChange(sort: { key: keyof ReturnMedicineSupplyDTO; isDescending: boolean }) {
+    this.supplyParams.sortBy = sort.key as string;
+    this.supplyParams.isDescending = sort.isDescending;
+    this.loadSupplies();
+  }
+
+  onPageChange(page: number) {
+    this.supplyParams.pageNumber = page;
+    this.loadSupplies();
+  }
+
+
+
+
+
+  isCreateSupplyFormVisible = false;
+  supplies: ReturnMedicineSupplyDTO[] = [];
+
+  constructor(private medicineSupplyService: MedicineSupplyService, private route: ActivatedRoute){}
+
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.allTenders = this.route.snapshot.data['tenders'];
+    this.allUsers = this.route.snapshot.data['users'];
+    this.loadSupplies();
+    this.initializeFilter();
+  }
+
+  private initializeFilter(): void {
+    this.filterConfig[0].options = this.allMedicines.map(medicine => ({
+      value: medicine.id,
+      label: this.medicineNamePipe.transform(medicine) 
+    }));
+  
+    this.filterConfig[3].options = this.allTenders.map(tender => ({
+      value: tender.id, 
+      label: tender.title 
+    }));
+  
+    this.filterConfig[4].options = this.allUsers.map(user => ({
+      value: user.id, 
+      label: this.fullNamePipe.transform(user)
+    }));
+  }
+
   private loadSupplies() {
     this.medicineSupplyService.getSupplies(this.supplyParams).subscribe(
       response => {
@@ -198,5 +168,27 @@ export class MedicineSuppliesComponent implements OnInit{
       }
     );
   }
+
+  
+  showCreateSupplyForm() {
+    this.isCreateSupplyFormVisible = true;
+  }
+
+  hideCreateSupplyForm() {
+    this.isCreateSupplyFormVisible = false;
+  }
+
+  onCreateSupply(supply: any) {
+    this.medicineSupplyService.createSupply(supply).subscribe(() => {
+      this.loadSupplies();
+      this.hideCreateSupplyForm();
+    });
+  }
+
+  onCloseCreateSupplyForm() {
+    this.hideCreateSupplyForm();
+  }
+
+
   
 }

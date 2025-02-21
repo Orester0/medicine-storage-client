@@ -25,10 +25,6 @@ export class MedicineUsagesComponent implements OnInit{
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserDTO[] = [];
 
-  
-
-
-
   totalUsages = 0;
 
   usageParams: MedicineUsageParams = {
@@ -36,35 +32,6 @@ export class MedicineUsagesComponent implements OnInit{
     pageSize: 10,
     isDescending: false
   };
-
-  onFilterChange(filters: Partial<MedicineUsageParams>) {
-    this.usageParams = { 
-      ...this.usageParams, 
-      ...filters, 
-      pageNumber: 1 
-    };
-    this.loadUsages();
-  }
-
-  onSortChange(sort: { key: keyof ReturnMedicineUsageDTO; isDescending: boolean }) {
-    this.usageParams.sortBy = sort.key as string;
-    this.usageParams.isDescending = sort.isDescending;
-    this.loadUsages();
-  }
-
-  onPageChange(page: number) {
-    this.usageParams.pageNumber = page;
-    this.loadUsages();
-  }
-
-
-
-
-
-
-  usages: ReturnMedicineUsageDTO[] = [];
-
-  constructor(private medicineUsageService: MedicineUsageService, private route: ActivatedRoute){}
 
   totalItems: TableColumn<ReturnMedicineUsageDTO>[] = [
     { 
@@ -122,6 +89,19 @@ export class MedicineUsagesComponent implements OnInit{
     }
   ];
 
+
+
+  usages: ReturnMedicineUsageDTO[] = [];
+
+  constructor(private medicineUsageService: MedicineUsageService, private route: ActivatedRoute){}
+
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.allUsers = this.route.snapshot.data['users'];
+    this.loadUsages();
+    this.initializeFilter();
+  }
+
   private initializeFilter(): void {
     this.usageFilters[0].options = this.allMedicines.map(medicine => ({
       value: medicine.id,
@@ -133,14 +113,7 @@ export class MedicineUsagesComponent implements OnInit{
       label: this.fullNamePipe.transform(user)
     }));
   }
-
-  ngOnInit(): void {
-    this.allMedicines = this.route.snapshot.data['medicines'];
-    this.allUsers = this.route.snapshot.data['users'];
-    this.loadUsages();
-    this.initializeFilter();
-  }
-
+  
   private loadUsages() {
     this.medicineUsageService.getUsages(this.usageParams).subscribe(
       response => {
@@ -149,4 +122,27 @@ export class MedicineUsagesComponent implements OnInit{
       }
     );
   }
+
+  onFilterChange(filters: Partial<MedicineUsageParams>) {
+    this.usageParams = { 
+      ...this.usageParams, 
+      ...filters, 
+      pageNumber: 1 
+    };
+    this.loadUsages();
+  }
+
+  onSortChange(sort: { key: keyof ReturnMedicineUsageDTO; isDescending: boolean }) {
+    this.usageParams.sortBy = sort.key as string;
+    this.usageParams.isDescending = sort.isDescending;
+    this.loadUsages();
+  }
+
+  onPageChange(page: number) {
+    this.usageParams.pageNumber = page;
+    this.loadUsages();
+  }
+
+
+
 }

@@ -1,10 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ReturnAuditDTO, AuditParams, AuditStatus, CreateAuditDTO, UpdateAuditItemsRequest } from '../../_models/audit.types';
 import { AuditService } from '../../_services/audit.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuditsDetailsComponent } from '../audits-details/audits-details.component';
-import { MedicineService } from '../../_services/medicine.service';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
@@ -21,7 +20,7 @@ import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-audits',
-  imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, FormsModule, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
+  imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
   providers: [AuditStatusPipe, UserFullNamePipe],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
@@ -31,13 +30,14 @@ export class AuditsComponent implements OnInit {
   userFullNamePipe = inject(UserFullNamePipe);
   authService = inject(AuthService)
 
+
+  // handle delete
+
   auditToDelete: ReturnAuditDTO | null = null;
 
   deleteAuditPrompt(audit: ReturnAuditDTO): void {
     this.auditToDelete = audit;
   }
-  isCreateAuditModalOpen = false;
-
 
   handleDeleteConfirm(): void {
     if (!this.auditToDelete) return;
@@ -56,61 +56,27 @@ export class AuditsComponent implements OnInit {
     this.auditToDelete = null;
   }
 
-  auditToStart: ReturnAuditDTO | null = null;
-  auditToClose: ReturnAuditDTO | null = null;
-  auditToUpdate: ReturnAuditDTO | null = null;
 
-  startAudit(id: number) {
-    const audit = this.audits.find(a => a.id === id);
-    if (audit) this.auditToStart = audit;
-  }
 
-  closeAudit(id: number) {
-    const audit = this.audits.find(a => a.id === id);
-    if (audit) this.auditToClose = audit;
-  }
+  isCreateAuditModalOpen = false;
 
-  updateAudit(id: number) {
-    const audit = this.audits.find(a => a.id === id);
-    if (audit) this.auditToUpdate = audit;
-  }
 
-  handleStartSubmit(data: { note: string }) {
-    if (!this.auditToStart) return;
-    
-    this.auditService.startAudit(this.auditToStart.id, { note: data.note }).subscribe({
-      next: () => {
-        this.loadAudits();
-        this.auditToStart = null;
-      },
-      error: () => this.error = 'Failed to start audit'
-    });
-  }
+  
 
-  handleCloseSubmit(data: { note: string }) { 
-    if (!this.auditToClose) return;
 
-    this.auditService.closeAudit(this.auditToClose.id, { note: data.note }).subscribe({
-      next: () => {
-        this.loadAudits();
-        this.auditToClose = null;
-      },
-      error: () => this.error = 'Failed to close audit'
-    });
-  }
+  
 
-  handleUpdateSubmit(data: UpdateAuditItemsRequest) {
-    if (!this.auditToUpdate) return;
 
-    this.auditService.updateAuditItems(this.auditToUpdate.id, data).subscribe({
-      next: () => {
-        this.loadAudits();
-        this.auditToUpdate = null;
-      },
-      error: () => console.error('Failed to update audit items'),
-    });
-  }
+  
+  
+  audits: ReturnAuditDTO[] = [];
+  allMedicines: ReturnMedicineDTO[] = [];
+  allUsers: ReturnUserDTO[] = [];
 
+  selectedAudit: ReturnAuditDTO | null = null;
+
+  error: string | null = null;
+  totalItems: number = 0;
 
   tableActions: TableAction<ReturnAuditDTO>[] = [
     {
@@ -197,21 +163,15 @@ export class AuditsComponent implements OnInit {
       label: 'Actions' 
     }
   ];
-  
-  audits: ReturnAuditDTO[] = [];
-  allMedicines: ReturnMedicineDTO[] = [];
-  allUsers: ReturnUserDTO[] = [];
-
-  selectedAudit: ReturnAuditDTO | null = null;
-
-  error: string | null = null;
-  sortColumn: string = 'plannedDate';
-  isDescending: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalItems: number = 0;
 
   
+  
+
+  auditParams: AuditParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
 
 
   constructor(
@@ -227,16 +187,77 @@ export class AuditsComponent implements OnInit {
     this.loadAudits();
   }
 
-  loadAudits(): void {
-    const queryParams = {
-      ...this.filterModel,
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending,
-    };
   
-    this.auditService.getAllAudits(queryParams).subscribe({
+  filterConfig: FilterConfig[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      type: 'text',
+      col: 6
+    },
+    {
+      key: 'fromPlannedDate',
+      label: 'Planned From Date',
+      type: 'date',
+    },
+    {
+      key: 'toPlannedDate',
+      label: 'Planned To Date',
+      type: 'date',
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: Object.values(AuditStatus)
+        .filter(status => typeof status === 'number')
+        .map(status => ({
+          value: status as AuditStatus,
+          label: this.auditStatusPipe.transform(status)
+        }))
+    },
+    {
+      key: 'plannedByUserId',
+      label: 'Planned By User',
+      type: 'select',
+      options: []
+    },
+    {
+      key: 'closedByUserId',
+      label: 'Closed By User',
+      type: 'select',
+      options: []
+    },
+    {
+      key: 'executedByUserId',
+      label: 'Executed By User',
+      type: 'select',
+      options: []
+    }
+    
+  ];
+  
+  private initializeFilter(): void {
+    this.filterConfig[4].options = this.allUsers.map(user => ({
+      value: user.id,
+      label: this.userFullNamePipe.transform(user)
+    }))
+  
+    this.filterConfig[5].options = this.allUsers.map(user => ({
+      value: user.id,
+      label: this.userFullNamePipe.transform(user)
+    }))
+  
+    this.filterConfig[6].options = this.allUsers.map(user => ({
+      value: user.id,
+      label: this.userFullNamePipe.transform(user)
+    }))
+  }
+  
+
+  loadAudits(): void {
+
+    this.auditService.getAllAudits(this.auditParams).subscribe({
       next: (response) => {
         this.audits = response.items || [];
         this.totalItems = response.totalCount || 0;
@@ -246,20 +267,60 @@ export class AuditsComponent implements OnInit {
       },
     });
   }
-  
-  onFilterChange(filters: any): void {
-    this.filterModel = {
-      ...this.filterModel,
-      ...filters
-    };
-    this.currentPage = 1;
-    this.loadAudits();
+
+  auditToStart: ReturnAuditDTO | null = null;
+  auditToClose: ReturnAuditDTO | null = null;
+  auditToUpdate: ReturnAuditDTO | null = null;
+
+  startAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToStart = audit;
   }
 
-  onSortChange(sortConfig: { key: keyof ReturnAuditDTO; isDescending: boolean }): void {
-    this.sortColumn = sortConfig.key as string;
-    this.isDescending = sortConfig.isDescending;
-    this.loadAudits();
+  closeAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToClose = audit;
+  }
+
+  updateAudit(id: number) {
+    const audit = this.audits.find(a => a.id === id);
+    if (audit) this.auditToUpdate = audit;
+  }
+
+  handleStartSubmit(data: { note: string }) {
+    if (!this.auditToStart) return;
+    
+    this.auditService.startAudit(this.auditToStart.id, { note: data.note }).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToStart = null;
+      },
+      error: () => this.error = 'Failed to start audit'
+    });
+  }
+
+  handleCloseSubmit(data: { note: string }) { 
+    if (!this.auditToClose) return;
+
+    this.auditService.closeAudit(this.auditToClose.id, { note: data.note }).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToClose = null;
+      },
+      error: () => this.error = 'Failed to close audit'
+    });
+  }
+
+  handleUpdateSubmit(data: UpdateAuditItemsRequest) {
+    if (!this.auditToUpdate) return;
+
+    this.auditService.updateAuditItems(this.auditToUpdate.id, data).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.auditToUpdate = null;
+      },
+      error: () => console.error('Failed to update audit items'),
+    });
   }
   
   saveAudit(auditData: CreateAuditDTO): void {
@@ -271,15 +332,8 @@ export class AuditsComponent implements OnInit {
       error: () => (this.error = 'Failed to create audit'),
     });
   }
-  
-  onPageChange(newPage: number): void {
-    this.currentPage = newPage;
-    this.loadAudits();
-  }
 
-  openCreateModal(): void {
-    this.isCreateAuditModalOpen = true;
-  }
+  
 
   closeCreateAuditModal(): void {
     this.isCreateAuditModalOpen = false;
@@ -325,88 +379,32 @@ export class AuditsComponent implements OnInit {
     return classMap[status] ?? 'bg-secondary';
   }
 
-  filterConfig: FilterConfig[] = [
-    {
-      key: 'title',
-      label: 'Title',
-      type: 'text',
-      col: 6
-    },
-    {
-      key: 'fromPlannedDate',
-      label: 'Planned From Date',
-      type: 'date',
-    },
-    {
-      key: 'toPlannedDate',
-      label: 'Planned To Date',
-      type: 'date',
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      type: 'select',
-      options: Object.values(AuditStatus)
-        .filter(status => typeof status === 'number')
-        .map(status => ({
-          value: status as AuditStatus,
-          label: this.auditStatusPipe.transform(status)
-        }))
-    },
-    
-  ];
   
-  private initializeFilter(): void {
-    this.filterConfig = [
-      
-      ...this.filterConfig,
-      {
-        key: 'plannedByUserId',
-        label: 'Planned By User',
-        type: 'select',
-        options: this.allUsers.map(user => ({
-          value: user.id,
-          label: this.userFullNamePipe.transform(user)
-        }))
-      },
-      {
-        key: 'closedByUserId',
-        label: 'Closed By User',
-        type: 'select',
-        options: this.allUsers.map(user => ({
-          value: user.id,
-          label: this.userFullNamePipe.transform(user)
-        }))
-      },
-      {
-        key: 'executedByUserId',
-        label: 'Executed By User',
-        type: 'select',
-        options: this.allUsers.map(user => ({
-          value: user.id,
-          label: this.userFullNamePipe.transform(user)
-        }))
-      }
-    ];
+
+  onFilterChange(filters: Partial<AuditParams>): void {
+    this.auditParams = { 
+      ...this.auditParams, 
+      ...filters, 
+      pageNumber: 1 
+    };
+    this.loadAudits();
+  }
+
+  onSortChange(sort: { key: keyof ReturnAuditDTO; isDescending: boolean }): void {
+    this.auditParams.sortBy = sort.key as string;
+    this.auditParams.isDescending = sort.isDescending;
+    this.loadAudits();
   }
   
   
+  onPageChange(page: number): void {
+    this.auditParams.pageNumber = page;
+    this.loadAudits();
+  }
 
-  filterModel: AuditParams = {
-    title: null,
-    fromPlannedDate: null,
-    toPlannedDate: null,
-    status: null,
-    plannedByUserId: null,
-    closedByUserId: null,
-    executedByUserId: null,
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'plannedDate',
-    isDescending: false
-  };
-  
-
+  openCreateModal(): void {
+    this.isCreateAuditModalOpen = true;
+  }
 
 
 }

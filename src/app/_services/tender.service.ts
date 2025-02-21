@@ -51,6 +51,10 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       if (params.winnerSelectedByUserId !== null && params.winnerSelectedByUserId !== undefined) {
           httpParams = httpParams.append('winnerSelectedByUserId', params.winnerSelectedByUserId.toString());
       }
+
+      if (params.medicineId !== null && params.medicineId !== undefined) {
+        httpParams = httpParams.append('medicineId', params.medicineId.toString());
+    }
   
       if (params.sortBy) {
           httpParams = httpParams.append('sortBy', params.sortBy);

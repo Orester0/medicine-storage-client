@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CreateMedicineDTO, MedicineParams, ReturnMedicineDTO } from '../../_models/medicine.types';
+import { MedicineParams, ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MedicineService } from '../../_services/medicine.service';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MedicinesDetailsComponent } from '../medicines-details/medicines-details.component';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
@@ -9,7 +9,8 @@ import { DeleteConfirmationModalComponent } from '../../delete-confirmation-moda
 import { FilterComponent, FilterConfig } from '../../filter/filter.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { ActivatedRoute } from '@angular/router';
-import { CreateMedicineRequestDTO } from '../../_models/medicine-request.types';import { MedicineRequestService } from '../../_services/medicine-request.service';
+import { CreateMedicineRequestDTO } from '../../_models/medicine-request.types';
+import { MedicineRequestService } from '../../_services/medicine-request.service';
 import { CreateMedicineFormComponent } from '../create-medicine-form/create-medicine-form.component';
 import { MedicineNotificationsComponent } from '../medicine-notifications/medicine-notifications.component';
 import { CreateMedicineRequestFormComponent } from '../../medicine-request-page/create-medicine-request-form/create-medicine-request-form.component';
@@ -63,19 +64,6 @@ export class MedicinesComponent implements OnInit {
   ];
   
 
-
-  filterModel: MedicineParams = {
-    name: null,
-    category: null,
-    requiresSpecialApproval: null,
-    minStock: null,
-    maxStock: null,
-    sortBy: 'name',
-    isDescending: false,
-    pageNumber: 1,
-    pageSize: 10
-  };
-  
 
   tableActions: TableAction<ReturnMedicineDTO>[] = [
     {
@@ -146,10 +134,6 @@ export class MedicinesComponent implements OnInit {
 
   medicineToDelete: ReturnMedicineDTO | null = null;
 
-  sortColumn = 'name';
-  isDescending = false;
-  currentPage = 1;
-  pageSize = 10;
   totalItems = 0;
 
 
@@ -168,20 +152,21 @@ export class MedicinesComponent implements OnInit {
     this.loadMedicines();
     this.initializeFilter();
   }
+
+  
+
+  medicineParams: MedicineParams = {
+    isDescending: false,
+    pageNumber: 1,
+    pageSize: 10
+  };
+  
   
   loadMedicines(): void {
-    const queryParams = {
-      ...this.filterModel,
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending
-    };
-  
-    this.medicineService.getMedicinesWithFilter(queryParams).subscribe({
+    this.medicineService.getMedicinesWithFilter(this.medicineParams).subscribe({
       next: (response) => {
-        this.medicines = response.items || [];
-        this.totalItems = response.totalCount || 0;
+        this.medicines = response.items;
+        this.totalItems = response.totalCount;
       },
       error: () => {
         this.error = 'Failed to load medicines';
@@ -201,17 +186,17 @@ export class MedicinesComponent implements OnInit {
 
 
   onSortChange(sortConfig: { key: keyof ReturnMedicineDTO; isDescending: boolean }): void {
-    this.sortColumn = sortConfig.key as string;
-    this.isDescending = sortConfig.isDescending;
+    this.medicineParams.sortBy = sortConfig.key as string;
+    this.medicineParams.isDescending = sortConfig.isDescending;
     this.loadMedicines();
   }
 
-  onFilterChange(filters: any): void {
-    this.filterModel = {
-      ...this.filterModel,
-      ...filters,
+  onFilterChange(filters: Partial<MedicineParams>): void {
+    this.medicineParams = {
+      ...this.medicineParams, 
+      ...filters, 
+      pageNumber: 1 
     };
-    this.currentPage = 1;
     this.loadMedicines();
   }
 
@@ -257,8 +242,8 @@ export class MedicinesComponent implements OnInit {
   //   });
   // }
   
-  onPageChange(newPage: number): void {
-    this.currentPage = newPage;
+  onPageChange(page: number): void {
+    this.medicineParams.pageNumber = page;
     this.loadMedicines();
   }
 

@@ -29,8 +29,8 @@
 
   <app-pagination
     [totalItems]="totalItems"
-    [pageSize]="pageSize"
-    [currentPage]="currentPage"
+    [currentPage]="medicineParams.pageNumber || 1"
+    [pageSize]="medicineParams.pageSize || 10"
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
 

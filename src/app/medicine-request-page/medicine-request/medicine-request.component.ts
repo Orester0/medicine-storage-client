@@ -151,7 +151,24 @@ export class MedicineRequestComponent implements OnInit {
 
   users: ReturnUserDTO[] = [];
   filterConfig: FilterConfig[] = [
-    
+    {
+      key: 'medicineId',
+      label: 'Medicine',
+      type: 'select',
+      options: this.allMedicines.map(medicine => ({
+        value: medicine.id,
+        label: medicine.name
+      }))
+    },
+    {
+      key: 'requestedByUserId',
+      label: 'Requested By',
+      type: 'select',
+      options: this.users.map(user => ({
+        value: user.id,
+        label: `${user.firstName} ${user.lastName}`
+      }))
+    },
     {
       key: 'status',
       label: 'Status',
@@ -199,27 +216,15 @@ export class MedicineRequestComponent implements OnInit {
   ) {}
   
   private initializeFilter(): void {
-    this.filterConfig = [
-      {
-        key: 'medicineId',
-        label: 'Medicine',
-        type: 'select',
-        options: this.allMedicines.map(medicine => ({
-          value: medicine.id,
-          label: medicine.name
-        }))
-      },
-      {
-        key: 'requestedByUserId',
-        label: 'Requested By',
-        type: 'select',
-        options: this.users.map(user => ({
-          value: user.id,
-          label: `${user.firstName} ${user.lastName}`
-        }))
-      },
-      ...this.filterConfig,
-    ];
+    this.filterConfig[0].options = this.allMedicines.map(medicine => ({
+      value: medicine.id,
+      label: medicine.name
+    }))
+  
+    this.filterConfig[1].options = this.users.map(user => ({
+      value: user.id,
+      label: `${user.firstName} ${user.lastName}`
+    }))
   }
 
   

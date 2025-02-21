@@ -1,10 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CreateTenderDTO, CreateTenderItem, ReturnTenderDTO, TenderStatus } from '../../_models/tender.types';
+import { CreateTenderDTO, ReturnTenderDTO, TenderParams, TenderStatus } from '../../_models/tender.types';
 import { TenderService } from '../../_services/tender.service';
-import { TendersDetailsComponent } from '../tenders-details/tenders-details.component';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MedicineService } from '../../_services/medicine.service';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
@@ -12,7 +10,6 @@ import { FilterComponent, FilterConfig } from '../../filter/filter.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteConfirmationModalComponent } from '../../delete-confirmation-modal/delete-confirmation-modal.component';
 import { CreateTenderFormComponent } from '../create-tender-form/create-tender-form.component';
-import { TenderItemsComponent } from '../tender-items/tender-items.component';
 import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { AuthService } from '../../_services/auth.service';
@@ -22,7 +19,7 @@ import { HasRoleDirective } from '../../_directives/has-role.directive';
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
-  imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, FormsModule, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
+  imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
   providers: [TenderStatusPipe, MedicineNamePipe, HasRoleDirective],
 })
 export class TendersComponent implements OnInit {
@@ -44,19 +41,52 @@ export class TendersComponent implements OnInit {
   }
 
   
+  filterConfig: FilterConfig[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      type: 'text',
+      col: 3
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: Object.values(TenderStatus)
+        .filter(status => typeof status === 'number') 
+        .map(status => ({
+            value: status as TenderStatus,
+            label: this.tenderStatusPipe.transform(status)
+      }))
+    },
+    {
+      key: 'medicineId',
+      label: 'Medicine',
+      type: 'select',
+      options: []
+    },
+    {
+      key: 'deadlineDateFrom',
+      label: 'Deadline Date From',
+      type: 'date',
+      col: 3
+    },
+    {
+      key: 'deadlineDateTo',
+      label: 'Deadline Date To',
+      type: 'date',
+      col: 3
+    }
+  ];
+
+
   private initializeFilter(): void {
-    this.filterConfig = [
-      ...this.filterConfig,
-      {
-        key: 'medicineId',
-        label: 'Medicine',
-        type: 'select',
-        options: this.allMedicines.map(medicine => ({
-          value: medicine.id,
-          label: this.medicineNamePipe.transform(medicine)
-        }))
-      }
-    ];
+    
+    this.filterConfig[2].options = this.allMedicines.map(medicine => ({
+      
+      value: medicine.id,
+      label: this.medicineNamePipe.transform(medicine)
+    }))
   }
 
   // delete 
@@ -84,12 +114,6 @@ export class TendersComponent implements OnInit {
   }
 
   // table config
-
-  onSortChange(sortConfig: { key: keyof ReturnTenderDTO; isDescending: boolean }): void {
-    this.sortColumn = sortConfig.key as string;
-    this.isDescending = sortConfig.isDescending;
-    this.loadTenders();
-  }
 
   tableActions: TableAction<ReturnTenderDTO>[] = [
     {
@@ -142,71 +166,11 @@ export class TendersComponent implements OnInit {
     }
   ];
 
-  // filters
-  sortColumn = 'title';
-  isDescending = false;
 
-  filterModel = {
-    title: '',
-    status: null as TenderStatus | null,
-    deadlineDateFrom: null as Date | null,
-    deadlineDateTo: null as Date | null
-  };
-
-  onFilterChange(filters: any): void {
-    this.filterModel = {
-    ...this.filterModel,
-    ...filters
-    };
-
-    this.currentPage = 1;
-    this.loadTenders();
-  }
   
-  filterConfig: FilterConfig[] = [
-    {
-      key: 'title',
-      label: 'Title',
-      type: 'text',
-      col: 3
-    },
-    {
-          key: 'status',
-          label: 'Status',
-          type: 'select',
-          options: Object.values(TenderStatus)
-          .filter(status => typeof status === 'number') 
-          .map(status => ({
-            value: status as TenderStatus,
-            label: this.tenderStatusPipe.transform(status)
-          }))
-        },
-    
-    
-    {
-      key: 'deadlineDateFrom',
-      label: 'Deadline Date From',
-      type: 'date',
-      col: 3
-    },
-    {
-      key: 'deadlineDateTo',
-      label: 'Deadline Date To',
-      type: 'date',
-      col: 3
-    }
-  ];
 
   // pagination
-
-  currentPage = 1;
-  pageSize = 10;
-  totalItems = 0;
   
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadTenders();
-}
 
 
   tenders: ReturnTenderDTO[] = [];
@@ -215,18 +179,19 @@ export class TendersComponent implements OnInit {
   error: string | null = null;
 
   isCreateTenderModalOpen = false;
+
+  
+  tenderParams: TenderParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
+
+  
+  totalItems = 0;
   
   private loadTenders(): void {
-    const queryParams = {
-      ...this.filterModel,
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending
-    };
-
-    
-    this.tenderService.getTendersWithFilter(queryParams).subscribe({
+    this.tenderService.getTendersWithFilter(this.tenderParams).subscribe({
       next: (response) => {
         this.tenders = response.items || [];
         this.totalItems = response.totalCount || 0;
@@ -237,14 +202,12 @@ export class TendersComponent implements OnInit {
     });
   }
   
-
   saveTender(tender: CreateTenderDTO): void {
     this.tenderService.createTender(tender).subscribe(() => {
       this.loadTenders();
       this.isCreateTenderModalOpen = false;
     });
   }
-  
 
   viewTenderDetails(tender: ReturnTenderDTO): void {
     this.router.navigate(['/tenders', tender.id]);
@@ -254,16 +217,24 @@ export class TendersComponent implements OnInit {
     this.isCreateTenderModalOpen = true;
   }
 
-  getStatusBadgeClass(status: TenderStatus): string {
-      const classMap: Record<TenderStatus, string> = {
-          [TenderStatus.Created]: 'bg-secondary',
-          [TenderStatus.Published]: 'bg-success',
-          [TenderStatus.Closed]: 'bg-warning text-dark',
-          [TenderStatus.Awarded]: 'bg-info text-dark',
-          [TenderStatus.Executing]: 'bg-primary',
-          [TenderStatus.Executed]: 'bg-dark',
-          [TenderStatus.Cancelled]: 'bg-danger'
-      };
-      return classMap[status] ?? 'bg-secondary';
+  
+  onFilterChange(filters: Partial<TenderParams>): void {
+    this.tenderParams = {
+      ...this.tenderParams,
+      ...filters,
+      pageNumber: 1 
+    };
+    this.loadTenders();
+  }
+
+  onPageChange(page: number): void {
+    this.tenderParams.pageNumber = page;
+    this.loadTenders();
+  }
+
+  onSortChange(sortConfig: { key: keyof ReturnTenderDTO; isDescending: boolean }): void {
+    this.tenderParams.sortBy = sortConfig.key as string;
+    this.tenderParams.isDescending = sortConfig.isDescending;
+    this.loadTenders();
   }
 }

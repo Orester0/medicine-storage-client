@@ -24,8 +24,8 @@
 
   <app-pagination
     [totalItems]="totalItems"
-    [pageSize]="pageSize"
-    [currentPage]="currentPage"
+    [pageSize]="tenderParams.pageSize|| 10"
+    [currentPage]="tenderParams.pageNumber || 1"
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
 
