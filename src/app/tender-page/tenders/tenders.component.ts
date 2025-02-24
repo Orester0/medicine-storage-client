@@ -26,18 +26,17 @@ export class TendersComponent implements OnInit {
   tenderStatusPipe = inject(TenderStatusPipe);
   medicineNamePipe = inject(MedicineNamePipe);
 
-  constructor(
-    private tenderService: TenderService,
-    private route: ActivatedRoute, 
-    private router: Router,
-    private authService: AuthService
-  ) {}
-
+  authService = inject(AuthService);
+  tenderService = inject(TenderService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+  
+  constructor() {}
   
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
-    this.loadTenders();
+    // this.loadTenders();
   }
 
   
@@ -57,7 +56,8 @@ export class TendersComponent implements OnInit {
         .map(status => ({
             value: status as TenderStatus,
             label: this.tenderStatusPipe.transform(status)
-      }))
+      })),
+      defaultValue: this.authService.userHasRole(['distributor']) ? TenderStatus.Published : null
     },
     {
       key: 'medicineId',
@@ -195,6 +195,7 @@ export class TendersComponent implements OnInit {
       next: (response) => {
         this.tenders = response.items || [];
         this.totalItems = response.totalCount || 0;
+        this.selectedTender = null;
       },
       error: () => {
         this.error = 'Failed to load tenders';

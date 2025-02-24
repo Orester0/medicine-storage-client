@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ReturnMedicineSupplyDTO, MedicineSupplyParams } from '../../_models/medicine-supply.types';
+import { ReturnMedicineSupplyDTO, MedicineSupplyParams, CreateMedicineSupplyDTO } from '../../_models/medicine-supply.types';
 import { MedicineSupplyService } from '../../_services/medicine-supply.service';
 import { FilterComponent, FilterConfig } from '../../filter/filter.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
@@ -10,7 +10,7 @@ import { CreateSupplyManualFormComponent } from '../create-supply-manual-modal/c
 import { ActivatedRoute } from '@angular/router';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { ReturnTenderDTO } from '../../_models/tender.types';
-import { ReturnUserDTO } from '../../_models/user.types';
+import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { CommonModule } from '@angular/common';
 import { TenderTitlePipe } from '../../_pipes/tender-title.pipe';
 
@@ -26,8 +26,11 @@ export class MedicineSuppliesComponent implements OnInit{
   medicineNamePipe = inject(MedicineNamePipe);
   tenderTitlePipe = inject(TenderTitlePipe);
 
+  medicineSupplyService = inject(MedicineSupplyService);
+  route = inject(ActivatedRoute);
+
   allMedicines: ReturnMedicineDTO[] = [];
-  allUsers: ReturnUserDTO[] = [];
+  allUsers: ReturnUserGeneralDTO[] = [];
   allTenders: ReturnTenderDTO[] = [];
 
   filterConfig: FilterConfig[] = [
@@ -133,13 +136,11 @@ export class MedicineSuppliesComponent implements OnInit{
   isCreateSupplyFormVisible = false;
   supplies: ReturnMedicineSupplyDTO[] = [];
 
-  constructor(private medicineSupplyService: MedicineSupplyService, private route: ActivatedRoute){}
-
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allTenders = this.route.snapshot.data['tenders'];
     this.allUsers = this.route.snapshot.data['users'];
-    this.loadSupplies();
+    // this.loadSupplies();
     this.initializeFilter();
   }
 
@@ -178,10 +179,10 @@ export class MedicineSuppliesComponent implements OnInit{
     this.isCreateSupplyFormVisible = false;
   }
 
-  onCreateSupply(supply: any) {
+  onCreateSupply(supply: CreateMedicineSupplyDTO) {
     this.medicineSupplyService.createSupply(supply).subscribe(() => {
-      this.loadSupplies();
       this.hideCreateSupplyForm();
+      this.loadSupplies();
     });
   }
 

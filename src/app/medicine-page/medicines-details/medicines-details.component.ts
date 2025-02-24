@@ -19,6 +19,8 @@ export class MedicinesDetailsComponent {
   @Output() onCreate = new EventEmitter<ReturnMedicineDTO>();
   @Output() onDelete = new EventEmitter<ReturnMedicineDTO>();
 
+
+  
   onCloseDetails() {
     this.onClose.emit();
   }

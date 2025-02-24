@@ -41,9 +41,6 @@ export class NotificationsComponent {
   ngOnInit(): void {
     if (this.authService.currentUser()) {
       this.loadNotifications();
-      this.notificationService.startSignalRConnection()
-        .catch(err => console.error('Failed to start SignalR:', err));
-
       this.subscriptions.add(
         this.notificationService.notification$.subscribe(newNotification => {
           this.notifications.unshift(newNotification);
@@ -57,22 +54,20 @@ export class NotificationsComponent {
   loadNotifications(): void {
     if (!this.authService.currentUser()) return;
 
-    this.subscriptions.add(
-      this.notificationService.getUserNotifications().subscribe({
-        next: (data) => {
-          this.notifications = data;
-          this.filterNotifications();
-          this.unreadCount = this.notifications.filter(n => !n.isRead).length;
-        },
-        error: (err) => {
-          if (err.status === 401) {
-            this.notifications = [];
-            this.filteredNotifications = [];
-            this.unreadCount = 0;
-          }
+    this.notificationService.getUserNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+        this.filterNotifications();
+        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          this.notifications = [];
+          this.filteredNotifications = [];
+          this.unreadCount = 0;
         }
-      })
-    );
+      }
+    })
   }
 
   filterNotifications(): void {
@@ -103,6 +98,8 @@ export class NotificationsComponent {
     });
   }
 
+
+  
   ngOnDestroy(): void {
     this.notificationService.stopSignalRConnection();
     this.subscriptions.unsubscribe();

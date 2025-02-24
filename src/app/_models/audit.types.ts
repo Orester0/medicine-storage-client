@@ -1,18 +1,15 @@
 import { ReturnMedicineDTO } from "./medicine.types";
-import { ReturnUserDTO } from "./user.types";
+import { ReturnUserGeneralDTO } from "./user.types";
 
 
 export interface AuditParams {
   title?: string | null;
-
   fromPlannedDate?: Date | string | null;
   toPlannedDate?: Date | string | null;
-
   status?: AuditStatus | null;
   plannedByUserId?: number | null;
   closedByUserId?: number | null;
   executedByUserId?: number | null;
-
   sortBy?: string;
   isDescending?: boolean;
   pageNumber?: number;
@@ -21,15 +18,15 @@ export interface AuditParams {
 
 export interface CreateAuditDTO {
   title: string;
-   medicineIds: number[];
-   notes?: string | null;
-   plannedDate: Date;
+  medicineIds: number[];
+  notes?: string | null;
+  plannedDate: Date;
 }
  
  
- export interface CreateAuditNoteDTO {
+export interface CreateAuditNoteDTO {
   note: string;
-  }
+}
 
   
 
@@ -40,20 +37,19 @@ export interface ReturnAuditDTO {
   startDate: Date | null;
   endDate: Date | null;
   status: AuditStatus;
-  plannedByUser: ReturnUserDTO;
-  closedByUser: ReturnUserDTO | null;
+  plannedByUser: ReturnUserGeneralDTO;
+  closedByUser: ReturnUserGeneralDTO | null;
   auditItems: ReturnAuditItemDTO[];
   notes: ReturnAuditNoteDTO[];
 }
 
- 
 export interface ReturnAuditItemDTO {
   id: number;
   auditId: number;
   expectedQuantity: number;
   actualQuantity: number;
   medicine: ReturnMedicineDTO;
-  checkedByUser: ReturnUserDTO | null;
+  checkedByUser: ReturnUserGeneralDTO | null;
 }
 
  export interface ReturnAuditNoteDTO {
@@ -66,17 +62,6 @@ export interface ReturnAuditItemDTO {
    notes?: string | null;
  }
  
- export interface ReturnAuditItemDTO {
-   id: number;
-   auditId: number;
-   expectedQuantity: number;
-   actualQuantity: number;
-   medicine: ReturnMedicineDTO;
-   checkedByUser: ReturnUserDTO | null;
- }
-
-
-
 
 
 export enum AuditStatus {

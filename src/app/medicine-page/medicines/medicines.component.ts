@@ -14,6 +14,7 @@ import { MedicineRequestService } from '../../_services/medicine-request.service
 import { CreateMedicineFormComponent } from '../create-medicine-form/create-medicine-form.component';
 import { MedicineNotificationsComponent } from '../medicine-notifications/medicine-notifications.component';
 import { CreateMedicineRequestFormComponent } from '../../medicine-request-page/create-medicine-request-form/create-medicine-request-form.component';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-medicines',
@@ -22,7 +23,7 @@ import { CreateMedicineRequestFormComponent } from '../../medicine-request-page/
   styleUrl: './medicines.component.css'
 })
 export class MedicinesComponent implements OnInit {
-  
+  private authService = inject(AuthService);
   filterConfig: FilterConfig[] = [
     { 
       key: 'name', 
@@ -82,7 +83,11 @@ export class MedicinesComponent implements OnInit {
       label: 'Delete',
       icon: 'delete',
       class: 'btn btn-danger btn-sm',
-      onClick: (row) => this.deleteMedicinePrompt(row)
+      onClick: (row) => this.deleteMedicinePrompt(row),
+      visible: () => {
+        const isAdmin = this.authService.userHasRole(['Admin']);
+        return isAdmin;
+      },
     },
   ];
 
@@ -144,12 +149,11 @@ export class MedicinesComponent implements OnInit {
   {
 
   }
-
   
   
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
-    this.loadMedicines();
+    // this.loadMedicines();
     this.initializeFilter();
   }
 
@@ -167,6 +171,7 @@ export class MedicinesComponent implements OnInit {
       next: (response) => {
         this.medicines = response.items;
         this.totalItems = response.totalCount;
+        this.selectedMedicine = null;
       },
       error: () => {
         this.error = 'Failed to load medicines';

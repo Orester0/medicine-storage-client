@@ -10,7 +10,9 @@ export interface FilterConfig {
   type: 'text' | 'number' | 'date' | 'select';
   options?: { value: any; label: string }[];
   col?: number;
+  defaultValue?: any;
 }
+
 
 @Component({
   selector: 'app-filter',
@@ -43,6 +45,7 @@ export class FilterComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.applyFilters();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -54,10 +57,11 @@ export class FilterComponent implements OnInit {
   private initForm(): void {
     const group: Record<string, any> = {};
     this.config.forEach(field => {
-      group[field.key] = [null];
+      group[field.key] = [field.defaultValue ?? null];
     });
     this.form = this.fb.group(group);
   }
+  
 
   toggleFilters(): void {
     this.isVisible = !this.isVisible;

@@ -20,14 +20,19 @@
         <li class="nav-item">
           <a routerLink="/templates" routerLinkActive="active" class="nav-link">Templates</a>
         </li>
-        <li *appHasRole="['Admin']" class="nav-item dropdown" (mouseenter)="showAdminDropdown = true" (mouseleave)="showAdminDropdown = false">
-          <a routerLink="/admin" routerLinkActive="active" class="nav-link dropdown-toggle">Admin Page</a>
-          <ul class="dropdown-menu" [class.show]="showAdminDropdown">
-            <li><a routerLink="/admin/users" class="dropdown-item">Users</a></li>
-            <li><a routerLink="/admin/supplies" class="dropdown-item">Supplies</a></li>
-            <li><a routerLink="/admin/usages" class="dropdown-item">Usages</a></li>
-          </ul>
-        </li>
+        <li *appHasRole="['Admin']" class="nav-item dropdown" 
+          (mouseenter)="showAdminDropdown = true" 
+          (mouseleave)="showAdminDropdown = false">
+        
+        <a class="nav-link dropdown-toggle" href="#" (click)="navigateToAdmin($event)">Admin Page</a>
+        
+        <ul class="dropdown-menu" [class.show]="showAdminDropdown">
+          <li><a routerLink="/admin/users" class="dropdown-item">Users</a></li>
+          <li><a routerLink="/admin/supplies" class="dropdown-item">Supplies</a></li>
+          <li><a routerLink="/admin/usages" class="dropdown-item">Usages</a></li>
+        </ul>
+      </li>
+
       }
     </ul>
     @if (authService.currentUserToken()) {

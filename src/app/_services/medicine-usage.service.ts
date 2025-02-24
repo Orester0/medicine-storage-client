@@ -10,9 +10,7 @@ import { CreateMedicineUsageDTO, MedicineUsageParams, ReturnMedicineUsageDTO } f
 })
 export class MedicineUsageService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}medicine-usage`;
-
-  constructor() {}
+  private baseUrlMedicineUsage = `${environment.apiUrl}medicine-usage`;
 
   getUsages(params: MedicineUsageParams): Observable<PagedList<ReturnMedicineUsageDTO>> {
     let httpParams = new HttpParams();
@@ -25,25 +23,35 @@ export class MedicineUsageService {
       const toDate = params.toDate instanceof Date ? params.toDate.toISOString() : params.toDate;
       httpParams = httpParams.append('toDate', toDate);
     }
-    if (params.medicineId) httpParams = httpParams.append('medicineId', params.medicineId.toString());
-    if (params.usedByUserId) httpParams = httpParams.append('usedByUserId', params.usedByUserId.toString());
-    if (params.sortBy) httpParams = httpParams.append('sortBy', params.sortBy);
-    if (params.isDescending !== undefined) httpParams = httpParams.append('isDescending', params.isDescending.toString());
-    if (params.pageNumber) httpParams = httpParams.append('pageNumber', params.pageNumber.toString());
-    if (params.pageSize) httpParams = httpParams.append('pageSize', params.pageSize.toString());
+    if (params.medicineId){
+      httpParams = httpParams.append('medicineId', params.medicineId.toString());
+    } 
+    if (params.usedByUserId){
+      httpParams = httpParams.append('usedByUserId', params.usedByUserId.toString());
+    } 
+    if (params.sortBy){
+      httpParams = httpParams.append('sortBy', params.sortBy);
+    } 
+    if (params.isDescending !== undefined){
+      httpParams = httpParams.append('isDescending', params.isDescending.toString());
+    } 
+    
 
-    return this.http.get<PagedList<ReturnMedicineUsageDTO>>(this.baseUrl, { params: httpParams });
+    httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
+    httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
+
+    return this.http.get<PagedList<ReturnMedicineUsageDTO>>(this.baseUrlMedicineUsage, { params: httpParams });
   }
 
   getUsageById(usageId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${usageId}`);
+    return this.http.get<any>(`${this.baseUrlMedicineUsage}/${usageId}`);
   }
 
   getUsagesByUserId(userId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/created-by/${userId}`);
+    return this.http.get<any>(`${this.baseUrlMedicineUsage}/created-by/${userId}`);
   }
 
   createUsage(createUsageDto: CreateMedicineUsageDTO): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}`, createUsageDto);
+    return this.http.post<any>(`${this.baseUrlMedicineUsage}`, createUsageDto);
   }
 }

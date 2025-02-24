@@ -10,12 +10,11 @@ import { environment } from '../../environments/environment';
 })
 export class MedicineService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}medicine`;
-  constructor() {}
+  private baseUrlMedicine = `${environment.apiUrl}medicine`;
 
   getAllMedicines(): Observable<ReturnMedicineDTO[]> {
-    return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrl}/all`);
-}
+    return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrlMedicine}/all`);
+  }
 
   getMedicinesWithFilter(params: MedicineParams): Observable<PagedList<ReturnMedicineDTO>> {
     let httpParams = new HttpParams();
@@ -44,24 +43,24 @@ export class MedicineService {
     httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
     httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
 
-    return this.http.get<PagedList<ReturnMedicineDTO>>(this.baseUrl, { params: httpParams });
+    return this.http.get<PagedList<ReturnMedicineDTO>>(this.baseUrlMedicine, { params: httpParams });
 }
 
   
  
   getMedicineById(id: number): Observable<ReturnMedicineDTO> {
-    return this.http.get<ReturnMedicineDTO>(`${this.baseUrl}/${id}`).pipe();
+    return this.http.get<ReturnMedicineDTO>(`${this.baseUrlMedicine}/${id}`).pipe();
   }
  
   createMedicine(medicine: CreateMedicineDTO): Observable<ReturnMedicineDTO> {
-    return this.http.post<ReturnMedicineDTO>(this.baseUrl, medicine).pipe();
+    return this.http.post<ReturnMedicineDTO>(this.baseUrlMedicine, medicine).pipe();
   }
  
   updateMedicine(id: number, medicine: CreateMedicineDTO): Observable<ReturnMedicineDTO> {
-    return this.http.put<ReturnMedicineDTO>(`${this.baseUrl}/${id}`, medicine).pipe();
+    return this.http.put<ReturnMedicineDTO>(`${this.baseUrlMedicine}/${id}`, medicine).pipe();
   }
  
   deleteMedicine(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe();
+    return this.http.delete<void>(`${this.baseUrlMedicine}/${id}`).pipe();
   }
 }

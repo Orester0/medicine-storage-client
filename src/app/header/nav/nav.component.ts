@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown'
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserPanelComponent } from '../user-panel/user-panel.component';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { HasRoleDirective } from '../../_directives/has-role.directive';
@@ -13,7 +13,15 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
-export class NavComponent {
+export class NavComponent{
   showAdminDropdown = false;
+  router = inject(Router);
   authService = inject(AuthService);
+
+  navigateToAdmin(event: Event) {
+    event.preventDefault();
+    this.router.navigate(['/admin']);
+  }
+  
+
 }

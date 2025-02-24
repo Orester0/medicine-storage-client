@@ -13,13 +13,12 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
   })
   export class TenderService {
     private http = inject(HttpClient);
-    private tenderUrl = `${environment.apiUrl}tender`;
+    private baseUrlTender = `${environment.apiUrl}tender`;
   
-    constructor() {}
   
     
-      getAllTenders(): Observable<ReturnTenderDTO[]> {
-        return this.http.get<ReturnTenderDTO[]>(`${this.tenderUrl}/all`);
+    getAllTenders(): Observable<ReturnTenderDTO[]> {
+      return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlTender}/all`);
     }
 
     getTendersWithFilter(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
@@ -66,54 +65,54 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
       httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
       httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
   
-      return this.http.get<PagedList<ReturnTenderDTO>>(this.tenderUrl, { params: httpParams });
+      return this.http.get<PagedList<ReturnTenderDTO>>(this.baseUrlTender, { params: httpParams });
   }
   
   
     
   
     getTendersCreatedByUser(userId: number): Observable<ReturnTenderDTO[]> {
-      return this.http.get<ReturnTenderDTO[]>(`${this.tenderUrl}/created-by/${userId}`).pipe();
+      return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlTender}/created-by/${userId}`).pipe();
     }
   
     getTendersAwardedByUser(userId: number): Observable<ReturnTenderDTO[]> {
-      return this.http.get<ReturnTenderDTO[]>(`${this.tenderUrl}/awarded-by/${userId}`).pipe();
+      return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlTender}/awarded-by/${userId}`).pipe();
     }
   
     getTenderById(tenderId: number): Observable<ReturnTenderDTO> {
-      return this.http.get<ReturnTenderDTO>(`${this.tenderUrl}/${tenderId}`).pipe();
+      return this.http.get<ReturnTenderDTO>(`${this.baseUrlTender}/${tenderId}`).pipe();
     }
   
   
     getProposalsByTenderId(tenderId: number): Observable<ReturnTenderProposal[]> {
-      return this.http.get<ReturnTenderProposal[]>(`${this.tenderUrl}/${tenderId}/proposals`).pipe();
+      return this.http.get<ReturnTenderProposal[]>(`${this.baseUrlTender}/${tenderId}/proposals`).pipe();
     }
   
     createTender(tender: CreateTenderDTO): Observable<ReturnTenderDTO> {
-      return this.http.post<ReturnTenderDTO>(`${this.tenderUrl}/create`, tender).pipe();
+      return this.http.post<ReturnTenderDTO>(`${this.baseUrlTender}/create`, tender).pipe();
     }
   
     publishTender(tenderId: number): Observable<ReturnTenderDTO> {
-      return this.http.put<ReturnTenderDTO>(`${this.tenderUrl}/publish/${tenderId}`, {}).pipe();
+      return this.http.put<ReturnTenderDTO>(`${this.baseUrlTender}/publish/${tenderId}`, {}).pipe();
     }
   
     closeTender(tenderId: number): Observable<ReturnTenderDTO> {
-      return this.http.put<ReturnTenderDTO>(`${this.tenderUrl}/close/${tenderId}`, {}).pipe();
+      return this.http.put<ReturnTenderDTO>(`${this.baseUrlTender}/close/${tenderId}`, {}).pipe();
     }
   
     selectWinningProposal(tenderId: number, proposalId: number): Observable<ReturnTenderDTO> {
       return this.http.put<ReturnTenderDTO>(
-        `${this.tenderUrl}/${tenderId}/select-winning-proposal/${proposalId}`, {}).pipe();
+        `${this.baseUrlTender}/${tenderId}/select-winning-proposal/${proposalId}`, {}).pipe();
     }
   
     
 
     addTenderItem(tenderId: number, tenderItem: CreateTenderItem): Observable<ReturnTenderItem> {
-      return this.http.post<ReturnTenderItem>(`${this.tenderUrl}/add-tender-item/${tenderId}`, tenderItem).pipe();
+      return this.http.post<ReturnTenderItem>(`${this.baseUrlTender}/add-tender-item/${tenderId}`, tenderItem).pipe();
     }
 
     deleteTender(tenderId: number): Observable<void> {
-      return this.http.delete<void>(`${this.tenderUrl}/${tenderId}`);
+      return this.http.delete<void>(`${this.baseUrlTender}/${tenderId}`);
 
     }
 
@@ -121,14 +120,14 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
 
 
     submitProposal(tenderId: number, proposal: CreateTenderProposal): Observable<ReturnTenderProposal> {
-      return this.http.post<ReturnTenderProposal>(`${this.tenderUrl}/proposals/submit/${tenderId}`, proposal).pipe();
+      return this.http.post<ReturnTenderProposal>(`${this.baseUrlTender}/proposals/submit/${tenderId}`, proposal).pipe();
     }
 
     executeTenderProposalItem(tenderItemId: number, proposalId: number): Observable<ReturnTenderProposal> {
-      return this.http.put<ReturnTenderProposal>(`${this.tenderUrl}/proposals/execute/${proposalId}/${tenderItemId}`, {}).pipe();
+      return this.http.put<ReturnTenderProposal>(`${this.baseUrlTender}/proposals/execute/${proposalId}/${tenderItemId}`, {}).pipe();
     }
 
     executeTenderProposal(proposalId: number): Observable<ReturnTenderProposal> {
-      return this.http.put<ReturnTenderProposal>(`${this.tenderUrl}/proposals/execute/${proposalId}`, {}).pipe();
+      return this.http.put<ReturnTenderProposal>(`${this.baseUrlTender}/proposals/execute/${proposalId}`, {}).pipe();
     }
   }

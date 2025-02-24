@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.getCurrentUserInfo().subscribe(() => {
+    this.authService.getCurrentUserInfo(true).subscribe(() => {
       console.log('User data initialized');
     });
     this.router.navigate(['/']);

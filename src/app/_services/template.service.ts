@@ -9,13 +9,14 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class TemplateService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}templates`;
+
+  
+  private baseUrlTemplates = `${environment.apiUrl}templates`;
   private urlMap = {
-    'medicine-request': `${this.baseUrl}/medicine-request-templates`,
-    'audit': `${this.baseUrl}/audit-templates`,
-    'tender': `${this.baseUrl}/tender-templates`
+    'medicine-request': `${this.baseUrlTemplates}/medicine-request-templates`,
+    'audit': `${this.baseUrlTemplates}/audit-templates`,
+    'tender': `${this.baseUrlTemplates}/tender-templates`
   };
-  constructor() { }
   
   getTemplatesByUserId<T>(type: TemplateType): Observable<T[]> {
     return this.http.get<T[]>(this.urlMap[type]);

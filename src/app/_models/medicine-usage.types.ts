@@ -1,12 +1,12 @@
 import { ReturnMedicineDTO } from "./medicine.types";
-import { ReturnUserDTO } from "./user.types";
+import { ReturnUserGeneralDTO } from "./user.types";
 
 export interface ReturnMedicineUsageDTO {
    id: number;
    quantity: number;
    usageDate: Date;
    medicine: ReturnMedicineDTO;
-   usedByUser: ReturnUserDTO;
+   usedByUser: ReturnUserGeneralDTO;
 }
  
 export interface CreateMedicineUsageDTO {

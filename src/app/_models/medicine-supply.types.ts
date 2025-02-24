@@ -1,6 +1,6 @@
 import { ReturnMedicineDTO } from "./medicine.types";
 import { ReturnTenderDTO } from "./tender.types";
-import { ReturnUserDTO } from "./user.types";
+import { ReturnUserGeneralDTO } from "./user.types";
 
 export interface ReturnMedicineSupplyDTO
 {
@@ -8,7 +8,7 @@ export interface ReturnMedicineSupplyDTO
    quantity: number;
    transactionDate: Date; 
    medicine: ReturnMedicineDTO;
-   createdByUser?: ReturnUserDTO | null;
+   createdByUser?: ReturnUserGeneralDTO | null;
    tender?: ReturnTenderDTO | null;
 }
 

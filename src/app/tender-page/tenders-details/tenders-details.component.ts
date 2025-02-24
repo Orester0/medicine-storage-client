@@ -14,17 +14,20 @@ import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
 import { ProposalStatusPipe } from '../../_pipes/proposal-status.pipe';
 import { TenderItemStatusPipe } from '../../_pipes/tender-item-status.pipe';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tenders-details',
   templateUrl: './tenders-details.component.html',
   styleUrls: ['./tenders-details.component.css'],
   imports: [TenderStatusPipe, CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent, LocalizedDatePipe, UserFullNamePipe],
-  providers: [CurrencyPipe, ProposalStatusPipe, TenderItemStatusPipe]
+  providers: [CurrencyPipe, ProposalStatusPipe, TenderItemStatusPipe, UserFullNamePipe]
 })
 export class TendersDetailsComponent implements OnInit {
   proposalStatusPipe = inject(ProposalStatusPipe);
   tenderItemStatusPipe = inject(TenderItemStatusPipe);
+  userFullNamePipe = inject(UserFullNamePipe);
+  toastr = inject(ToastrService);
 
  itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
     {
@@ -41,6 +44,55 @@ export class TendersDetailsComponent implements OnInit {
     },
   ];
   
+loading = {
+  tender: false,
+  proposals: false,
+  publishing: false,
+  closing: false,
+};
+
+reloadTenderInfo() {
+  this.loading.tender = true;
+  this.tenderService.getTenderById(this.tender.id).subscribe({
+    next: (tender) => {
+      this.tender = tender;
+      this.loadProposals();
+      this.loading.tender = false;
+    },
+    error: () => {
+      this.loading.tender = false;
+    }
+  });
+}
+
+publishTender(): void {
+  this.loading.publishing = true;
+  this.tenderService.publishTender(this.tender.id).subscribe({
+    next: () => {
+      this.reloadTenderInfo();
+      this.toastr.success('Tender published successfully');
+      this.loading.publishing = false;
+    },
+    error: () => {
+      this.loading.publishing = false;
+    }
+  });
+}
+
+closeTender(): void {
+  this.loading.closing = true;
+  this.tenderService.closeTender(this.tender.id).subscribe({
+    next: () => {
+      this.reloadTenderInfo(); 
+      this.toastr.success('Tender closed successfully');
+      this.loading.closing = false;
+    },
+    error: () => {
+      this.loading.closing = false;
+    }
+  });
+}
+
   
   itemsTableColumns: TableColumn<ReturnTenderItemDTO>[] = [
     {
@@ -94,7 +146,7 @@ export class TendersDetailsComponent implements OnInit {
     {
       key: 'createdByUser',
       label: 'Vendor',
-      render: (value) => `${value?.firstName} ${value?.lastName}`,
+      render: (value) => this.userFullNamePipe.transform(value),
     },
     {
       key: 'totalPrice',
@@ -110,11 +162,6 @@ export class TendersDetailsComponent implements OnInit {
       key: 'submissionDate',
       label: 'Submission Date',
       render: (value) => new Date(value).toLocaleDateString(),
-    },
-    {
-      key: 'items',
-      label: 'Items Count',
-      render: (value) => value?.length,
     },
     {
       key: 'actions',
@@ -177,12 +224,6 @@ export class TendersDetailsComponent implements OnInit {
     this.reloadTenderInfo();
   }
 
-  reloadTenderInfo() {
-    this.tenderService.getTenderById(this.tender.id).subscribe((tender) => {
-      this.tender = tender;
-      this.loadProposals();
-    });
-  }
 
   loadProposals() {
     this.tenderService.getProposalsByTenderId(this.tender.id).subscribe((proposals) => {
@@ -241,22 +282,6 @@ export class TendersDetailsComponent implements OnInit {
       });
   }
 
-  
-  publishTender(): void {
-    this.tenderService.publishTender(this.tender.id).subscribe({
-      next: () => {
-        this.reloadTenderInfo();
-      }
-    });
-  }
-
-  closeTender(): void {
-    this.tenderService.closeTender(this.tender.id).subscribe({
-      next: () => {
-        this.reloadTenderInfo();
-      }
-    });
-  }
 
   executeTenderItem(tenderItemId: number, proposalId: number): void {
     this.tenderService.executeTenderProposalItem(tenderItemId, proposalId)
@@ -281,22 +306,4 @@ export class TendersDetailsComponent implements OnInit {
     return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
   }
 
-  getBadgeByItemStatus(status: TenderItemStatus): string {
-    const baseClasses = 'badge rounded-pill';
-    const statusClasses = {
-      [TenderItemStatus.Pending]: 'bg-warning',
-      [TenderItemStatus.Executed]: 'bg-success'
-    };
-    return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
-  }
-
-  getBadgeByProposalStatus(status: ProposalStatus): string {
-    const baseClasses = 'badge rounded-pill';
-    const statusClasses = {
-      [ProposalStatus.Submitted]: 'bg-info',
-      [ProposalStatus.Accepted]: 'bg-success',
-      [ProposalStatus.Rejected]: 'bg-danger'
-    };
-    return `${baseClasses} ${statusClasses[status] || 'bg-secondary'}`;
-  }
 }

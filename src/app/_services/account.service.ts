@@ -14,31 +14,31 @@ export class AccountService {
   private baseUrlAccount = `${environment.apiUrl}account`;
 
   
-    getAuditsPlanned(): Observable<ReturnAuditDTO[]> {
-      return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/planned`);
-    }
+  getAuditsPlanned(): Observable<ReturnAuditDTO[]> {
+    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/planned`);
+  }
   
-    getAuditsExecuted(): Observable<ReturnAuditDTO[]> {
-      return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/executed`);
-    }
+  getAuditsExecuted(): Observable<ReturnAuditDTO[]> {
+    return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/executed`);
+  }
   
-    getRequestsRequested(): Observable<ReturnMedicineRequestDTO[]> {
-      return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/requested`);
-    }
+  getRequestsRequested(): Observable<ReturnMedicineRequestDTO[]> {
+    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/requested`);
+  }
   
-    getUsagesCreated(): Observable<ReturnMedicineUsageDTO[]> {
-      return this.http.get<ReturnMedicineUsageDTO[]>(`${this.baseUrlAccount}/usages/created`);
-    }
+  getUsagesCreated(): Observable<ReturnMedicineUsageDTO[]> {
+    return this.http.get<ReturnMedicineUsageDTO[]>(`${this.baseUrlAccount}/usages/created`);
+  }
   
-    getRequestsApproved(): Observable<ReturnMedicineRequestDTO[]> {
-      return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/approved`);
-    }
+  getRequestsApproved(): Observable<ReturnMedicineRequestDTO[]> {
+    return this.http.get<ReturnMedicineRequestDTO[]>(`${this.baseUrlAccount}/requests/approved`);
+  }
   
-    getTendersAwarded(): Observable<ReturnTenderDTO[]> {
-      return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlAccount}/tenders/awarded`);
-    }
+  getTendersAwarded(): Observable<ReturnTenderDTO[]> {
+    return this.http.get<ReturnTenderDTO[]>(`${this.baseUrlAccount}/tenders/awarded`);
+  }
   
-    getProposalsCreated(): Observable<ReturnTenderProposal[]> {
-      return this.http.get<ReturnTenderProposal[]>(`${this.baseUrlAccount}/proposals/created`);
-    }
+  getProposalsCreated(): Observable<ReturnTenderProposal[]> {
+    return this.http.get<ReturnTenderProposal[]>(`${this.baseUrlAccount}/proposals/created`);
+  }
 }

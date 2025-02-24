@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { map, Observable, of, tap } from 'rxjs';
-import { ChangePasswordDTO, ReturnUserDTO, ReturnUserTokenDTO, UserUpdateDTO } from '../_models/user.types';
+import { Observable } from 'rxjs';
+import { ReturnUserGeneralDTO } from '../_models/user.types';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,11 @@ export class UserService  {
   private baseUrlUser = `${environment.apiUrl}users`;
 
   
-  constructor() {
-    
-  }
+  constructor() {}
   
 
-  getAllUsers(): Observable<ReturnUserDTO[]> {
-    return this.http.get<ReturnUserDTO[]>(`${this.baseUrlUser}`);
+  getAllUsers(): Observable<ReturnUserGeneralDTO[]> {
+    return this.http.get<ReturnUserGeneralDTO[]>(`${this.baseUrlUser}/all`);
   }
 
 }

@@ -32,3 +32,30 @@
   background-color: #5a6268;
   border-color: #545b62;
 }
+
+.role-card {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 2px solid #ccc;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  font-weight: 500;
+}
+
+.role-card mat-icon {
+  font-size: 20px;
+}
+
+.role-card:hover {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.role-card.selected {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}

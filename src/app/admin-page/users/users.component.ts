@@ -1,30 +1,116 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ReturnUserDTO } from '../../_models/user.types';
+import { ReturnUserPersonalDTO, UserParams, UserRegistrationDTO } from '../../_models/user.types';
 import { AdminService } from '../../_services/admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { UserInfoComponent } from '../user-info/user-info.component';
+import { PaginationComponent } from '../../pagination/pagination.component';
+import { FilterComponent, FilterConfig } from '../../filter/filter.component';
+import { RegisterComponent } from "../../home-page/register/register.component";
+import { CreateUserFormComponent } from '../create-user-form/create-user-form.component';
 
 @Component({
   selector: 'app-users',
-  imports: [TableComponent, ReactiveFormsModule, CommonModule, UserInfoComponent],
+  imports: [TableComponent, ReactiveFormsModule, CommonModule, UserInfoComponent, PaginationComponent, FilterComponent, CreateUserFormComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
-  users: ReturnUserDTO[] = [];
-  selectedUser: ReturnUserDTO | null = null;
+  
+  isCreateUserFormVisible = false;
+  showCreateUseForm(){
+    this.isCreateUserFormVisible = true;
+  }
+
+
+  onFormSubmit(formData: any): void {
+    
+    this.adminService.createUser(formData).subscribe({
+      next: () => {
+        this.isCreateUserFormVisible = false;
+      },
+      error: (error) => {
+        console.error('CreateUser error:', error);
+      },
+      complete: () => {
+      }
+    });
+  }
+
+
+  onCancel(): void {
+    this.isCreateUserFormVisible = false;
+  }
+
+
+
+  users: ReturnUserPersonalDTO[] = [];
+  selectedUser: ReturnUserPersonalDTO | null = null;
+
+  availableRoles = ['Admin', 'Doctor', 'Manager', 'Distributor'];
+  totalItems = 0;
+  userParams: UserParams = {
+    isDescending: false,
+    pageNumber: 1,
+    pageSize: 10
+  };
+
+  filterConfig: FilterConfig[] = [
+    { 
+      key: 'userName', 
+      label: 'Username', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'firstName', 
+      label: 'First Name', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'lastName', 
+      label: 'Last Name', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'email', 
+      label: 'Email', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'position', 
+      label: 'Position', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'company', 
+      label: 'Company', 
+      type: 'text', 
+      col: 3 
+    },
+    { 
+      key: 'role', 
+      label: 'Role', 
+      type: 'select', 
+      col: 3, 
+      options: this.availableRoles.map(role => ({ value: role, label: role }))
+    }
+  ];
+
 
   rolesForm: FormGroup;
-  availableRoles = ['Admin', 'Doctor', 'Manager', 'Distributor'];
   isModalOpen = false;
 
   showUserInfoModal = false;
-  selectedUserForInfo: ReturnUserDTO | null = null;
+  selectedUserForInfo: ReturnUserPersonalDTO | null = null;
     
-  openUserInfoModal(user: ReturnUserDTO): void {
+  openUserInfoModal(user: ReturnUserPersonalDTO): void {
     this.selectedUserForInfo = user;
     this.showUserInfoModal = true;
   }
@@ -34,14 +120,35 @@ export class UsersComponent implements OnInit {
     this.selectedUserForInfo = null;
   }
 
-  columns: TableColumn<ReturnUserDTO>[] = [
-    { key: 'userName', label: 'Username' },
-    { key: 'firstName', label: 'First Name' },
-    { key: 'lastName', label: 'Last Name' },
-    { key: 'actions', label: 'Actions', sortable: false }
+  columns: TableColumn<ReturnUserPersonalDTO>[] = [
+    { 
+      key: 'id', 
+      label: 'ID',
+      sortable: true,
+    },
+    { 
+      key: 'userName', 
+      label: 'Username' ,
+      sortable: true,
+    },
+    { 
+      key: 'firstName', 
+      label: 'First Name',
+      sortable: true,
+    },
+    { 
+      key: 'lastName', 
+      label: 'Last Name',
+      sortable: true,
+    },
+    { 
+      key: 'actions', 
+      label: 'Actions', 
+      sortable: false 
+    }
   ];
 
-  actions: TableAction<ReturnUserDTO>[] = [
+  actions: TableAction<ReturnUserPersonalDTO>[] = [
     {
       label: 'Details',
       icon: 'visibility',
@@ -57,29 +164,30 @@ export class UsersComponent implements OnInit {
   ];
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private adminService: AdminService,
     private fb: FormBuilder
   ) {
-    this.users = this.route.snapshot.data['users'];
     this.rolesForm = this.fb.group({
       roles: [[], Validators.required] 
     });
   }
 
   ngOnInit(): void {
-    this.loadUsers();
+    // this.loadUsers();
   }
 
+
   private loadUsers(): void {
-    this.adminService.getAllUsers().subscribe({
-      next: (users) => this.users = users,
+    this.adminService.getUsersWithFilter(this.userParams).subscribe({
+      next: (response) => {
+        this.users = response.items;
+        this.totalItems = response.totalCount;
+      },
       error: (error) => console.error('Error loading users:', error)
     });
   }
 
-  openRolesModal(user: ReturnUserDTO): void {
+  openRolesModal(user: ReturnUserPersonalDTO): void {
     this.selectedUser = user;
     this.rolesForm.setValue({ roles: user.roles });
     this.isModalOpen = true;
@@ -119,6 +227,23 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => console.error('Error updating roles:', error)
     });
+  }
+
+  
+  onFilterChange(filters: Partial<UserParams>): void {
+    this.userParams = { ...this.userParams, ...filters, pageNumber: 1 };
+    this.loadUsers();
+  }
+
+  onSortChange(sortConfig: { key: keyof ReturnUserPersonalDTO; isDescending: boolean }): void {
+    this.userParams.sortBy = sortConfig.key as string;
+    this.userParams.isDescending = sortConfig.isDescending;
+    this.loadUsers();
+  }
+
+  onPageChange(page: number): void {
+    this.userParams.pageNumber = page;
+    this.loadUsers();
   }
   
 }

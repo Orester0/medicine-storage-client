@@ -9,10 +9,11 @@
       </button>
     </div>
   
-    <app-register 
-      *ngIf="registerMode" 
-      (cancelRegister)="registerToggle()">
-    </app-register>
+    <app-register
+      *ngIf="registerMode"
+      (formSubmit)="onFormSubmit($event)"
+      (cancelClick)="onCancel()"
+    ></app-register>
   </div>
 
   <ng-template #loggedInTemplate>

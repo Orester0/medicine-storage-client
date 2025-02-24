@@ -1,5 +1,5 @@
 import { ReturnMedicineDTO } from "./medicine.types";
-import { ReturnUserDTO } from "./user.types";
+import { ReturnUserGeneralDTO } from "./user.types";
 
 export interface ReturnMedicineRequestDTO {
    id: number;
@@ -10,8 +10,8 @@ export interface ReturnMedicineRequestDTO {
    justification?: string;
    approvalDate?: Date;
    medicine: ReturnMedicineDTO;
-   requestedByUser: ReturnUserDTO;
-   approvedByUser?: ReturnUserDTO;
+   requestedByUser: ReturnUserGeneralDTO;
+   approvedByUser?: ReturnUserGeneralDTO;
 }
  
 export interface CreateMedicineRequestDTO {
@@ -41,8 +41,8 @@ export interface CreateMedicineRequestDTO {
    justification?: string;
    sortBy?: string;
    isDescending: boolean;
-   pageNumber?: number;
-   pageSize?: number;
+   pageNumber: number;
+   pageSize: number;
 }
 
  

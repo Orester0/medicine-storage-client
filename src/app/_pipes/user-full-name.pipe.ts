@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ReturnUserDTO } from '../_models/user.types';
+import { ReturnUserGeneralDTO, ReturnUserPersonalDTO } from '../_models/user.types';
 
 @Pipe({
   name: 'userFullName'
 })
 export class UserFullNamePipe implements PipeTransform {
-  transform(user: ReturnUserDTO | null | undefined): string {
+  transform(user: ReturnUserPersonalDTO | ReturnUserGeneralDTO | null | undefined): string {
     if (!user) return 'N/A';
 
     const { lastName, firstName } = user;

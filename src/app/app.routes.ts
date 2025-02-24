@@ -33,7 +33,7 @@ export const routes: Routes = [
             {path: 'user-profile', component: UserProfileComponent},
             {path: 'templates', component: TemplateComponent, resolve: {medicines: medicinesResolver}},
             {path: 'admin',
-              // component: AdminPanelComponent,
+              component: AdminPanelComponent,
               children: [
                 {
                   path: 'users',

@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, SimpleChanges } from '@angular/core';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +30,14 @@ export class MedicineNotificationsComponent {
   medicinesNeedingTender: ReturnMedicineDTO[] = [];
   medicinesNeedingAudit: ReturnMedicineDTO[] = [];
   hasIssues = false;
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const notificationContainer = document.querySelector('.notification-panel');
+    if (notificationContainer && !notificationContainer.contains(event.target as Node)) {
+      this.isOpen = false;
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['allMedicines']) {

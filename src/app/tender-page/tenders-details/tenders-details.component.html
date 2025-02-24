@@ -9,14 +9,18 @@
       </button>
       
       <button *ngIf="tender.status === 1" 
-              class="btn btn-success btn-sm"
-              (click)="publishTender()">
+        class="btn btn-success btn-sm"
+        [disabled]="loading.publishing"
+        (click)="publishTender()">
+        <span *ngIf="loading.publishing" class="spinner-border spinner-border-sm me-1"></span>
         Publish Tender
       </button>
       
       <button *ngIf="tender.status === 2" 
-              class="btn btn-danger btn-sm"
-              (click)="closeTender()">
+        class="btn btn-danger btn-sm"
+        [disabled]="loading.closing"
+        (click)="closeTender()">
+        <span *ngIf="loading.closing" class="spinner-border spinner-border-sm me-1"></span>
         Close Tender
       </button>
       <button *ngIf="tender.status === 1" 

@@ -8,7 +8,7 @@ import { TableColumn, TableComponent } from '../../table/table.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { ActivatedRoute } from '@angular/router';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
-import { ReturnUserDTO } from '../../_models/user.types';
+import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,9 +21,12 @@ import { CommonModule } from '@angular/common';
 export class MedicineUsagesComponent implements OnInit{
   fullNamePipe = inject(UserFullNamePipe);
   medicineNamePipe = inject(MedicineNamePipe);
+  
+  medicineUsageService = inject(MedicineUsageService); 
+  route = inject(ActivatedRoute);
 
   allMedicines: ReturnMedicineDTO[] = [];
-  allUsers: ReturnUserDTO[] = [];
+  allUsers: ReturnUserGeneralDTO[] = [];
 
   totalUsages = 0;
 
@@ -93,12 +96,11 @@ export class MedicineUsagesComponent implements OnInit{
 
   usages: ReturnMedicineUsageDTO[] = [];
 
-  constructor(private medicineUsageService: MedicineUsageService, private route: ActivatedRoute){}
 
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allUsers = this.route.snapshot.data['users'];
-    this.loadUsages();
+    // this.loadUsages();
     this.initializeFilter();
   }
 

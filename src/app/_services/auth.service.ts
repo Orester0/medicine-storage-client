@@ -1,7 +1,7 @@
-import { inject, Injectable, OnInit, signal } from '@angular/core';
-import { Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ChangePasswordDTO, ReturnUserDTO, UserRefreshTokenDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO } from '../_models/user.types';
+import { ChangePasswordDTO, ReturnUserPersonalDTO, ReturnUserTokenDTO, UserUpdateDTO, ReturnUserLoginDTO, UserLoginDTO, UserRefreshTokenDTO } from '../_models/user.types';
 import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,7 @@ export class AuthService{
   private baseUrlAccount = `${environment.apiUrl}account`;
 
   currentUserToken = signal<ReturnUserTokenDTO | null>(null);
-  currentUser = signal<ReturnUserDTO | null>(null);
-
+  currentUser = signal<ReturnUserPersonalDTO | null>(null);
   
   private readonly TOKEN_KEY = 'token_Data';
   private readonly USER_DATA_KEY = 'USER_Data';
@@ -27,19 +26,11 @@ export class AuthService{
     const storedToken = localStorage.getItem(this.TOKEN_KEY);
     const storedUser = localStorage.getItem(this.USER_DATA_KEY);
 
-
+    if (storedToken) {
+          this.currentUserToken.set(JSON.parse(storedToken));
+    }
     if (storedUser) {
       this.currentUser.set(JSON.parse(storedUser));
-    }
-    if (storedToken) {
-      this.currentUserToken.set(JSON.parse(storedToken));
-
-      this.http.get<ReturnUserDTO>(`${this.baseUrlAccount}/info`).pipe(
-        tap(user => {
-          this.currentUser.set(user);
-          this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(user));
-        })
-      );
     }
   }
 
@@ -121,11 +112,11 @@ export class AuthService{
 
 
 
-  getCurrentUserInfo(force: boolean = false): Observable<ReturnUserDTO> {
+  getCurrentUserInfo(force: boolean = false): Observable<ReturnUserPersonalDTO> {
     if (this.currentUser() && !force) {
       return of(this.currentUser()!);
     }
-    return this.http.get<ReturnUserDTO>(`${this.baseUrlAccount}/info`).pipe(
+    return this.http.get<ReturnUserPersonalDTO>(`${this.baseUrlAccount}/info`).pipe(
       tap(user => {
         this.currentUser.set(user);
         this.setStorageItem(this.USER_DATA_KEY, JSON.stringify(user));

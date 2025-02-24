@@ -1,0 +1,58 @@
+<div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white" [style.border-bottom]="'2px solid #ffc107'">
+          <h5 class="modal-title">Create User</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="mb-3" *ngFor="let field of ['firstName', 'lastName', 'username', 'email', 'password']">
+              <label [for]="field" class="form-label fw-bold">{{ field | titlecase }}</label>
+              <input [type]="field === 'password' ? 'password' : 'text'" [id]="field" class="form-control" [formControlName]="field" />
+              <app-validation-errors [control]="userForm.get(field)!"></app-validation-errors>
+            </div>
+  
+            <label class="form-label fw-bold">Roles</label>
+            <div class="mb-3 text-center"> 
+              <div class="d-flex justify-content-center flex-wrap gap-2">
+                <div *ngFor="let role of availableRoles" 
+                     class="role-card" 
+                     [class.selected]="userForm.get('roles')?.value.includes(role)"
+                     (click)="toggleRole(role)">
+                  <mat-icon class="me-1">
+                    {{ getRoleIcon(role) }}
+                  </mat-icon>
+                  <span>{{ role | titlecase }}</span>
+                </div>
+              </div>
+              <app-validation-errors [control]="userForm.get('roles')!"></app-validation-errors>
+            </div>
+            
+  
+            <div class="mb-3" *ngIf="showPositionField">
+              <label for="position" class="form-label fw-bold">Position</label>
+              <input type="text" id="position" class="form-control" formControlName="position" placeholder="Enter position" />
+              <app-validation-errors [control]="userForm.get('position')!"></app-validation-errors>
+            </div>
+  
+            <div class="mb-3" *ngIf="showCompanyField">
+              <label for="company" class="form-label fw-bold">Company</label>
+              <input type="text" id="company" class="form-control" formControlName="company" placeholder="Enter company name" />
+              <app-validation-errors [control]="userForm.get('company')!"></app-validation-errors>
+            </div>
+  
+            <div class="text-end">
+              <button [disabled]="!userForm.valid || isLoading" class="btn btn-success me-2" type="submit">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                Create User
+              </button>
+              <button class="btn btn-secondary" (click)="onCancel()" type="button" [disabled]="isLoading">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+  

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CreateMedicineRequestDTO, MedicineRequestParams, RequestStatus, ReturnMedicineRequestDTO } from '../../_models/medicine-request.types';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
-import { ReturnUserDTO } from '../../_models/user.types';
+import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { MedicineOperationsDetailsComponent } from '../medicine-request-details/medicine-request-details.component';
@@ -35,10 +35,6 @@ export class MedicineRequestComponent implements OnInit {
   requests: ReturnMedicineRequestDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = []; 
   error: string | null = null;
-  
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalItems: number = 0;
   
   sortColumn = 'requestDate';
   isDescending: boolean = false;
@@ -149,7 +145,7 @@ export class MedicineRequestComponent implements OnInit {
 
 
 
-  users: ReturnUserDTO[] = [];
+  users: ReturnUserGeneralDTO[] = [];
   filterConfig: FilterConfig[] = [
     {
       key: 'medicineId',
@@ -167,7 +163,8 @@ export class MedicineRequestComponent implements OnInit {
       options: this.users.map(user => ({
         value: user.id,
         label: `${user.firstName} ${user.lastName}`
-      }))
+      })),
+      defaultValue: this.authService.userHasRole(['doctor']) ? this.authService.currentUser()?.id : null
     },
     {
       key: 'status',
@@ -178,7 +175,8 @@ export class MedicineRequestComponent implements OnInit {
             .map(status => ({
               value: status as RequestStatus,
               label: this.requestStatusPipe.transform(status)
-            }))
+            })),
+      defaultValue: this.authService.userHasRole(['manager']) ? RequestStatus.Pending : null
     },
     {
       key: 'fromDate',
@@ -197,15 +195,9 @@ export class MedicineRequestComponent implements OnInit {
 
   
 
-  filterModel = {
-    fromDate: null as Date | null,
-    toDate: null as Date | null,
-    status: null as RequestStatus | null,
-    requestedByUserId: null as number | null,
-    medicineId: null as number | null,
+  requestParams: MedicineRequestParams = {
     pageNumber: 1,
     pageSize: 10,
-    sortBy: 'id',
     isDescending: false,
   };
   
@@ -232,22 +224,17 @@ export class MedicineRequestComponent implements OnInit {
     this.users = this.route.snapshot.data['users'];
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
-    this.loadRequests();
+    // this.loadRequests();
   }
 
-  loadRequests(): void {
-    const filterModel: MedicineRequestParams = {
-      ...this.filterModel,
-      pageNumber: this.currentPage,
-      pageSize: this.pageSize,
-      sortBy: this.sortColumn,
-      isDescending: this.isDescending,
-    };
+  totalItems = 0;
 
-    this.requestService.getRequests(filterModel).subscribe({
+  loadRequests(): void {
+    this.requestService.getRequestsWithFilters(this.requestParams).subscribe({
       next: (response) => {
         this.requests = response.items;
         this.totalItems = response.totalCount;
+        this.selectedRequest = null;
       },
       error: () => {
         this.error = 'Failed to load requests'
@@ -256,14 +243,7 @@ export class MedicineRequestComponent implements OnInit {
   }
 
  
-  onFilterChange(filters: any): void {
-    this.filterModel = {
-      ...this.filterModel,
-      ...filters
-    };
-    this.currentPage = 1;
-    this.loadRequests();
-  }
+  
 
   
 
@@ -282,12 +262,7 @@ export class MedicineRequestComponent implements OnInit {
     this.selectedRequest = null;
   }
 
-    onSortChange(sortConfig: { key: keyof ReturnMedicineRequestDTO; isDescending: boolean }): void {
-        this.sortColumn = sortConfig.key as string;
-        this.isDescending = sortConfig.isDescending;
-        this.loadRequests();
-    }
-
+    
 
   openCreateRequestModal(): void {
     this.isCreateRequestModalOpen = true;
@@ -322,22 +297,26 @@ export class MedicineRequestComponent implements OnInit {
       error: () => this.error = 'Failed to reject request'
     });
   }
+
+  
   
   onPageChange(page: number): void {
-    this.currentPage = page;
+    this.requestParams.pageNumber = page;
     this.loadRequests();
   }
-  
-  
-
-  getRequestStatusBadgeClass(status: RequestStatus): string {
-    const classMap = {
-      [RequestStatus.Pending]: 'bg-warning',
-      [RequestStatus.PedingWithSpecial]: 'bg-info',
-      [RequestStatus.Approved]: 'bg-success',
-      [RequestStatus.Rejected]: 'bg-danger'
+  onFilterChange(filters: any): void {
+    this.requestParams = {
+      ...this.requestParams,
+      ...filters,
+      pageNumber: 1 
     };
-    return classMap[status] || 'bg-secondary';
+    this.loadRequests();
   }
+  onSortChange(sortConfig: { key: keyof ReturnMedicineRequestDTO; isDescending: boolean }): void {
+    this.sortColumn = sortConfig.key as string;
+    this.isDescending = sortConfig.isDescending;
+    this.loadRequests();
+}
+  
   
 }

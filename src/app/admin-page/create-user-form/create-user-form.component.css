@@ -1,0 +1,21 @@
+.role-card {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    background-color: #f8f9fa;
+  }
+  
+  .role-card:hover {
+    background-color: #e9ecef;
+  }
+  
+  .role-card.selected {
+    background-color: #007bff;
+    border-color: #0056b3;
+    color: white;
+  }
+  

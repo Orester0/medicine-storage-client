@@ -15,7 +15,7 @@ import { AuditNotesComponent } from '../audit-notes/audit-notes.component';
 import { AuditUpdateItemsComponent } from "../audit-update-items/audit-update-items.component";
 import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
-import { ReturnUserDTO } from '../../_models/user.types';
+import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { AuthService } from '../../_services/auth.service';
 
 @Component({
@@ -71,7 +71,7 @@ export class AuditsComponent implements OnInit {
   
   audits: ReturnAuditDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
-  allUsers: ReturnUserDTO[] = [];
+  allUsers: ReturnUserGeneralDTO[] = [];
 
   selectedAudit: ReturnAuditDTO | null = null;
 
@@ -184,7 +184,7 @@ export class AuditsComponent implements OnInit {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allUsers = this.route.snapshot.data['users'];
     this.initializeFilter();
-    this.loadAudits();
+    // this.loadAudits();
   }
 
   
@@ -257,10 +257,11 @@ export class AuditsComponent implements OnInit {
 
   loadAudits(): void {
 
-    this.auditService.getAllAudits(this.auditParams).subscribe({
+    this.auditService.getAuditsWithFilters(this.auditParams).subscribe({
       next: (response) => {
         this.audits = response.items || [];
         this.totalItems = response.totalCount || 0;
+        this.selectedAudit = null;
       },
       error: () => {
         this.error = 'Failed to load audits';

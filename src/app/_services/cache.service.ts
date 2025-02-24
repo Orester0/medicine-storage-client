@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class CacheService {
   private cache = new Map<string, { data: any; expiry: number }>();
-  private ttl = 5 * 60 * 1000; // 5m
+  private ttl = 5 * 60 * 1000;
 
   set(key: string, data: any, ttl: number = this.ttl) {
     const expiry = Date.now() + ttl;
