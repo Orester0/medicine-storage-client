@@ -12,7 +12,6 @@ import { ReturnMedicineUsageDTO } from '../_models/medicine-usage.types';
 export class AccountService {
   private http = inject(HttpClient);
   private baseUrlAccount = `${environment.apiUrl}account`;
-
   
   getAuditsPlanned(): Observable<ReturnAuditDTO[]> {
     return this.http.get<ReturnAuditDTO[]>(`${this.baseUrlAccount}/audits/planned`);

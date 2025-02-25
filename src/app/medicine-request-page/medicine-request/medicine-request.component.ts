@@ -16,6 +16,7 @@ import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { AuthService } from '../../_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-medicine-operations',
@@ -30,6 +31,7 @@ export class MedicineRequestComponent implements OnInit {
   userFullNamePipe = inject(UserFullNamePipe);
   medicineNamePipe = inject(MedicineNamePipe);
   authService = inject(AuthService);
+  toastr = inject(ToastrService);
 
 
   requests: ReturnMedicineRequestDTO[] = [];
@@ -41,13 +43,17 @@ export class MedicineRequestComponent implements OnInit {
   
   isCreateRequestModalOpen = false;
 
+  hasRole(roles: string[]): boolean {
+    return roles.some(role => this.authService.userHasRole([role]));
+  }
+
   tableActions: TableAction<ReturnMedicineRequestDTO>[] = [
     {
         label: 'Approve Request',
         icon: 'check_circle',
         class: 'btn btn-success btn-sm me-2',
         onClick: (row) => this.approveRequest(row.id),
-        visible: (row) => row.status === 1 || row.status === 2,
+        visible: (row) => (row.status === 1 || row.status === 2) && this.hasRole(['Admin', 'Manager']),
       },
     
     {
@@ -55,7 +61,7 @@ export class MedicineRequestComponent implements OnInit {
         icon: 'cancel',
         class: 'btn btn-danger btn-sm me-2',
         onClick: (row) => this.rejectRequest(row.id),
-        visible: (row) => row.status === 1 || row.status === 2,
+        visible: (row) => (row.status === 1 || row.status === 2) && this.hasRole(['Admin', 'Manager']),
     },
     {
       label: 'View Details',
@@ -88,6 +94,7 @@ export class MedicineRequestComponent implements OnInit {
       if (!this.requestToDelete) return;
       this.requestService.deleteRequest(this.requestToDelete.id).subscribe({
         next: () => {
+          this.toastr.success('Request has been deleted');
           this.loadRequests();
           this.requestToDelete = null;
         },
@@ -275,6 +282,7 @@ export class MedicineRequestComponent implements OnInit {
   saveRequest(requestData: CreateMedicineRequestDTO): void {
     this.requestService.createRequest(requestData).subscribe({
       next: () => {
+        this.toastr.success('Request created succesfully');
         this.loadRequests();
         this.closeCreateRequestModal();
       },
@@ -286,14 +294,20 @@ export class MedicineRequestComponent implements OnInit {
   
   approveRequest(requestId: number): void {
     this.requestService.approveRequest(requestId).subscribe({
-      next: () => this.loadRequests(),
+      next: () => {
+        this.toastr.success('Request has been approved');
+        this.loadRequests()
+      },
       error: () => this.error = 'Failed to approve request'
     });
   }
   
   rejectRequest(requestId: number): void {
     this.requestService.rejectRequest(requestId).subscribe({
-      next: () => this.loadRequests(),
+      next: () => {
+        this.toastr.success('Request has been rejected');
+        this.loadRequests()
+      },
       error: () => this.error = 'Failed to reject request'
     });
   }

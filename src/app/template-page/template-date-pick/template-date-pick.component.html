@@ -1,23 +1,24 @@
 <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ getTitle() }}</h5>
-          <button type="button" class="btn-close" (click)="cancel()"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="form">
-            <div class="mb-3">
-              <label class="form-label">{{ getLabel() }}</label>
-              <input type="date" formControlName="date" class="form-control form-control-sm" />
-              <app-validation-errors [control]="form.get('date')!"></app-validation-errors>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" (click)="cancel()">Cancel</button>
-          <button type="button" class="btn btn-primary btn-sm" [disabled]="!form.valid" (click)="confirm()">Confirm</button>
-        </div>
+          <div class="modal-header">
+              <h5 class="modal-title">{{ getTitle() }}</h5>
+              <button type="button" class="btn-close" (click)="cancel()"></button>
+          </div>
+          <div class="modal-body">
+              <form [formGroup]="form">
+                  <div class="mb-3">
+                      <label class="form-label">{{ getLabel() }}</label>
+                      <input type="date" formControlName="date" class="form-control form-control-sm" />
+                      <app-validation-errors [control]="form.get('date')!"></app-validation-errors>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" (click)="cancel()">Cancel</button>
+              <button type="button" class="btn btn-primary btn-sm" [disabled]="!form.valid" (click)="confirm()">Confirm</button>
+          </div>
       </div>
-    </div>
+  </div>
 </div>
+<div class="modal-backdrop show"></div>

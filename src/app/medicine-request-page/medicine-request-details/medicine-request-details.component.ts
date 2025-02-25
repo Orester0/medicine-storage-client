@@ -6,10 +6,11 @@ import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
 import { RequestStatusPipe } from '../../_pipes/request-status.pipe';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
 
 @Component({
   selector: 'app-medicine-operations-details',
-  imports: [CommonModule, MatIconModule, MedicineNamePipe, UserFullNamePipe, LocalizedDatePipe, RequestStatusPipe],
+  imports: [CommonModule, MatIconModule, MedicineNamePipe, UserFullNamePipe, LocalizedDatePipe, RequestStatusPipe, HasRoleDirective],
   templateUrl: './medicine-request-details.component.html',
   styleUrl: './medicine-request-details.component.css'
 })

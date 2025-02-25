@@ -5,10 +5,11 @@ import { CommonEngine } from '@angular/ssr/node';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CreateTenderItem } from '../../_models/tender.types';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-tender-items',
-  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, MedicineNamePipe, MatIconModule],
   templateUrl: './tender-items.component.html',
   styleUrl: './tender-items.component.css'
 })

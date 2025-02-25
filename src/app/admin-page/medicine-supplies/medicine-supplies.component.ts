@@ -13,6 +13,7 @@ import { ReturnTenderDTO } from '../../_models/tender.types';
 import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { CommonModule } from '@angular/common';
 import { TenderTitlePipe } from '../../_pipes/tender-title.pipe';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-medicine-supplies',
@@ -28,6 +29,7 @@ export class MedicineSuppliesComponent implements OnInit{
 
   medicineSupplyService = inject(MedicineSupplyService);
   route = inject(ActivatedRoute);
+  toastr = inject(ToastrService);
 
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserGeneralDTO[] = [];
@@ -181,6 +183,8 @@ export class MedicineSuppliesComponent implements OnInit{
 
   onCreateSupply(supply: CreateMedicineSupplyDTO) {
     this.medicineSupplyService.createSupply(supply).subscribe(() => {
+      
+      this.toastr.success('Supply created succesfully');
       this.hideCreateSupplyForm();
       this.loadSupplies();
     });

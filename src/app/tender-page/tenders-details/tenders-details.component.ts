@@ -15,12 +15,15 @@ import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
 import { ProposalStatusPipe } from '../../_pipes/proposal-status.pipe';
 import { TenderItemStatusPipe } from '../../_pipes/tender-item-status.pipe';
 import { ToastrService } from 'ngx-toastr';
+import { MatIconModule } from '@angular/material/icon';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-tenders-details',
   templateUrl: './tenders-details.component.html',
   styleUrls: ['./tenders-details.component.css'],
-  imports: [TenderStatusPipe, CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent, LocalizedDatePipe, UserFullNamePipe],
+  imports: [HasRoleDirective, MatIconModule, TenderStatusPipe, CommonModule, ReactiveFormsModule, CreateTenderProposalComponent, TableComponent, TenderItemsComponent, DeleteConfirmationModalComponent, LocalizedDatePipe, UserFullNamePipe],
   providers: [CurrencyPipe, ProposalStatusPipe, TenderItemStatusPipe, UserFullNamePipe]
 })
 export class TendersDetailsComponent implements OnInit {
@@ -28,6 +31,7 @@ export class TendersDetailsComponent implements OnInit {
   tenderItemStatusPipe = inject(TenderItemStatusPipe);
   userFullNamePipe = inject(UserFullNamePipe);
   toastr = inject(ToastrService);
+  authService = inject(AuthService);
 
  itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
     {
@@ -40,7 +44,9 @@ export class TendersDetailsComponent implements OnInit {
           this.executeTenderItem(row.id, winningProposal.id);
         }
       },
-      visible: (row) => row.status === TenderItemStatus.Pending && this.tender.status === TenderStatus.Executing,
+      visible: (row) => (this.tender.status === TenderStatus.Awarded || this.tender.status === TenderStatus.Executing) && 
+                        row.status === TenderItemStatus.Pending && 
+                        this.hasRole(['Admin', 'Manager']),
     },
   ];
   
@@ -125,19 +131,21 @@ closeTender(): void {
   proposalTableActions: TableAction<ReturnTenderProposalDTO>[] = [
     {
       label: 'Select Winner',
-
-   icon: 'emoji_events',
+      icon: 'emoji_events',
       class: 'btn btn-success btn-sm me-1',
       onClick: (row) => this.selectWinner(row.id),
-      visible: (row) => row.status === ProposalStatus.Submitted && this.tender.status === TenderStatus.Closed,
+      visible: (row) => row.status === ProposalStatus.Submitted &&
+                    this.tender.status === TenderStatus.Closed &&
+                    this.hasRole(['Admin', 'Manager']),
     },
     {
       label: 'Execute',
-
-   icon: 'play_arrow',
+      icon: 'play_arrow',
       class: 'btn btn-primary btn-sm',
       onClick: (row) => this.executeProposal(row.id),
-      visible: (row) => this.tender.status === TenderStatus.Awarded,
+      visible: (row) => (this.tender.status === TenderStatus.Awarded || this.tender.status === TenderStatus.Executing) && 
+                        row.status === ProposalStatus.Accepted && 
+                        this.hasRole(['Admin', 'Manager']),
     },
     
   ];
@@ -169,6 +177,8 @@ closeTender(): void {
     },
   ];
 
+  isAdminDetailsVisible = false;
+
   // delete
   tenderToDelete: ReturnTenderDTO | null = null;
 
@@ -181,6 +191,7 @@ closeTender(): void {
     this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
       next: () => {
         this.tenderToDelete = null;
+        this.toastr.success('Tender has been deleted');
       },
       error: () => {
         console.error('Failed to delete tender.');
@@ -268,6 +279,7 @@ closeTender(): void {
     this.tenderService.selectWinningProposal(this.tender.id, proposalId)
       .subscribe({
         next: () => {
+          this.toastr.success('Tender marked as winner');
           this.reloadTenderInfo();
         },
       });
@@ -277,6 +289,7 @@ closeTender(): void {
     this.tenderService.executeTenderProposal(proposalId)
       .subscribe({
         next: () => {
+          this.toastr.success('Proposal has been executed');
           this.reloadTenderInfo();
         },
       });
@@ -287,11 +300,16 @@ closeTender(): void {
     this.tenderService.executeTenderProposalItem(tenderItemId, proposalId)
       .subscribe({
         next: () => {
+          this.toastr.success('Items has been executed');
           this.reloadTenderInfo();
         }
       });
   }
 
+  hasRole(roles: string[]): boolean {
+    return roles.some(role => this.authService.userHasRole([role]));
+  }
+  
   getBadgeByTenderStatus(status: TenderStatus): string {
     const baseClasses = 'badge rounded-pill';
     const statusClasses = {

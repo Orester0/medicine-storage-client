@@ -19,74 +19,64 @@ import { MedicineUsagesComponent } from './admin-page/medicine-usages/medicine-u
 import { tendersResolver } from './_resolvers/tenders.resolver';
 
 export const routes: Routes = [
-    {path: '', component: HomeComponent, pathMatch: 'full'},
-    {
-        path: '',
-        runGuardsAndResolvers: 'always',
-        canActivate: [authGuard],
-        children: [
-            {path: 'medicines', component: MedicinesComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'tenders', component: TendersComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver } },
-            {path: 'audits', component: AuditsComponent,  resolve: {medicines: medicinesResolver, users: usersResolver}},
-            {path: 'requests', component: MedicineRequestComponent, resolve: {medicines: medicinesResolver, users: usersResolver}},
-            {path: 'user-profile', component: UserProfileComponent},
-            {path: 'templates', component: TemplateComponent, resolve: {medicines: medicinesResolver}},
-            {path: 'admin',
+  { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'Medicine Storage' } },
+  {
+      path: '',
+      runGuardsAndResolvers: 'always',
+      canActivate: [authGuard],
+      children: [
+          { path: 'medicines', component: MedicinesComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Medicines - Medicine Storage' } },
+          { path: 'tenders', component: TendersComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Tenders - Medicine Storage' } },
+          { path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver }, data: { title: 'Tender - Medicine Storage' } },
+          { path: 'audits', component: AuditsComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Audits - Medicine Storage' } },
+          { path: 'requests', component: MedicineRequestComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Requests - Medicine Storage' } },
+          { path: 'user-profile', component: UserProfileComponent, data: { title: 'User Profile  - Medicine Storage' } },
+          { path: 'templates', component: TemplateComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Templates  - Medicine Storage' } },
+          {
+              path: 'admin',
               component: AdminPanelComponent,
+              data: { title: 'Admin Panel - Medicine Storage' },
               children: [
-                {
-                  path: 'users',
-                  component: UsersComponent
-                },
-                {
-                  path: 'supplies',
-                  component: MedicineSuppliesComponent,
-                  resolve: {
-                    users: usersResolver,
-                    medicines: medicinesResolver,
-                    tenders: tendersResolver
+                  { path: 'users', component: UsersComponent, data: { title: 'User Management - Medicine Storage' } },
+                  { 
+                      path: 'supplies', 
+                      component: MedicineSuppliesComponent, 
+                      resolve: { users: usersResolver, medicines: medicinesResolver, tenders: tendersResolver }, 
+                      data: { title: 'Medicine Supplies - Medicine Storage' } 
                   },
-                },
-                {
-                  path: 'usages', 
-                  component: MedicineUsagesComponent,
-                  resolve: {
-                    users: usersResolver,
-                    medicines: medicinesResolver
+                  { 
+                      path: 'usages', 
+                      component: MedicineUsagesComponent, 
+                      resolve: { users: usersResolver, medicines: medicinesResolver }, 
+                      data: { title: 'Medicine Usages - Medicine Storage' } 
                   },
-                },
-                {
-                  path: '',
-                  pathMatch: 'full',
-                  redirectTo: 'users',
-                },
+                  { path: '', pathMatch: 'full', redirectTo: 'users' },
               ],
-            },
-        ]
-    },
-    { 
-        path: 'not-found', 
-        component: ErrorTemplateComponent, 
-        data: { 
+          },
+      ]
+  },
+  { 
+      path: 'not-found', 
+      component: ErrorTemplateComponent, 
+      data: { 
           title: '404 - Not Found', 
           message: 'The requested page was not found.' 
-        } 
-    },
-    { 
-        path: 'internal-server-error', 
-        component: ErrorTemplateComponent, 
-        data: { 
+      } 
+  },
+  { 
+      path: 'internal-server-error', 
+      component: ErrorTemplateComponent, 
+      data: { 
           title: '500 - Internal Server Error', 
           message: 'Something went wrong.' 
-        } 
-    },
-    { 
-        path: '**', 
-        component: ErrorTemplateComponent, 
-        data: { 
+      } 
+  },
+  { 
+      path: '**', 
+      component: ErrorTemplateComponent, 
+      data: { 
           title: '404 - Not Found', 
           message: 'The requested page was not found.' 
-        } 
-    },
+      } 
+  },
 ];

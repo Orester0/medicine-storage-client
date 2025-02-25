@@ -1,58 +1,78 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 400px;
-    height: 100%;
-    background-color: white;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    overflow-y: auto;
-  }
+.sidebar {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 15px;
+  border-right: 1px solid #dee2e6;
   
-  .modal-content {
-    padding: 20px;
-  }
+}
 
-  
-  .template-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
 
-  .icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-  }
-  
-  @keyframes bellShake {
-    0% { transform: rotate(0); }
-    20% { transform: rotate(15deg); }
-    40% { transform: rotate(-15deg); }
-    60% { transform: rotate(7deg); }
-    80% { transform: rotate(-7deg); }
-    100% { transform: rotate(0); }
-  }
-  .bell-notification {
-    animation: bellShake 2s infinite;
-    color: #dc3545;
-  }
-  
-  @keyframes pulseHighlight {
-    0% { background-color: transparent; }
-    50% { background-color: rgba(220, 53, 69, 0.1); }
-    100% { background-color: transparent; }
-  }
+.sidebar .list-group-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background-color: #ffc107;
+}
 
-  .nav-link.needs-execution {
-    border: 2px solid #ffc107;
-    font-weight: bold;
+.sidebar .list-group-item {
+  border-radius: 0;
+  margin-bottom: 2px;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  padding: 12px 15px;
+  border: none;
+}
+
+
+.sidebar .list-group-item.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+
+.tab-text {
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
+
+.template-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.sidebar .list-group-item {
+  border-radius: 0;
+  margin-bottom: 2px;
+}
+
+.sidebar .list-group-item i {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    min-height: auto;
+    margin-bottom: 20px;
   }
-
-  
-
-  
+}

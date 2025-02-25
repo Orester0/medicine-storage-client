@@ -4,10 +4,11 @@ import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MatIconModule } from '@angular/material/icon';
 import { LocalizedDatePipe } from '../../_pipes/localized-date.pipe';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
 
 @Component({
   selector: 'app-medicines-details',
-  imports: [CommonModule, MatIconModule, LocalizedDatePipe, MatTooltip],
+  imports: [CommonModule, MatIconModule, LocalizedDatePipe, MatTooltip, HasRoleDirective],
   templateUrl: './medicines-details.component.html',
   styleUrl: './medicines-details.component.css'
 })

@@ -15,6 +15,7 @@ import { CreateMedicineFormComponent } from '../create-medicine-form/create-medi
 import { MedicineNotificationsComponent } from '../medicine-notifications/medicine-notifications.component';
 import { CreateMedicineRequestFormComponent } from '../../medicine-request-page/create-medicine-request-form/create-medicine-request-form.component';
 import { AuthService } from '../../_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-medicines',
@@ -24,6 +25,7 @@ import { AuthService } from '../../_services/auth.service';
 })
 export class MedicinesComponent implements OnInit {
   private authService = inject(AuthService);
+  private toastr = inject(ToastrService);
   filterConfig: FilterConfig[] = [
     { 
       key: 'name', 
@@ -209,6 +211,7 @@ export class MedicinesComponent implements OnInit {
   handleRequestSubmit(request: CreateMedicineRequestDTO): void {
     this.medicineRequestService.createRequest(request).subscribe({
       next: () => {
+        this.toastr.success('Request created succesfully');
         this.closeCreateRequestModal();
       },
       error: () => {
@@ -218,35 +221,31 @@ export class MedicinesComponent implements OnInit {
   }
 
   isCreateMedicineOpen = false;
-  saveMedicine(medicine: ReturnMedicineDTO): void {
-    let request$ = this.selectedMedicine
-      ? this.medicineService.updateMedicine(this.selectedMedicine.id, medicine)
-      : this.medicineService.createMedicine(medicine);
 
-    request$.subscribe({
+  createMedicine(medicine: ReturnMedicineDTO): void {
+    this.medicineService.createMedicine(medicine).subscribe({
       next: () => {
+        
+        this.toastr.success('Medicine created succesfully');
         this.isCreateMedicineOpen = false;
         this.loadMedicines();
       },
-
-      // error: (err) => {
-      //   if (err.status === 400) {
-      //     this.handleServerErrors(err.error.errors);
-      //   }
-      // },
+    });
+  }
+  
+  updateMedicine(medicine: ReturnMedicineDTO): void {
+    if (!this.selectedMedicine) return; 
+  
+    this.medicineService.updateMedicine(this.selectedMedicine.id, medicine).subscribe({
+      next: () => {
+        
+        this.toastr.success('Medicine has been updated');
+        this.isCreateMedicineOpen = false;
+        this.loadMedicines();
+      },
     });
   }
 
-  // handleServerErrors(errors: any): void {
-  //   this.serverErrors = errors;
-  //   Object.keys(errors).forEach((field) => {
-  //     const control = this.medicineForm.get(field.toLowerCase());
-  //     if (control) {
-  //       control.setErrors({ serverError: errors[field].join(' ') });
-  //     }
-  //   });
-  // }
-  
   onPageChange(page: number): void {
     this.medicineParams.pageNumber = page;
     this.loadMedicines();
@@ -273,6 +272,8 @@ export class MedicinesComponent implements OnInit {
       next: () => {
         this.loadMedicines();
         this.medicineToDelete = null;
+        
+        this.toastr.success('Medicine has been deleted');
       },
       error: () => {
         console.error('Failed to delete medicine.');

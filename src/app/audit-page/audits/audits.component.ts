@@ -17,6 +17,7 @@ import { AuditStatusPipe } from '../../_pipes/audit-status.pipe';
 import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { ReturnUserGeneralDTO } from '../../_models/user.types';
 import { AuthService } from '../../_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-audits',
@@ -28,7 +29,8 @@ import { AuthService } from '../../_services/auth.service';
 export class AuditsComponent implements OnInit {
   auditStatusPipe = inject(AuditStatusPipe);
   userFullNamePipe = inject(UserFullNamePipe);
-  authService = inject(AuthService)
+  authService = inject(AuthService);
+  toastr = inject(ToastrService);
 
 
   // handle delete
@@ -45,6 +47,8 @@ export class AuditsComponent implements OnInit {
       next: () => {
         this.loadAudits();
         this.auditToDelete = null;
+        
+        this.toastr.success('Audit has been deleted');
       },
       error: () => {
         console.error('Failed to delete tender.');
@@ -295,6 +299,8 @@ export class AuditsComponent implements OnInit {
       next: () => {
         this.loadAudits();
         this.auditToStart = null;
+        
+        this.toastr.success('Audit has been started');
       },
       error: () => this.error = 'Failed to start audit'
     });
@@ -307,6 +313,8 @@ export class AuditsComponent implements OnInit {
       next: () => {
         this.loadAudits();
         this.auditToClose = null;
+        
+        this.toastr.success('Audit has been closed');
       },
       error: () => this.error = 'Failed to close audit'
     });
@@ -319,6 +327,8 @@ export class AuditsComponent implements OnInit {
       next: () => {
         this.loadAudits();
         this.auditToUpdate = null;
+        
+        this.toastr.success('Audit has been updated');
       },
       error: () => console.error('Failed to update audit items'),
     });
@@ -329,6 +339,7 @@ export class AuditsComponent implements OnInit {
       next: () => {
         this.loadAudits();
         this.closeCreateAuditModal();
+        this.toastr.success('Audit created succesfully');
       },
       error: () => (this.error = 'Failed to create audit'),
     });

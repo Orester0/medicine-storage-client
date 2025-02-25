@@ -74,7 +74,7 @@
             <mat-icon class="me-1">close</mat-icon>
             Close
           </button>
-          <button class="btn btn-outline-primary d-flex align-items-center" (click)="onEditMedicine()">
+          <button *appHasRole="['Admin', 'Manager']" class="btn btn-outline-primary d-flex align-items-center" (click)="onEditMedicine()">
             <mat-icon class="me-1">edit</mat-icon>
             Edit
           </button>
@@ -82,7 +82,7 @@
             <mat-icon class="me-1">add_circle</mat-icon>
             Create Request
           </button>
-          <button class="btn btn-danger d-flex align-items-center" (click)="onDeleteMedicine()">
+          <button *appHasRole="['Admin']" class="btn btn-danger d-flex align-items-center" (click)="onDeleteMedicine()">
             <mat-icon class="me-1">delete</mat-icon>
             Delete
           </button>

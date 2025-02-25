@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnUserPersonalDTO, UserParams, UserRegistrationDTO } from '../../_models/user.types';
@@ -10,6 +10,7 @@ import { PaginationComponent } from '../../pagination/pagination.component';
 import { FilterComponent, FilterConfig } from '../../filter/filter.component';
 import { RegisterComponent } from "../../home-page/register/register.component";
 import { CreateUserFormComponent } from '../create-user-form/create-user-form.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-users',
@@ -18,7 +19,9 @@ import { CreateUserFormComponent } from '../create-user-form/create-user-form.co
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
-  
+  private toastr = inject(ToastrService);
+
+
   isCreateUserFormVisible = false;
   showCreateUseForm(){
     this.isCreateUserFormVisible = true;
@@ -30,6 +33,8 @@ export class UsersComponent implements OnInit {
     this.adminService.createUser(formData).subscribe({
       next: () => {
         this.isCreateUserFormVisible = false;
+        
+        this.toastr.success('User created succesfully');
       },
       error: (error) => {
         console.error('CreateUser error:', error);
@@ -223,6 +228,7 @@ export class UsersComponent implements OnInit {
     this.adminService.updateRoles(userId, updatedRoles).subscribe({
       next: () => {
         this.selectedUser!.roles = updatedRoles;
+        
         this.closeRolesModal();
       },
       error: (error) => console.error('Error updating roles:', error)

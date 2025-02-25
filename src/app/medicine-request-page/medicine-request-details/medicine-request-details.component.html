@@ -121,11 +121,11 @@
             Close
           </button>
           <div class="ms-auto d-flex gap-2" *ngIf="medicineRequest.status === RequestStatus.Pending">
-            <button class="btn btn-success d-flex align-items-center" (click)="performAction('approve')">
+            <button *appHasRole="['Admin', 'Manager']" class="btn btn-success d-flex align-items-center" (click)="performAction('approve')">
               <mat-icon class="me-1">check_circle</mat-icon>
               Approve
             </button>
-            <button class="btn btn-danger d-flex align-items-center" (click)="performAction('reject')">
+            <button *appHasRole="['Admin', 'Manager']" class="btn btn-danger d-flex align-items-center" (click)="performAction('reject')">
               <mat-icon class="me-1">cancel</mat-icon>
               Reject
             </button>

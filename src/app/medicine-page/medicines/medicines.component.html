@@ -48,9 +48,10 @@
   *ngIf="isCreateMedicineOpen"
   [medicine]="selectedMedicine"
   [allMedicines]="allMedicines"
-  (save)="saveMedicine($event)"
+  (save)="selectedMedicine ? updateMedicine($event) : createMedicine($event)"
   (close)="closeModal()">
-  </app-create-medicine-form>
+</app-create-medicine-form>
+
 
   
   <app-delete-confirmation-modal

@@ -14,6 +14,7 @@ import { TenderStatusPipe } from '../../_pipes/tender-status.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { AuthService } from '../../_services/auth.service';
 import { HasRoleDirective } from '../../_directives/has-role.directive';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tenders',
@@ -30,8 +31,8 @@ export class TendersComponent implements OnInit {
   tenderService = inject(TenderService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  toastr = inject(ToastrService);
   
-  constructor() {}
   
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
@@ -100,6 +101,7 @@ export class TendersComponent implements OnInit {
     if (!this.tenderToDelete) return;
     this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
       next: () => {
+        this.toastr.success('Tender has been deleted');
         this.loadTenders();
         this.tenderToDelete = null;
       },
@@ -205,6 +207,7 @@ export class TendersComponent implements OnInit {
   
   saveTender(tender: CreateTenderDTO): void {
     this.tenderService.createTender(tender).subscribe(() => {
+      this.toastr.success('Tender created succesfully');
       this.loadTenders();
       this.isCreateTenderModalOpen = false;
     });

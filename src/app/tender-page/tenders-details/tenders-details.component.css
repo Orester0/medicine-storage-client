@@ -1,0 +1,136 @@
+
+.tender-status-badge {
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+  }
+  
+.btn {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease-in-out;
+  }
+  
+  .btn:active {
+    transform: scale(0.95);
+  }
+  
+  .btn-primary {
+    background-color: #0d6efd;
+    border: 2px solid #0b5ed7;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0b5ed7;
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+  }
+  
+  .btn-outline-primary {
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border: 2px solid #c82333;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+  }
+  
+  .btn-outline-danger {
+    border: 2px solid #dc3545;
+    color: #dc3545;
+  }
+  
+  .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+  }
+  
+  .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+  }
+  
+  .btn .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+  }
+  
+  .modal-header {
+    border-bottom: 2px solid #ffc107;
+  }
+  
+  .modal-footer, 
+  .card-footer,
+  .btn-panel {
+    background-color: transparent !important;
+    border-top: none;
+  }
+  
+  .card {
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-header.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+    border-bottom: none;
+    padding: 0.8rem 1.25rem;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .description-container {
+    padding: 0.75rem;
+    border-radius: 0.4rem;
+  }
+  
+  button[aria-expanded="true"] mat-icon,
+  button[aria-controls] mat-icon.expand_less {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
+  
+  button[aria-expanded="false"] mat-icon,
+  button[aria-controls] mat-icon.expand_more {
+    transition: transform 0.3s ease;
+  }
+  
+  h4, h5, h6 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .text-primary {
+    color: #0d6efd !important;
+  }
+  
+  .mat-tooltip {
+    z-index: 10000 !important;
+  }
