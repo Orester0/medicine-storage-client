@@ -22,50 +22,28 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './medicine-supplies.component.html',
   styleUrl: './medicine-supplies.component.css'
 })
-export class MedicineSuppliesComponent implements OnInit{
-  fullNamePipe = inject(UserFullNamePipe);
-  medicineNamePipe = inject(MedicineNamePipe);
-  tenderTitlePipe = inject(TenderTitlePipe);
+export class MedicineSuppliesComponent implements OnInit {
+  private fullNamePipe = inject(UserFullNamePipe);
+  private medicineNamePipe = inject(MedicineNamePipe);
+  private tenderTitlePipe = inject(TenderTitlePipe);
+  private medicineSupplyService = inject(MedicineSupplyService);
+  private route = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
 
-  medicineSupplyService = inject(MedicineSupplyService);
-  route = inject(ActivatedRoute);
-  toastr = inject(ToastrService);
-
+  supplies: ReturnMedicineSupplyDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserGeneralDTO[] = [];
   allTenders: ReturnTenderDTO[] = [];
-
-  filterConfig: FilterConfig[] = [
-    { 
-      key: 'medicineId', 
-      label: 'Medicine', 
-      type: 'select', 
-      options: [] 
-    },
-    { 
-      key: 'startDate', 
-      label: 'Start Date', 
-      type: 'date' 
-    },
-    { 
-      key: 'endDate', 
-      label: 'End Date', 
-      type: 'date' 
-    },
-    { 
-      key: 'tenderId', 
-      label: 'Tender', 
-      type: 'select', 
-      options: [] 
-    },
-    { 
-      key: 'createdByUserId', 
-      label: 'Created By User', 
-      type: 'select', 
-      options: [] 
-    }
-  ];
+  totalItems = 0;
   
+  isCreateSupplyFormVisible = false;
+
+  supplyParams: MedicineSupplyParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
+
   supplyColumns: TableColumn<ReturnMedicineSupplyDTO>[] = [
     { 
       key: 'id', 
@@ -100,50 +78,45 @@ export class MedicineSuppliesComponent implements OnInit{
       render: (value) => this.tenderTitlePipe.transform(value),
       sortable: true
     }
-    
   ];
 
-  supplyParams: MedicineSupplyParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    isDescending: false
-  };
-
-  totalItems = 0;
-
-  onFilterChange(filters: Partial<MedicineSupplyParams>) {
-    this.supplyParams = { 
-      ...this.supplyParams, 
-      ...filters, 
-      pageNumber: 1 
-    };
-    this.loadSupplies();
-  }
-
-  onSortChange(sort: { key: keyof ReturnMedicineSupplyDTO; isDescending: boolean }) {
-    this.supplyParams.sortBy = sort.key as string;
-    this.supplyParams.isDescending = sort.isDescending;
-    this.loadSupplies();
-  }
-
-  onPageChange(page: number) {
-    this.supplyParams.pageNumber = page;
-    this.loadSupplies();
-  }
-
-
-
-
-
-  isCreateSupplyFormVisible = false;
-  supplies: ReturnMedicineSupplyDTO[] = [];
+  filterConfig: FilterConfig[] = [
+    { 
+      key: 'medicineId', 
+      label: 'Medicine', 
+      type: 'select', 
+      options: [] 
+    },
+    { 
+      key: 'startDate', 
+      label: 'Start Date', 
+      type: 'date' 
+    },
+    { 
+      key: 'endDate', 
+      label: 'End Date', 
+      type: 'date' 
+    },
+    { 
+      key: 'tenderId', 
+      label: 'Tender', 
+      type: 'select', 
+      options: [] 
+    },
+    { 
+      key: 'createdByUserId', 
+      label: 'Created By User', 
+      type: 'select', 
+      options: [] 
+    }
+  ];
 
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allTenders = this.route.snapshot.data['tenders'];
     this.allUsers = this.route.snapshot.data['users'];
-    // this.loadSupplies();
     this.initializeFilter();
+    this.loadSupplies();
   }
 
   private initializeFilter(): void {
@@ -163,37 +136,55 @@ export class MedicineSuppliesComponent implements OnInit{
     }));
   }
 
-  private loadSupplies() {
-    this.medicineSupplyService.getSupplies(this.supplyParams).subscribe(
-      response => {
+  private loadSupplies(): void {
+    this.medicineSupplyService.getSupplies(this.supplyParams).subscribe({
+      next: (response) => {
         this.supplies = response.items;
         this.totalItems = response.totalCount;
-      }
-    );
-  }
-
-  
-  showCreateSupplyForm() {
-    this.isCreateSupplyFormVisible = true;
-  }
-
-  hideCreateSupplyForm() {
-    this.isCreateSupplyFormVisible = false;
-  }
-
-  onCreateSupply(supply: CreateMedicineSupplyDTO) {
-    this.medicineSupplyService.createSupply(supply).subscribe(() => {
-      
-      this.toastr.success('Supply created succesfully');
-      this.hideCreateSupplyForm();
-      this.loadSupplies();
+      },
+      error: (error) => console.error('Error loading supplies:', error)
     });
   }
 
-  onCloseCreateSupplyForm() {
-    this.hideCreateSupplyForm();
+  showCreateSupplyForm(): void {
+    this.isCreateSupplyFormVisible = true;
   }
 
+  hideCreateSupplyForm(): void {
+    this.isCreateSupplyFormVisible = false;
+  }
 
-  
+  onCreateSupply(supply: CreateMedicineSupplyDTO): void {
+    this.medicineSupplyService.createSupply(supply).subscribe({
+      next: () => {
+        this.toastr.success('Supply created successfully');
+        this.hideCreateSupplyForm();
+        this.loadSupplies();
+      },
+      error: (error) => {
+        console.error('Error creating supply:', error);
+        this.toastr.error('Failed to create supply');
+      }
+    });
+  }
+
+  onFilterChange(filters: Partial<MedicineSupplyParams>): void {
+    this.supplyParams = { 
+      ...this.supplyParams, 
+      ...filters, 
+      pageNumber: 1 
+    };
+    this.loadSupplies();
+  }
+
+  onSortChange(sort: { key: keyof ReturnMedicineSupplyDTO; isDescending: boolean }): void {
+    this.supplyParams.sortBy = sort.key as string;
+    this.supplyParams.isDescending = sort.isDescending;
+    this.loadSupplies();
+  }
+
+  onPageChange(page: number): void {
+    this.supplyParams.pageNumber = page;
+    this.loadSupplies();
+  }
 }

@@ -21,111 +21,47 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-audits',
-  imports: [AuditNotesComponent, DeleteConfirmationModalComponent, CreateAuditFormComponent, CommonModule, AuditsDetailsComponent, TableComponent, PaginationComponent, ReactiveFormsModule, FilterComponent, AuditUpdateItemsComponent],
+  imports: [
+    AuditNotesComponent, 
+    DeleteConfirmationModalComponent, 
+    CreateAuditFormComponent, 
+    CommonModule, 
+    AuditsDetailsComponent, 
+    TableComponent, 
+    PaginationComponent, 
+    ReactiveFormsModule, 
+    FilterComponent, 
+    AuditUpdateItemsComponent
+  ],
   providers: [AuditStatusPipe, UserFullNamePipe],
   templateUrl: './audits.component.html',
   styleUrl: './audits.component.css'
 })
 export class AuditsComponent implements OnInit {
-  auditStatusPipe = inject(AuditStatusPipe);
-  userFullNamePipe = inject(UserFullNamePipe);
-  authService = inject(AuthService);
-  toastr = inject(ToastrService);
+  private auditService = inject(AuditService);
+  private auditStatusPipe = inject(AuditStatusPipe);
+  private userFullNamePipe = inject(UserFullNamePipe);
+  private authService = inject(AuthService);
+  private toastr = inject(ToastrService);
+  private route = inject(ActivatedRoute);
 
-
-  // handle delete
-
-  auditToDelete: ReturnAuditDTO | null = null;
-
-  deleteAuditPrompt(audit: ReturnAuditDTO): void {
-    this.auditToDelete = audit;
-  }
-
-  handleDeleteConfirm(): void {
-    if (!this.auditToDelete) return;
-    this.auditService.deleteAudit(this.auditToDelete.id).subscribe({
-      next: () => {
-        this.loadAudits();
-        this.auditToDelete = null;
-        
-        this.toastr.success('Audit has been deleted');
-      },
-      error: () => {
-        console.error('Failed to delete tender.');
-      },
-    });
-  }
-
-  handleDeleteCancel(): void {
-    this.auditToDelete = null;
-  }
-
-
-
-  isCreateAuditModalOpen = false;
-
-
-  
-
-
-  
-
-
-  
-  
   audits: ReturnAuditDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserGeneralDTO[] = [];
-
-  selectedAudit: ReturnAuditDTO | null = null;
-
-  error: string | null = null;
   totalItems: number = 0;
-
-  tableActions: TableAction<ReturnAuditDTO>[] = [
-    {
-      label: 'View Details',
-      icon: 'visibility',
-      class: 'btn btn-info btn-sm',
-      onClick: (row) => this.viewAuditDetails(row),
-    },
-    {
-      label: 'Execute',
-      icon: 'play_arrow', 
-      class: 'btn btn-info btn-sm',
-      onClick: (row) => this.updateAudit(row.id),
-      visible: (row) => row.status === 2 ||  row.status === 4,
-    },
-    {
-      label: 'Start Audit',
-      icon: 'play_circle',
-      class: 'btn btn-success btn-sm me-2',
-      onClick: (row) => this.startAudit(row.id),
-      visible: (row) => row.status === 1,
-    },
-    {
-      label: 'Close Audit',
-      icon: 'stop_circle',
-      class: 'btn btn-danger btn-sm me-2',
-      onClick: (row) => this.closeAudit(row.id),
-      visible: (row) => row.status === 2 ||  row.status === 4,
-  },
-  {
-    label: 'Delete',
-    icon: 'delete',
-    class: 'btn btn-danger btn-sm me-2',
-    onClick: (row) => this.deleteAuditPrompt(row),
-    visible: (row) => {
-      const userId = this.authService.currentUser()?.id; 
-      const isAdmin = this.authService.userHasRole(['Admin']);
-      const isCreator = row.plannedByUser!.id === userId;
-      return row.status === 1 && (isAdmin || isCreator);
-    },
-  },
-  ];
-
   
+  isCreateAuditModalOpen = false;
+  selectedAudit: ReturnAuditDTO | null = null;
+  auditToStart: ReturnAuditDTO | null = null;
+  auditToClose: ReturnAuditDTO | null = null;
+  auditToUpdate: ReturnAuditDTO | null = null;
+  auditToDelete: ReturnAuditDTO | null = null;
 
+  auditParams: AuditParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
 
   auditColumns: TableColumn<ReturnAuditDTO>[] = [
     {
@@ -168,30 +104,48 @@ export class AuditsComponent implements OnInit {
     }
   ];
 
-  
-  
+  tableActions: TableAction<ReturnAuditDTO>[] = [
+    {
+      label: 'View Details',
+      icon: 'visibility',
+      class: 'btn btn-info btn-sm',
+      onClick: (row) => this.viewAuditDetails(row),
+    },
+    {
+      label: 'Execute',
+      icon: 'play_arrow', 
+      class: 'btn btn-info btn-sm',
+      onClick: (row) => this.updateAudit(row.id),
+      visible: (row) => row.status === 2 || row.status === 4,
+    },
+    {
+      label: 'Start Audit',
+      icon: 'play_circle',
+      class: 'btn btn-success btn-sm me-2',
+      onClick: (row) => this.startAudit(row.id),
+      visible: (row) => row.status === 1,
+    },
+    {
+      label: 'Close Audit',
+      icon: 'stop_circle',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.closeAudit(row.id),
+      visible: (row) => row.status === 2 || row.status === 4,
+    },
+    {
+      label: 'Delete',
+      icon: 'delete',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.deleteAuditPrompt(row),
+      visible: (row) => {
+        const userId = this.authService.currentUser()?.id; 
+        const isAdmin = this.authService.userHasRole(['Admin']);
+        const isCreator = row.plannedByUser!.id === userId;
+        return row.status === 1 && (isAdmin || isCreator);
+      },
+    },
+  ];
 
-  auditParams: AuditParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    isDescending: false
-  };
-
-
-  constructor(
-    private auditService: AuditService,
-    private route: ActivatedRoute 
-  ) {}
-  
-
-  ngOnInit(): void {
-    this.allMedicines = this.route.snapshot.data['medicines'];
-    this.allUsers = this.route.snapshot.data['users'];
-    this.initializeFilter();
-    // this.loadAudits();
-  }
-
-  
   filterConfig: FilterConfig[] = [
     {
       key: 'title',
@@ -238,147 +192,156 @@ export class AuditsComponent implements OnInit {
       type: 'select',
       options: []
     }
-    
   ];
-  
-  private initializeFilter(): void {
-    this.filterConfig[4].options = this.allUsers.map(user => ({
-      value: user.id,
-      label: this.userFullNamePipe.transform(user)
-    }))
-  
-    this.filterConfig[5].options = this.allUsers.map(user => ({
-      value: user.id,
-      label: this.userFullNamePipe.transform(user)
-    }))
-  
-    this.filterConfig[6].options = this.allUsers.map(user => ({
-      value: user.id,
-      label: this.userFullNamePipe.transform(user)
-    }))
+
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.allUsers = this.route.snapshot.data['users'];
+    this.initializeFilter();
+    this.loadAudits();
   }
-  
+
+  private initializeFilter(): void {
+    const userOptions = this.allUsers.map(user => ({
+      value: user.id,
+      label: this.userFullNamePipe.transform(user)
+    }));
+    
+    this.filterConfig[4].options = userOptions;
+    this.filterConfig[5].options = userOptions;
+    this.filterConfig[6].options = userOptions;
+  }
 
   loadAudits(): void {
-
     this.auditService.getAuditsWithFilters(this.auditParams).subscribe({
       next: (response) => {
         this.audits = response.items || [];
         this.totalItems = response.totalCount || 0;
         this.selectedAudit = null;
-      },
-      error: () => {
-        this.error = 'Failed to load audits';
-      },
+      }
     });
   }
 
-  auditToStart: ReturnAuditDTO | null = null;
-  auditToClose: ReturnAuditDTO | null = null;
-  auditToUpdate: ReturnAuditDTO | null = null;
+  openCreateModal(): void {
+    this.isCreateAuditModalOpen = true;
+  }
 
-  startAudit(id: number) {
+  closeCreateAuditModal(): void {
+    this.isCreateAuditModalOpen = false;
+  }
+
+  saveAudit(auditData: CreateAuditDTO): void {
+    this.auditService.createAudit(auditData).subscribe({
+      next: () => {
+        this.loadAudits();
+        this.closeCreateAuditModal();
+        this.toastr.success('Audit created successfully');
+      }
+    });
+  }
+
+  viewAuditDetails(audit: ReturnAuditDTO): void {
+    this.selectedAudit = audit;
+  }
+
+  onCloseDetails(): void {
+    this.selectedAudit = null;
+  }
+
+  startAudit(id: number): void {
     const audit = this.audits.find(a => a.id === id);
     if (audit) this.auditToStart = audit;
   }
 
-  closeAudit(id: number) {
+  closeAudit(id: number): void {
     const audit = this.audits.find(a => a.id === id);
     if (audit) this.auditToClose = audit;
   }
 
-  updateAudit(id: number) {
+  updateAudit(id: number): void {
     const audit = this.audits.find(a => a.id === id);
     if (audit) this.auditToUpdate = audit;
   }
 
-  handleStartSubmit(data: { note: string }) {
+  handleStartSubmit(data: { note: string }): void {
     if (!this.auditToStart) return;
     
     this.auditService.startAudit(this.auditToStart.id, { note: data.note }).subscribe({
       next: () => {
         this.loadAudits();
         this.auditToStart = null;
-        
         this.toastr.success('Audit has been started');
-      },
-      error: () => this.error = 'Failed to start audit'
+      }
     });
   }
 
-  handleCloseSubmit(data: { note: string }) { 
+  handleCloseSubmit(data: { note: string }): void { 
     if (!this.auditToClose) return;
 
     this.auditService.closeAudit(this.auditToClose.id, { note: data.note }).subscribe({
       next: () => {
         this.loadAudits();
         this.auditToClose = null;
-        
         this.toastr.success('Audit has been closed');
-      },
-      error: () => this.error = 'Failed to close audit'
+      }
     });
   }
 
-  handleUpdateSubmit(data: UpdateAuditItemsRequest) {
+  handleUpdateSubmit(data: UpdateAuditItemsRequest): void {
     if (!this.auditToUpdate) return;
 
     this.auditService.updateAuditItems(this.auditToUpdate.id, data).subscribe({
       next: () => {
         this.loadAudits();
         this.auditToUpdate = null;
-        
         this.toastr.success('Audit has been updated');
       },
       error: () => console.error('Failed to update audit items'),
     });
   }
-  
-  saveAudit(auditData: CreateAuditDTO): void {
-    this.auditService.createAudit(auditData).subscribe({
+
+  deleteAuditPrompt(audit: ReturnAuditDTO): void {
+    this.auditToDelete = audit;
+  }
+
+  handleDeleteConfirm(): void {
+    if (!this.auditToDelete) return;
+    
+    this.auditService.deleteAudit(this.auditToDelete.id).subscribe({
       next: () => {
         this.loadAudits();
-        this.closeCreateAuditModal();
-        this.toastr.success('Audit created succesfully');
+        this.auditToDelete = null;
+        this.toastr.success('Audit has been deleted');
       },
-      error: () => (this.error = 'Failed to create audit'),
+      error: () => {
+        console.error('Failed to delete audit.');
+      },
     });
   }
 
-  
-
-  closeCreateAuditModal(): void {
-    this.isCreateAuditModalOpen = false;
-  }
-  
-  viewAuditDetails(audit: ReturnAuditDTO): void {
-    this.selectedAudit = audit;
+  handleDeleteCancel(): void {
+    this.auditToDelete = null;
   }
 
-
-  onCloseDetails() : void{
-    this.selectedAudit = null;
-  }
-
-
-  onUpdateAuditFromDetails(audit: ReturnAuditDTO) : void{
+  onUpdateAuditFromDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = null;
     this.updateAudit(audit.id);
   }
 
-  onDeleteAuditFromDetails(audit: ReturnAuditDTO) : void{
+  onDeleteAuditFromDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = null;
     this.deleteAuditPrompt(audit);
   }
-  onStartAuditFromDetails(audit: ReturnAuditDTO) : void{
+
+  onStartAuditFromDetails(audit: ReturnAuditDTO): void {
     this.selectedAudit = null;
-    this.startAudit(audit.id)
-  }
-  onCloseAuditFromDetails(audit: ReturnAuditDTO) : void{
-    this.selectedAudit = null;
-    this.closeAudit(audit.id)
+    this.startAudit(audit.id);
   }
 
+  onCloseAuditFromDetails(audit: ReturnAuditDTO): void {
+    this.selectedAudit = null;
+    this.closeAudit(audit.id);
+  }
 
   getAuditStatusBadgeClass(status: AuditStatus): string {
     const classMap: Record<AuditStatus, string> = {
@@ -390,8 +353,6 @@ export class AuditsComponent implements OnInit {
     };
     return classMap[status] ?? 'bg-secondary';
   }
-
-  
 
   onFilterChange(filters: Partial<AuditParams>): void {
     this.auditParams = { 
@@ -408,15 +369,8 @@ export class AuditsComponent implements OnInit {
     this.loadAudits();
   }
   
-  
   onPageChange(page: number): void {
     this.auditParams.pageNumber = page;
     this.loadAudits();
   }
-
-  openCreateModal(): void {
-    this.isCreateAuditModalOpen = true;
-  }
-
-
 }

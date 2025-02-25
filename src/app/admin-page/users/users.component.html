@@ -1,23 +1,18 @@
 <div class="container-fluid py-3">
     <h2>Users Management</h2>
-
-    
     <button class="btn btn-success mb-3" (click)="showCreateUseForm()">
       <i class="bi bi-plus-circle"></i> Create User
     </button>
-
     <app-create-user-form
       *ngIf="isCreateUserFormVisible"
       (formSubmit)="onFormSubmit($event)"
       (cancelClick)="onCancel()"
     ></app-create-user-form>
-
     <app-filter 
       [config]="filterConfig"
       [title]="'Filters'"
       (filterChange)="onFilterChange($event)">
     </app-filter>
-    
     <div class="table-responsive">
       <app-table 
         [columns]="columns" 

@@ -3,156 +3,59 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnUserPersonalDTO, UserParams, UserRegistrationDTO } from '../../_models/user.types';
 import { AdminService } from '../../_services/admin.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TableAction, TableColumn, TableComponent } from '../../table/table.component';
 import { UserInfoComponent } from '../user-info/user-info.component';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { FilterComponent, FilterConfig } from '../../filter/filter.component';
-import { RegisterComponent } from "../../home-page/register/register.component";
 import { CreateUserFormComponent } from '../create-user-form/create-user-form.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-users',
-  imports: [TableComponent, ReactiveFormsModule, CommonModule, UserInfoComponent, PaginationComponent, FilterComponent, CreateUserFormComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TableComponent,
+    UserInfoComponent,
+    PaginationComponent,
+    FilterComponent,
+    CreateUserFormComponent
+  ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
   private toastr = inject(ToastrService);
-
-
-  isCreateUserFormVisible = false;
-  showCreateUseForm(){
-    this.isCreateUserFormVisible = true;
-  }
-
-
-  onFormSubmit(formData: any): void {
-    
-    this.adminService.createUser(formData).subscribe({
-      next: () => {
-        this.isCreateUserFormVisible = false;
-        
-        this.toastr.success('User created succesfully');
-      },
-      error: (error) => {
-        console.error('CreateUser error:', error);
-      },
-      complete: () => {
-      }
-    });
-  }
-
-
-  onCancel(): void {
-    this.isCreateUserFormVisible = false;
-  }
-
-
+  private adminService = inject(AdminService);
+  private fb = inject(FormBuilder);
 
   users: ReturnUserPersonalDTO[] = [];
-  selectedUser: ReturnUserPersonalDTO | null = null;
-
-  availableRoles = ['Admin', 'Doctor', 'Manager', 'Distributor'];
   totalItems = 0;
+  availableRoles = ['Admin', 'Doctor', 'Manager', 'Distributor'];
+  
+  selectedUser: ReturnUserPersonalDTO | null = null;
+  selectedUserForInfo: ReturnUserPersonalDTO | null = null;
+  
+  isCreateUserFormVisible = false;
+  isModalOpen = false;
+  showUserInfoModal = false;
+  
+  rolesForm: FormGroup;
+  
   userParams: UserParams = {
     isDescending: false,
     pageNumber: 1,
     pageSize: 10
   };
-
-  filterConfig: FilterConfig[] = [
-    { 
-      key: 'userName', 
-      label: 'Username', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'firstName', 
-      label: 'First Name', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'lastName', 
-      label: 'Last Name', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'email', 
-      label: 'Email', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'position', 
-      label: 'Position', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'company', 
-      label: 'Company', 
-      type: 'text', 
-      col: 3 
-    },
-    { 
-      key: 'role', 
-      label: 'Role', 
-      type: 'select', 
-      col: 3, 
-      options: this.availableRoles.map(role => ({ value: role, label: role }))
-    }
-  ];
-
-
-  rolesForm: FormGroup;
-  isModalOpen = false;
-
-  showUserInfoModal = false;
-  selectedUserForInfo: ReturnUserPersonalDTO | null = null;
-    
-  openUserInfoModal(user: ReturnUserPersonalDTO): void {
-    this.selectedUserForInfo = user;
-    this.showUserInfoModal = true;
-  }
-
-  closeUserInfoModal(): void {
-    this.showUserInfoModal = false;
-    this.selectedUserForInfo = null;
-  }
-
+  
   columns: TableColumn<ReturnUserPersonalDTO>[] = [
-    { 
-      key: 'id', 
-      label: 'ID',
-      sortable: true,
-    },
-    { 
-      key: 'userName', 
-      label: 'Username' ,
-      sortable: true,
-    },
-    { 
-      key: 'firstName', 
-      label: 'First Name',
-      sortable: true,
-    },
-    { 
-      key: 'lastName', 
-      label: 'Last Name',
-      sortable: true,
-    },
-    { 
-      key: 'actions', 
-      label: 'Actions', 
-      sortable: false 
-    }
+    { key: 'id', label: 'ID', sortable: true },
+    { key: 'userName', label: 'Username', sortable: true },
+    { key: 'firstName', label: 'First Name', sortable: true },
+    { key: 'lastName', label: 'Last Name', sortable: true },
+    { key: 'actions', label: 'Actions', sortable: false }
   ];
-
+  
   actions: TableAction<ReturnUserPersonalDTO>[] = [
     {
       label: 'Details',
@@ -167,20 +70,32 @@ export class UsersComponent implements OnInit {
       onClick: (user) => this.openRolesModal(user)
     }
   ];
+  
+  filterConfig: FilterConfig[] = [
+    { key: 'userName', label: 'Username', type: 'text', col: 3 },
+    { key: 'firstName', label: 'First Name', type: 'text', col: 3 },
+    { key: 'lastName', label: 'Last Name', type: 'text', col: 3 },
+    { key: 'email', label: 'Email', type: 'text', col: 3 },
+    { key: 'position', label: 'Position', type: 'text', col: 3 },
+    { key: 'company', label: 'Company', type: 'text', col: 3 },
+    { 
+      key: 'role', 
+      label: 'Role', 
+      type: 'select', 
+      col: 3, 
+      options: this.availableRoles.map(role => ({ value: role, label: role }))
+    }
+  ];
 
-  constructor(
-    private adminService: AdminService,
-    private fb: FormBuilder
-  ) {
+  constructor() {
     this.rolesForm = this.fb.group({
       roles: [[], Validators.required] 
     });
   }
 
   ngOnInit(): void {
-    // this.loadUsers();
+    this.loadUsers();
   }
-
 
   private loadUsers(): void {
     this.adminService.getUsersWithFilter(this.userParams).subscribe({
@@ -192,6 +107,37 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  showCreateUseForm(): void {
+    this.isCreateUserFormVisible = true;
+  }
+
+  onFormSubmit(formData: any): void {
+    this.adminService.createUser(formData).subscribe({
+      next: () => {
+        this.isCreateUserFormVisible = false;
+        this.toastr.success('User created successfully');
+        this.loadUsers();
+      },
+      error: (error) => {
+        console.error('CreateUser error:', error);
+      }
+    });
+  }
+
+  onCancel(): void {
+    this.isCreateUserFormVisible = false;
+  }
+
+  openUserInfoModal(user: ReturnUserPersonalDTO): void {
+    this.selectedUserForInfo = user;
+    this.showUserInfoModal = true;
+  }
+
+  closeUserInfoModal(): void {
+    this.showUserInfoModal = false;
+    this.selectedUserForInfo = null;
+  }
+  // Roles management methods
   openRolesModal(user: ReturnUserPersonalDTO): void {
     this.selectedUser = user;
     this.rolesForm.setValue({ roles: user.roles });
@@ -213,8 +159,6 @@ export class UsersComponent implements OnInit {
       this.rolesForm.patchValue({ roles: roles.filter((r: string) => r !== role) });
     }
   }
-  
-  
 
   saveRoles(): void {
     if (!this.selectedUser) return;
@@ -228,14 +172,13 @@ export class UsersComponent implements OnInit {
     this.adminService.updateRoles(userId, updatedRoles).subscribe({
       next: () => {
         this.selectedUser!.roles = updatedRoles;
-        
         this.closeRolesModal();
+        this.loadUsers();
       },
       error: (error) => console.error('Error updating roles:', error)
     });
   }
 
-  
   onFilterChange(filters: Partial<UserParams>): void {
     this.userParams = { ...this.userParams, ...filters, pageNumber: 1 };
     this.loadUsers();
@@ -251,5 +194,4 @@ export class UsersComponent implements OnInit {
     this.userParams.pageNumber = page;
     this.loadUsers();
   }
-  
 }

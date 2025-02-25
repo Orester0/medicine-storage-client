@@ -24,22 +24,27 @@ import { ToastrService } from 'ngx-toastr';
   providers: [TenderStatusPipe, MedicineNamePipe, HasRoleDirective],
 })
 export class TendersComponent implements OnInit {
-  tenderStatusPipe = inject(TenderStatusPipe);
-  medicineNamePipe = inject(MedicineNamePipe);
-
-  authService = inject(AuthService);
-  tenderService = inject(TenderService);
-  router = inject(Router);
-  route = inject(ActivatedRoute);
-  toastr = inject(ToastrService);
+  private tenderStatusPipe = inject(TenderStatusPipe);
+  private medicineNamePipe = inject(MedicineNamePipe);
+  private authService = inject(AuthService);
+  private tenderService = inject(TenderService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
   
+  tenders: ReturnTenderDTO[] = [];
+  allMedicines: ReturnMedicineDTO[] = [];
+  totalItems = 0;
   
-  ngOnInit(): void {
-    this.allMedicines = this.route.snapshot.data['medicines'];
-    this.initializeFilter();
-    // this.loadTenders();
-  }
-
+  selectedTender: ReturnTenderDTO | null = null;
+  tenderToDelete: ReturnTenderDTO | null = null;
+  isCreateTenderModalOpen = false;
+  
+  tenderParams: TenderParams = {
+    pageNumber: 1,
+    pageSize: 10,
+    isDescending: false
+  };
   
   filterConfig: FilterConfig[] = [
     {
@@ -80,65 +85,6 @@ export class TendersComponent implements OnInit {
     }
   ];
 
-
-  private initializeFilter(): void {
-    
-    this.filterConfig[2].options = this.allMedicines.map(medicine => ({
-      
-      value: medicine.id,
-      label: this.medicineNamePipe.transform(medicine)
-    }))
-  }
-
-  // delete 
-  tenderToDelete: ReturnTenderDTO | null = null;
-
-  deleteTenderPrompt(medicine: ReturnTenderDTO): void {
-    this.tenderToDelete = medicine;
-  }
-
-  handleDeleteConfirm(): void {
-    if (!this.tenderToDelete) return;
-    this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
-      next: () => {
-        this.toastr.success('Tender has been deleted');
-        this.loadTenders();
-        this.tenderToDelete = null;
-      },
-      error: () => {
-        console.error('Failed to delete tender.');
-      },
-    });
-  }
-
-  handleDeleteCancel(): void {
-    this.tenderToDelete = null;
-  }
-
-  // table config
-
-  tableActions: TableAction<ReturnTenderDTO>[] = [
-    {
-        label: 'View Details',
-        icon: 'visibility',
-        class: 'btn btn-info btn-sm',
-        onClick: (row) => this.viewTenderDetails(row),
-      },
-      
-    {
-      label: 'Delete',
-      icon: 'delete',
-      class: 'btn btn-danger btn-sm me-2',
-      onClick: (row) => this.deleteTenderPrompt(row),
-      visible: (row) => {
-        const userId = this.authService.currentUser()?.id; 
-        const isAdmin = this.authService.userHasRole(['Admin']);
-        const isCreator = row.createdByUser!.id === userId;
-        return row.status === 1 && (isAdmin || isCreator);
-      },
-    },
-  ];
-
   tableColumns: TableColumn<ReturnTenderDTO>[] = [
     {
       key: 'id',
@@ -168,48 +114,58 @@ export class TendersComponent implements OnInit {
     }
   ];
 
+  tableActions: TableAction<ReturnTenderDTO>[] = [
+    {
+        label: 'View Details',
+        icon: 'visibility',
+        class: 'btn btn-info btn-sm',
+        onClick: (row) => this.viewTenderDetails(row),
+      },
+      
+    {
+      label: 'Delete',
+      icon: 'delete',
+      class: 'btn btn-danger btn-sm me-2',
+      onClick: (row) => this.deleteTenderPrompt(row),
+      visible: (row) => {
+        const userId = this.authService.currentUser()?.id; 
+        const isAdmin = this.authService.userHasRole(['Admin']);
+        const isCreator = row.createdByUser!.id === userId;
+        return row.status === 1 && (isAdmin || isCreator);
+      },
+    },
+  ];
 
-  
+  ngOnInit(): void {
+    this.allMedicines = this.route.snapshot.data['medicines'];
+    this.initializeFilter();
+    this.loadTenders();
+  }
 
-  // pagination
-  
+  private initializeFilter(): void {
+    this.filterConfig[2].options = this.allMedicines.map(medicine => ({
+      value: medicine.id,
+      label: this.medicineNamePipe.transform(medicine)
+    }));
+  }
 
-
-  tenders: ReturnTenderDTO[] = [];
-  allMedicines: ReturnMedicineDTO[] = [];
-  selectedTender: ReturnTenderDTO | null = null;
-  error: string | null = null;
-
-  isCreateTenderModalOpen = false;
-
-  
-  tenderParams: TenderParams = {
-    pageNumber: 1,
-    pageSize: 10,
-    isDescending: false
-  };
-
-  
-  totalItems = 0;
-  
   private loadTenders(): void {
     this.tenderService.getTendersWithFilter(this.tenderParams).subscribe({
       next: (response) => {
         this.tenders = response.items || [];
         this.totalItems = response.totalCount || 0;
         this.selectedTender = null;
-      },
-      error: () => {
-        this.error = 'Failed to load tenders';
       }
     });
   }
   
   saveTender(tender: CreateTenderDTO): void {
-    this.tenderService.createTender(tender).subscribe(() => {
-      this.toastr.success('Tender created succesfully');
-      this.loadTenders();
-      this.isCreateTenderModalOpen = false;
+    this.tenderService.createTender(tender).subscribe({
+      next: () => {
+        this.toastr.success('Tender created successfully');
+        this.loadTenders();
+        this.isCreateTenderModalOpen = false;
+      }
     });
   }
 
@@ -217,11 +173,32 @@ export class TendersComponent implements OnInit {
     this.router.navigate(['/tenders', tender.id]);
   }
 
+  deleteTenderPrompt(tender: ReturnTenderDTO): void {
+    this.tenderToDelete = tender;
+  }
+
+  handleDeleteConfirm(): void {
+    if (!this.tenderToDelete) return;
+    this.tenderService.deleteTender(this.tenderToDelete.id).subscribe({
+      next: () => {
+        this.toastr.success('Tender has been deleted');
+        this.loadTenders();
+        this.tenderToDelete = null;
+      },
+      error: () => {
+        console.error('Failed to delete tender.');
+      },
+    });
+  }
+
+  handleDeleteCancel(): void {
+    this.tenderToDelete = null;
+  }
+
   openCreateModal(): void {
     this.isCreateTenderModalOpen = true;
   }
 
-  
   onFilterChange(filters: Partial<TenderParams>): void {
     this.tenderParams = {
       ...this.tenderParams,

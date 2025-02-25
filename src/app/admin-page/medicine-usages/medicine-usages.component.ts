@@ -18,24 +18,23 @@ import { CommonModule } from '@angular/common';
   templateUrl: './medicine-usages.component.html',
   styleUrl: './medicine-usages.component.css'
 })
-export class MedicineUsagesComponent implements OnInit{
-  fullNamePipe = inject(UserFullNamePipe);
-  medicineNamePipe = inject(MedicineNamePipe);
+export class MedicineUsagesComponent implements OnInit {
+  private medicineUsageService = inject(MedicineUsageService);
+  private route = inject(ActivatedRoute);
+  private fullNamePipe = inject(UserFullNamePipe);
+  private medicineNamePipe = inject(MedicineNamePipe);
   
-  medicineUsageService = inject(MedicineUsageService); 
-  route = inject(ActivatedRoute);
-
+  usages: ReturnMedicineUsageDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserGeneralDTO[] = [];
-
   totalUsages = 0;
-
+  
   usageParams: MedicineUsageParams = {
     pageNumber: 1,
     pageSize: 10,
     isDescending: false
   };
-
+  
   totalItems: TableColumn<ReturnMedicineUsageDTO>[] = [
     { 
       key: 'id', 
@@ -66,7 +65,6 @@ export class MedicineUsagesComponent implements OnInit{
     }
   ];
 
-
   usageFilters: FilterConfig[] = [
     { 
       key: 'medicineId', 
@@ -92,16 +90,11 @@ export class MedicineUsagesComponent implements OnInit{
     }
   ];
 
-
-
-  usages: ReturnMedicineUsageDTO[] = [];
-
-
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allUsers = this.route.snapshot.data['users'];
-    // this.loadUsages();
     this.initializeFilter();
+    this.loadUsages();
   }
 
   private initializeFilter(): void {
@@ -116,16 +109,17 @@ export class MedicineUsagesComponent implements OnInit{
     }));
   }
   
-  private loadUsages() {
-    this.medicineUsageService.getUsages(this.usageParams).subscribe(
-      response => {
+  private loadUsages(): void {
+    this.medicineUsageService.getUsages(this.usageParams).subscribe({
+      next: (response) => {
         this.usages = response.items;
         this.totalUsages = response.totalCount;
-      }
-    );
+      },
+      error: (error) => console.error('Error loading usages:', error)
+    });
   }
 
-  onFilterChange(filters: Partial<MedicineUsageParams>) {
+  onFilterChange(filters: Partial<MedicineUsageParams>): void {
     this.usageParams = { 
       ...this.usageParams, 
       ...filters, 
@@ -134,17 +128,14 @@ export class MedicineUsagesComponent implements OnInit{
     this.loadUsages();
   }
 
-  onSortChange(sort: { key: keyof ReturnMedicineUsageDTO; isDescending: boolean }) {
+  onSortChange(sort: { key: keyof ReturnMedicineUsageDTO; isDescending: boolean }): void {
     this.usageParams.sortBy = sort.key as string;
     this.usageParams.isDescending = sort.isDescending;
     this.loadUsages();
   }
 
-  onPageChange(page: number) {
+  onPageChange(page: number): void {
     this.usageParams.pageNumber = page;
     this.loadUsages();
   }
-
-
-
 }
