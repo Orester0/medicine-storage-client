@@ -102,14 +102,14 @@ export class MedicineRequestComponent implements OnInit {
     {
       label: 'Approve Request',
       icon: 'check_circle',
-      class: 'btn btn-success btn-sm me-2',
+      class: 'btn btn-success btn-sm',
       onClick: (row) => this.approveRequest(row.id),
       visible: (row) => (row.status === 1 || row.status === 2) && this.hasRole(['Admin', 'Manager']),
     },
     {
       label: 'Reject Request',
       icon: 'cancel',
-      class: 'btn btn-danger btn-sm me-2',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.rejectRequest(row.id),
       visible: (row) => (row.status === 1 || row.status === 2) && this.hasRole(['Admin', 'Manager']),
     },
@@ -122,7 +122,7 @@ export class MedicineRequestComponent implements OnInit {
     {
       label: 'Delete',
       icon: 'delete',
-      class: 'btn btn-danger btn-sm me-2',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.deleteTenderPrompt(row),
       visible: (row) => {
         const userId = this.authService.currentUser()?.id; 
@@ -175,7 +175,7 @@ export class MedicineRequestComponent implements OnInit {
     this.users = this.route.snapshot.data['users'];
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
-    this.loadRequests();
+    // this.loadRequests();
   }
 
   hasRole(roles: string[]): boolean {

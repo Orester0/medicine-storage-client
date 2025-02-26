@@ -125,7 +125,7 @@ export class TendersComponent implements OnInit {
     {
       label: 'Delete',
       icon: 'delete',
-      class: 'btn btn-danger btn-sm me-2',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.deleteTenderPrompt(row),
       visible: (row) => {
         const userId = this.authService.currentUser()?.id; 
@@ -139,7 +139,7 @@ export class TendersComponent implements OnInit {
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
-    this.loadTenders();
+    // this.loadTenders();
   }
 
   private initializeFilter(): void {

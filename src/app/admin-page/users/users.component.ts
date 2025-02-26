@@ -94,7 +94,7 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadUsers();
+    // this.loadUsers();
   }
 
   private loadUsers(): void {

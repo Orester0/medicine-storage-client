@@ -121,21 +121,21 @@ export class AuditsComponent implements OnInit {
     {
       label: 'Start Audit',
       icon: 'play_circle',
-      class: 'btn btn-success btn-sm me-2',
+      class: 'btn btn-success btn-sm',
       onClick: (row) => this.startAudit(row.id),
       visible: (row) => row.status === 1,
     },
     {
       label: 'Close Audit',
       icon: 'stop_circle',
-      class: 'btn btn-danger btn-sm me-2',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.closeAudit(row.id),
       visible: (row) => row.status === 2 || row.status === 4,
     },
     {
       label: 'Delete',
       icon: 'delete',
-      class: 'btn btn-danger btn-sm me-2',
+      class: 'btn btn-danger btn-sm',
       onClick: (row) => this.deleteAuditPrompt(row),
       visible: (row) => {
         const userId = this.authService.currentUser()?.id; 
@@ -198,7 +198,7 @@ export class AuditsComponent implements OnInit {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.allUsers = this.route.snapshot.data['users'];
     this.initializeFilter();
-    this.loadAudits();
+    // this.loadAudits();
   }
 
   private initializeFilter(): void {

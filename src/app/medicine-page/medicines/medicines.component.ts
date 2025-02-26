@@ -151,7 +151,7 @@ export class MedicinesComponent implements OnInit {
   ngOnInit(): void {
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
-    this.loadMedicines();
+    // this.loadMedicines();
   }
 
   private initializeFilter(): void {

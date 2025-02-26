@@ -116,7 +116,7 @@ export class MedicineSuppliesComponent implements OnInit {
     this.allTenders = this.route.snapshot.data['tenders'];
     this.allUsers = this.route.snapshot.data['users'];
     this.initializeFilter();
-    this.loadSupplies();
+    // this.loadSupplies();
   }
 
   private initializeFilter(): void {

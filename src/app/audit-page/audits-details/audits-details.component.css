@@ -42,7 +42,3 @@ h4 {
 .mat-tooltip {
   z-index: 10000 !important;
 }
-
-  .modal-header {
-    border-bottom: 2px solid #ffc107;
-  }
