@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { CreateAuditDTO } from '../../_models/audit.types';
 import { FormBuilder, FormGroup, MaxLengthValidator, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-audit-form.component.css'
 })
 export class CreateAuditFormComponent implements OnInit{
+  private fb = inject(FormBuilder);
+
   @Input() medicines: ReturnMedicineDTO[] = [];
   @Input() initialData: Partial<CreateAuditDTO> = {};
   @Output() submitRequest = new EventEmitter<CreateAuditDTO>();
@@ -22,9 +24,6 @@ export class CreateAuditFormComponent implements OnInit{
 
 
   auditForm!: FormGroup;
-
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();

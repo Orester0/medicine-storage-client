@@ -27,11 +27,14 @@ import { AuthService } from '../../_services/auth.service';
   providers: [CurrencyPipe, ProposalStatusPipe, TenderItemStatusPipe, UserFullNamePipe]
 })
 export class TendersDetailsComponent implements OnInit {
-  proposalStatusPipe = inject(ProposalStatusPipe);
-  tenderItemStatusPipe = inject(TenderItemStatusPipe);
-  userFullNamePipe = inject(UserFullNamePipe);
-  toastr = inject(ToastrService);
-  authService = inject(AuthService);
+  private proposalStatusPipe = inject(ProposalStatusPipe);
+  private tenderItemStatusPipe = inject(TenderItemStatusPipe);
+  private userFullNamePipe = inject(UserFullNamePipe);
+  private toastr = inject(ToastrService);
+  private authService = inject(AuthService);
+  private tenderService = inject(TenderService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
  itemsTableActions: TableAction<ReturnTenderItemDTO>[] = [
     {
@@ -223,12 +226,7 @@ closeTender(): void {
 
   // load data
 
-  constructor(
-    private tenderService: TenderService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
+  
   ngOnInit(): void {
     this.tender = this.route.snapshot.data['tender'];
     this.allMedicines = this.route.snapshot.data['medicines'];

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MedicineService } from '../../_services/medicine.service';
@@ -14,6 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-medicine-form.component.css'
 })
 export class CreateMedicineFormComponent implements OnInit{
+  private fb = inject(FormBuilder);
+
   @Input() medicine: ReturnMedicineDTO | null = null;
   @Input() allMedicines!: ReturnMedicineDTO[];
   @Output() save = new EventEmitter<ReturnMedicineDTO>();
@@ -25,8 +27,6 @@ export class CreateMedicineFormComponent implements OnInit{
   getMedicineNames(medicines: ReturnMedicineDTO[]): string[] {
     return medicines.map(medicine => medicine.name);
   } 
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();

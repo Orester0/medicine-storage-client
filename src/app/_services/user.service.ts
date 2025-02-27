@@ -11,10 +11,6 @@ export class UserService  {
   private http = inject(HttpClient);
   private baseUrlUser = `${environment.apiUrl}users`;
 
-  
-  constructor() {}
-  
-
   getAllUsers(): Observable<ReturnUserGeneralDTO[]> {
     return this.http.get<ReturnUserGeneralDTO[]>(`${this.baseUrlUser}/all`);
   }

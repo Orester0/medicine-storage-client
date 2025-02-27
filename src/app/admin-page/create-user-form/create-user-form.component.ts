@@ -11,10 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-user-form.component.css'
 })
 export class CreateUserFormComponent {
+  private fb = inject(FormBuilder);
+  
   @Output() formSubmit = new EventEmitter<any>();
   @Output() cancelClick = new EventEmitter<void>();
 
-  fb = inject(FormBuilder);
   userForm!: FormGroup;
   availableRoles = ['doctor', 'distributor', 'admin', 'manager'];
   isLoading = false;

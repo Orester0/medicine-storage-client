@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -9,11 +9,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './error-template.component.css'
 })
 export class ErrorTemplateComponent implements OnInit{
+  private location = inject(Location);
+  private route = inject(ActivatedRoute);
+
   @Input() title = 'Error';
   @Input() message = 'An error occurred.';
   @Input() details: string | null = null;
-
-  constructor(private location: Location, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.title = this.route.snapshot.data['title'] || this.title;

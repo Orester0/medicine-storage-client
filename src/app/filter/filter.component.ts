@@ -1,6 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -34,6 +34,8 @@ export interface FilterConfig {
   styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {
+  private fb = inject(FormBuilder);
+
   @Input() config: FilterConfig[] = [];
   @Input() title = 'Filters';
   @Output() filterChange = new EventEmitter<any>();
@@ -41,20 +43,18 @@ export class FilterComponent implements OnInit {
   form!: FormGroup;
   isVisible = false;
 
-  constructor(private fb: FormBuilder) {}
-
   ngOnInit() {
-    this.initForm();
+    this.initializeForm();
     this.applyFilters();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config']) {
-      this.initForm();
+      this.initializeForm();
     }
   }
 
-  private initForm(): void {
+  private initializeForm(): void {
     const group: Record<string, any> = {};
     this.config.forEach(field => {
       group[field.key] = [field.defaultValue ?? null];

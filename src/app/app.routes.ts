@@ -72,11 +72,9 @@ export const routes: Routes = [
       } 
   },
   { 
+    
       path: '**', 
-      component: ErrorTemplateComponent, 
-      data: { 
-          title: '404 - Not Found', 
-          message: 'The requested page was not found.' 
-      } 
+      component: HomeComponent, 
+      data: { title: 'Medicine Storage' }
   },
 ];

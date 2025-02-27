@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnTenderItem, CreateTenderProposalItem, CreateTenderProposal } from '../../_models/tender.types';
 import { TenderService } from '../../_services/tender.service';
@@ -12,27 +12,29 @@ import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
   styleUrl: './create-tender-proposal.component.css'
 })
 export class CreateTenderProposalComponent {
+  private fb = inject(FormBuilder);
+  private tenderService = inject(TenderService);
+
   @Input() tenderId!: number;
   @Input() tenderItems!: ReturnTenderItem[];
   @Output() onClose = new EventEmitter<void>();
 
-  proposalForm: FormGroup;
+  proposalForm!: FormGroup;
   totalPrice: number = 0;
 
   get proposalItemsControls() {
     return (this.proposalForm.get('proposalItems') as FormArray).controls;
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private tenderService: TenderService
-  ) {
+  ngOnInit() {
+    this.initializeForm();
+  }
+
+  private initializeForm(){
     this.proposalForm = this.fb.group({
       proposalItems: this.fb.array([])
     });
-  }
 
-  ngOnInit() {
     const proposalItemsArray = this.proposalForm.get('proposalItems') as FormArray;
     
     this.tenderItems.forEach(item => {

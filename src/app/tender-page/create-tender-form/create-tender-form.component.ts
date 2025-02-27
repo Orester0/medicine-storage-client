@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReturnTenderDTO, CreateTenderDTO } from '../../_models/tender.types';
 import { CommonModule } from '@angular/common';
@@ -13,13 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-tender-form.component.css'
 })
 export class CreateTenderFormComponent {
+  private fb = inject(FormBuilder);
+
   @Input() tender: ReturnTenderDTO | null = null;
   @Output() save = new EventEmitter<CreateTenderDTO>();
   @Output() close = new EventEmitter<void>();
 
   tenderForm!: FormGroup;
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();

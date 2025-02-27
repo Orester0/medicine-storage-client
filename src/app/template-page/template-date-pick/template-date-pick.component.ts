@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { TemplateType } from '../../_models/template.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { pastDateValidator, validDateValidator } from '../../_validators/validators';
@@ -10,14 +10,20 @@ import { ValidationErrorsComponent } from '../../validation-errors/validation-er
   templateUrl: './template-date-pick.component.html',
   styleUrl: './template-date-pick.component.css'
 })
-export class TemplateDatePickComponent {
+export class TemplateDatePickComponent implements OnInit{
+  private fb = inject(FormBuilder);
+
   @Input() templateType!: TemplateType;
   @Output() confirmed = new EventEmitter<Date>();
   @Output() cancelled = new EventEmitter<void>();
 
-  form: FormGroup;
+  form!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  private initializeForm(){
     this.form = this.fb.group({
       date: [new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0], [Validators.required, pastDateValidator, validDateValidator]]
     });

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CreateMedicineRequestDTO } from '../../_models/medicine-request.types';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,16 +15,15 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-medicine-request-form.component.css'
 })
 export class CreateMedicineRequestFormComponent implements OnInit{
+  private fb = inject(FormBuilder);
+
   @Input() medicines: ReturnMedicineDTO[] = [];
   @Input() initialData: Partial<CreateMedicineRequestDTO> = {};
   @Input() preselectedMedicine: ReturnMedicineDTO | null = null;
   @Output() submitRequest = new EventEmitter<CreateMedicineRequestDTO>();
   @Output() cancelRequest = new EventEmitter<void>();
 
-
   requestForm!: FormGroup;
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CommonModule } from '@angular/common';
@@ -15,15 +15,13 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-supply-manual-form.component.css'
 })
 export class CreateSupplyManualFormComponent {
+  private fb = inject(FormBuilder);
+  
   @Input() medicines: ReturnMedicineDTO[] = [];
   @Output() submit = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
 
   supplyForm!: FormGroup;
-
-  constructor(private fb: FormBuilder) {
-    
-  }
 
   ngOnInit() {
     this.initializeForm();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { passwordMatchValidator } from '../../_validators/validators';
 import { ValidationErrorsComponent } from '../../validation-errors/validation-errors.component';
@@ -12,14 +12,14 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './register.component.html',
 })
 export class RegisterComponent implements OnInit {
+  private fb = inject(FormBuilder);
+
   @Output() formSubmit = new EventEmitter<any>();
   @Output() cancelClick = new EventEmitter<void>();
 
   userForm!: FormGroup;
   validationErrors: string[] = [];
   isLoading = false;
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();

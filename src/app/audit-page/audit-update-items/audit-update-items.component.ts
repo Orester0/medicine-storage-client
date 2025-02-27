@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReturnAuditItemDTO, UpdateAuditItemsRequest } from '../../_models/audit.types';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
@@ -11,6 +11,8 @@ import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
   styleUrl: './audit-update-items.component.css'
 })
 export class AuditUpdateItemsComponent {
+  private fb = inject(FormBuilder);
+
   @Input() title: string = 'Update Audit Items';
   @Input() auditItems: ReturnAuditItemDTO[] = [];
   @Input() showQuantities: boolean = true;
@@ -20,9 +22,11 @@ export class AuditUpdateItemsComponent {
 
   auditForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
-
   ngOnInit() {
+    this.initializeForm();
+  }
+
+  private initializeForm() {
     this.auditForm = this.fb.group({
       notes: ['', [Validators.maxLength(500), Validators.minLength(5)]]
     });

@@ -6,12 +6,10 @@ import { AuthService } from '../_services/auth.service';
 })
 export class HasRoleDirective {
   private authService = inject(AuthService); 
-  private roles: string[] = [];
+  private templateRef = inject(TemplateRef<any>); 
+  private viewContainer = inject(ViewContainerRef); 
 
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef
-  ) {}
+  private roles: string[] = [];
 
   @Input()
   set appHasRole(roles: string[]) { 

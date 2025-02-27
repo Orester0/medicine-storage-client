@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -9,15 +9,19 @@ import { CommonModule } from '@angular/common';
   styleUrl: './audit-notes.component.css'
 })
 export class AuditNotesComponent implements OnInit {
+  private fb = inject(FormBuilder);
+
   @Input() title!: string;
   @Output() submit = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
-
   ngOnInit() {
+    this.initializeForm();
+  }
+
+  private initializeForm(){
     const formGroup: any = {
       note: ['', [Validators.maxLength(500), Validators.minLength(5)]]
     };

@@ -40,7 +40,7 @@ export class UsersComponent implements OnInit {
   isModalOpen = false;
   showUserInfoModal = false;
   
-  rolesForm: FormGroup;
+  rolesForm!: FormGroup;
   
   userParams: UserParams = {
     isDescending: false,
@@ -87,13 +87,14 @@ export class UsersComponent implements OnInit {
     }
   ];
 
-  constructor() {
+  private initializeForm(){
     this.rolesForm = this.fb.group({
       roles: [[], Validators.required] 
     });
   }
 
   ngOnInit(): void {
+    this.initializeForm();
     // this.loadUsers();
   }
 
@@ -137,7 +138,7 @@ export class UsersComponent implements OnInit {
     this.showUserInfoModal = false;
     this.selectedUserForInfo = null;
   }
-  // Roles management methods
+
   openRolesModal(user: ReturnUserPersonalDTO): void {
     this.selectedUser = user;
     this.rolesForm.setValue({ roles: user.roles });

@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -12,23 +12,25 @@ import { NotificationService } from '../../_services/notification.service';
 
 @Component({
   selector: 'app-notifications',
-  imports: [MatIconModule, CommonModule, MatBadgeModule, MatButtonModule, 
-    MatSlideToggleModule, LocalizedDatePipe],
+  imports: [MatIconModule, 
+            CommonModule, 
+            MatBadgeModule, 
+            MatButtonModule, 
+            MatSlideToggleModule, 
+            LocalizedDatePipe],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
 })
-export class NotificationsComponent {
+export class NotificationsComponent {  
+  private notificationService = inject(NotificationService);
+  private authService =  inject(AuthService);
+  private subscriptions: Subscription = new Subscription();
+
   notifications: AppNotification[] = [];
   filteredNotifications: AppNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
   showReadNotifications = false;
-  private subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private notificationService: NotificationService,
-    private authService: AuthService
-  ) {}
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
@@ -98,8 +100,6 @@ export class NotificationsComponent {
     });
   }
 
-
-  
   ngOnDestroy(): void {
     this.notificationService.stopSignalRConnection();
     this.subscriptions.unsubscribe();

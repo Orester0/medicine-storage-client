@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { TemplateType, Template } from '../../_models/template.types';
@@ -13,7 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './create-template-form.component.html',
   styleUrl: './create-template-form.component.css'
 })
-export class CreateTemplateFormComponent {
+export class CreateTemplateFormComponent implements OnInit{
+  private fb = inject(FormBuilder);
+
   @Input() activeTab!: TemplateType;
   @Input() isEditMode!: boolean;
   @Input() selectedTemplate!: Template | null;
@@ -26,8 +28,8 @@ export class CreateTemplateFormComponent {
   auditForm!: FormGroup;
   medicineRequestForm!: FormGroup;
   tenderForm!: FormGroup;
-
-  constructor(private fb: FormBuilder) {
+  
+  ngOnInit(): void {
     this.initializeForms();
   }
 
