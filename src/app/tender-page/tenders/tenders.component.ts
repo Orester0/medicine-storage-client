@@ -20,7 +20,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-tenders',
   templateUrl: './tenders.component.html',
   styleUrls: ['./tenders.component.css'],
-  imports: [CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
+  imports: [HasRoleDirective, CreateTenderFormComponent, DeleteConfirmationModalComponent, FilterComponent, CommonModule, TableComponent, PaginationComponent, ReactiveFormsModule],
   providers: [TenderStatusPipe, MedicineNamePipe, HasRoleDirective],
 })
 export class TendersComponent implements OnInit {

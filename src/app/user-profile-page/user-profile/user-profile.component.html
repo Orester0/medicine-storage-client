@@ -1,10 +1,10 @@
-<div class="container-fluid">
-    <div class="row">
-      <div class="col-md-5">
-        <app-user-profile-info></app-user-profile-info>
-      </div>
-      <div class="col-md-7">
-        <app-medicine-tracker></app-medicine-tracker>
-      </div>
+<div class="container-fluid profile-container">
+  <div class="row profile-row">
+    <div class="col-md-5 profile-col">
+      <app-user-profile-info></app-user-profile-info>
+    </div>
+    <div class="col-md-7 profile-col">
+      <app-medicine-tracker *appHasRole="['Admin', 'Doctor', 'Manager']"></app-medicine-tracker>
     </div>
   </div>
+</div>

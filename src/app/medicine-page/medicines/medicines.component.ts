@@ -16,6 +16,7 @@ import { MedicineNotificationsComponent } from '../medicine-notifications/medici
 import { CreateMedicineRequestFormComponent } from '../../medicine-request-page/create-medicine-request-form/create-medicine-request-form.component';
 import { AuthService } from '../../_services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
 
 @Component({
   selector: 'app-medicines',
@@ -29,7 +30,8 @@ import { ToastrService } from 'ngx-toastr';
     ReactiveFormsModule, 
     TableComponent, 
     DeleteConfirmationModalComponent, 
-    MedicineNotificationsComponent
+    MedicineNotificationsComponent,
+    HasRoleDirective
   ],
   templateUrl: './medicines.component.html',
   styleUrl: './medicines.component.css'
@@ -47,7 +49,6 @@ export class MedicinesComponent implements OnInit {
   
   selectedMedicine: ReturnMedicineDTO | null = null;
   medicineToDelete: ReturnMedicineDTO | null = null;
-  error: string | null = null;
   isCreateMedicineOpen = false;
   isCreateRequestOpen = false;
   selectedMedicineForRequest: ReturnMedicineDTO | null = null;
@@ -169,9 +170,6 @@ export class MedicinesComponent implements OnInit {
         this.medicines = response.items;
         this.totalItems = response.totalCount;
         this.selectedMedicine = null;
-      },
-      error: () => {
-        this.error = 'Failed to load medicines';
       }
     });
   }
@@ -182,9 +180,6 @@ export class MedicinesComponent implements OnInit {
         this.toastr.success('Medicine created successfully');
         this.isCreateMedicineOpen = false;
         this.loadMedicines();
-      },
-      error: () => {
-        this.error = 'Failed to create medicine';
       }
     });
   }
@@ -197,9 +192,6 @@ export class MedicinesComponent implements OnInit {
         this.toastr.success('Medicine has been updated');
         this.isCreateMedicineOpen = false;
         this.loadMedicines();
-      },
-      error: () => {
-        this.error = 'Failed to update medicine';
       }
     });
   }
@@ -216,11 +208,7 @@ export class MedicinesComponent implements OnInit {
         this.loadMedicines();
         this.medicineToDelete = null;
         this.toastr.success('Medicine has been deleted');
-      },
-      error: () => {
-        console.error('Failed to delete medicine.');
-        this.error = 'Failed to delete medicine';
-      },
+      }
     });
   }
 
@@ -243,9 +231,6 @@ export class MedicinesComponent implements OnInit {
       next: () => {
         this.toastr.success('Request created successfully');
         this.closeCreateRequestModal();
-      },
-      error: () => {
-        this.error = 'Failed to create request';
       }
     });
   }

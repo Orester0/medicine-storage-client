@@ -1,0 +1,15 @@
+.card {
+  height: 100%;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  margin-bottom: 1.5rem;
+}

@@ -18,22 +18,54 @@
 
   <ng-template #loggedInTemplate>
     <div class="card shadow-sm p-4">
-      <h4 class="text-success mb-4">
-        <mat-icon>waving_hand</mat-icon> Welcome, {{ currentUser()?.firstName }}!
+      <h4 class="text-primary mb-4">
+        <mat-icon>health_and_safety</mat-icon> Welcome, {{ currentUser()?.firstName }}!
       </h4>
-      <p class="text-muted mb-4">Here is the general information about the system:</p>
+      <p class="text-muted mb-4">Medicine Storage System</p>
       
-      <ul class="list-group">
-        <li class="list-group-item d-flex align-items-center">
-          <mat-icon class="me-2">inventory</mat-icon> Manage your medicine inventory
-        </li>
-        <li class="list-group-item d-flex align-items-center">
-          <mat-icon class="me-2">assessment</mat-icon> View audit reports and logs
-        </li>
-        <li class="list-group-item d-flex align-items-center">
-          <mat-icon class="me-2">description</mat-icon> Submit tender proposals
-        </li>
-      </ul>
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="card h-100 border-0 bg-light">
+            <div class="card-body">
+              <h5 class="card-title text-primary">
+                <mat-icon class="align-middle me-2">info</mat-icon>About System
+              </h5>
+              <p class="card-text">
+                Medicine Storage is a modern medication management system designed in accordance with healthcare regulations. 
+                It provides a complete control cycle from ordering to dispensing medications.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100 border-0 bg-light">
+            <div class="card-body">
+              <h5 class="card-title text-primary">
+                <mat-icon class="align-middle me-2">verified</mat-icon>Key Features
+              </h5>
+              <ul class="list-unstyled">
+                <li><mat-icon class="text-success me-2 small">check_circle</mat-icon>Compliance with Industry Standards</li>
+                <li><mat-icon class="text-success me-2 small">check_circle</mat-icon>Data Protection and Security</li>
+                <li><mat-icon class="text-success me-2 small">check_circle</mat-icon>Integration with State Registries</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="card border-0 bg-light">
+        <div class="card-body">
+          <h5 class="card-title text-primary">
+            <mat-icon class="align-middle me-2">support_agent</mat-icon>Support
+          </h5>
+          <p class="mb-2">If you have any questions, please contact us:</p>
+          <ul class="list-unstyled">
+            <li><mat-icon class="text-primary me-2 small">email</mat-icon>email</li>
+            <li><mat-icon class="text-primary me-2 small">phone</mat-icon>(111) 111-1111</li>
+            <li><mat-icon class="text-primary me-2 small">schedule</mat-icon>Mon-Fri: 9:00 AM - 5:00 PM</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </ng-template>
 </div>

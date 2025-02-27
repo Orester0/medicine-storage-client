@@ -3,18 +3,21 @@
       <h4 class="mt-4 mb-3">Template Types</h4>
       <div class="list-group">
         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           
            [class.active]="activeTab === 'medicine-request'"
            (click)="setActiveTab('medicine-request')">
           Medicine Request
           <i *ngIf="tabsNeedingExecution['medicine-request']" class="bi bi-exclamation-circle-fill text-warning"></i>
         </a>
         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        *appHasRole="['Manager', 'Admin']"
            [class.active]="activeTab === 'audit'"
            (click)="setActiveTab('audit')">
           Audit
           <i *ngIf="tabsNeedingExecution['audit']" class="bi bi-exclamation-circle-fill text-warning"></i>
         </a>
         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        *appHasRole="['Manager', 'Admin']"
            [class.active]="activeTab === 'tender'"
            (click)="setActiveTab('tender')">
           Tender

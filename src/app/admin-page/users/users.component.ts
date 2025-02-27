@@ -79,7 +79,7 @@ export class UsersComponent implements OnInit {
     { key: 'position', label: 'Position', type: 'text', col: 3 },
     { key: 'company', label: 'Company', type: 'text', col: 3 },
     { 
-      key: 'role', 
+      key: 'roles', 
       label: 'Role', 
       type: 'select', 
       col: 3, 
