@@ -25,9 +25,12 @@ export class AuditService {
       const toPlannedDate = params.toPlannedDate instanceof Date ? params.toPlannedDate.toISOString() : params.toPlannedDate;
       httpParams = httpParams.append('toPlannedDate', toPlannedDate);
     }
-    if (params.status !== null && params.status !== undefined) {
-      httpParams = httpParams.append('status', params.status.toString());
+    if (params.statuses && params.statuses.length > 0) {
+      params.statuses.forEach(status => {
+        httpParams = httpParams.append('statuses', status.toString());
+      });
     }
+    
     if (params.plannedByUserId !== null && params.plannedByUserId !== undefined) {
       httpParams = httpParams.append('plannedByUserId', params.plannedByUserId.toString());
     }

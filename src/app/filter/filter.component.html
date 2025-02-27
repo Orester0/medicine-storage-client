@@ -1,49 +1,77 @@
-<div class="position-relative">
-  <button class="btn btn-primary btn-lg rounded-circle p-2 mb-3" (click)="toggleFilters()">
-    <mat-icon>filter_list</mat-icon>
-  </button>
+<div class="filter-container">
+  <div class="filter-toggle">
+    <button class="filter-button" (click)="toggleFilters()">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filters</span>
+    </button>
+  </div>
 
-  <div *ngIf="isVisible" class="card-body">
+  <div *ngIf="isVisible" class="filter-panel">
     <form [formGroup]="form">
-      <div class="row row-cols-auto g-2">
-        <div *ngFor="let field of config" [class]="'col-md-' + (field.col || 3)">
-          <label [for]="field.key" class="form-label small mb-1">{{ field.label }}</label>
+      <div class="filter-grid">
+        <div *ngFor="let field of config" class="filter-item" [ngClass]="{'filter-item-wide': field.col && field.col > 3}">
+          <label [for]="field.key" class="filter-label">{{ field.label }}</label>
 
           <ng-container [ngSwitch]="field.type">
             <input *ngSwitchCase="'text'"
               [id]="field.key"
               type="text"
-              class="form-control form-control-sm"
-              [formControlName]="field.key">
+              class="filter-input"
+              [formControlName]="field.key"
+              [placeholder]="'Enter ' + field.label.toLowerCase()">
 
             <input *ngSwitchCase="'number'"
               [id]="field.key"
               type="number"
-              class="form-control form-control-sm"
-              [formControlName]="field.key">
+              class="filter-input"
+              [formControlName]="field.key"
+              [placeholder]="'Enter ' + field.label.toLowerCase()">
 
             <input *ngSwitchCase="'date'"
               [id]="field.key"
               type="date"
-              class="form-control form-control-sm"
+              class="filter-input"
               [formControlName]="field.key">
 
-            <select *ngSwitchCase="'select'"
-              [id]="field.key"
-              class="form-select form-select-sm"
-              [formControlName]="field.key">
-              <option [ngValue]="null">All</option>
-              <option *ngFor="let opt of field.options" [value]="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
+            <div *ngSwitchCase="'select'" class="select-container">
+              <div class="custom-select" [ngClass]="{'open': field.isOpen}">
+                <div class="select-trigger" 
+                     [ngClass]="{'has-selected': hasSelectedValues(field)}"
+                     (click)="toggleSelect(field)">
+                  <span class="select-label">{{ getSelectedLabel(field) }}</span>
+                  <mat-icon class="select-icon">{{ field.isOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+                </div>
+                <div class="select-dropdown" *ngIf="field.isOpen">
+                  <div class="select-options">
+                    <div *ngIf="!field.multiselect" class="select-option" 
+                         [ngClass]="{'selected': !form.get(field.key)?.value}"
+                         (click)="selectOption(field, null)">
+                      <span>All</span>
+                    </div>
+                    <div *ngFor="let opt of field.options" 
+                         class="select-option" 
+                         [ngClass]="{'selected': isOptionSelected(field, opt.value)}"
+                         (click)="selectOption(field, opt.value)">
+                      <span>{{ opt.label }}</span>
+                      <mat-icon *ngIf="isOptionSelected(field, opt.value)">check</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ng-container>
         </div>
       </div>
 
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">Reset</button>
-        <button type="button" class="btn btn-primary btn-sm" (click)="applyFilters()">Apply</button>
+      <div class="filter-actions">
+        <button type="button" class="filter-button filter-button-reset" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon>
+          Reset
+        </button>
+        <button type="button" class="filter-button filter-button-apply" (click)="applyFilters()">
+          <mat-icon>check</mat-icon>
+          Apply
+        </button>
       </div>
     </form>
   </div>

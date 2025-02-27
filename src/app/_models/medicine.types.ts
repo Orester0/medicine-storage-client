@@ -21,7 +21,7 @@ export interface CreateMedicineDTO {
   
 export interface MedicineParams {
   name?: string | null;
-  category?: string | null; 
+  category?: string[];
   requiresSpecialApproval?: boolean | null;
   minStock?: number | null;
   maxStock?: number | null;

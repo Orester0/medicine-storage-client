@@ -23,6 +23,7 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
 
     getTendersWithFilter(params: TenderParams): Observable<PagedList<ReturnTenderDTO>> {
       let httpParams = new HttpParams();
+      
   
       if (params.title) httpParams = httpParams.append('title', params.title);
   
@@ -34,10 +35,13 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
         const toDate = params.deadlineDateTo instanceof Date ? params.deadlineDateTo.toISOString() : params.deadlineDateTo;
         httpParams = httpParams.append('deadlineDateTo', toDate);
       }
-      if (params.status !== null && params.status !== undefined) {
-          httpParams = httpParams.append('status', params.status.toString());
+
+      if (params.statuses && params.statuses.length > 0) {
+        params.statuses.forEach(status => {
+          httpParams = httpParams.append('statuses', status.toString());
+        });
       }
-  
+      
       if (params.createdByUserId !== null && params.createdByUserId !== undefined) {
           httpParams = httpParams.append('createdByUserId', params.createdByUserId.toString());
       }
@@ -51,9 +55,11 @@ import { ReturnTenderDTO, CreateTenderDTO, ReturnTenderItem, CreateTenderItem, R
           httpParams = httpParams.append('winnerSelectedByUserId', params.winnerSelectedByUserId.toString());
       }
 
-      if (params.medicineId !== null && params.medicineId !== undefined) {
-        httpParams = httpParams.append('medicineId', params.medicineId.toString());
-    }
+      if (params.medicineIds && params.medicineIds.length > 0) {
+        params.medicineIds.forEach(id => {
+          httpParams = httpParams.append('medicineIds', id.toString());
+        });
+      }
   
       if (params.sortBy) {
           httpParams = httpParams.append('sortBy', params.sortBy);

@@ -1,3 +1,167 @@
+.filter-container {
+  font-family: 'Roboto', sans-serif;
+  margin: 16px 0;
+}
+
+.filter-toggle {
+  margin-bottom: 16px;
+}
+
+.filter-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 18px;
+  background-color: #f2f2f2;
+  color: #0f0f0f;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button:hover {
+  background-color: #e9e9e9;
+}
+
+.filter-button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #606060;
+}
+
+.filter-panel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  animation: slideDown 0.3s ease-out;
+  border: 1px solid #e0e0e0;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-item-wide {
+  grid-column: span 2;
+}
+
+.filter-label {
+  font-size: 13px;
+  color: #606060;
+  font-weight: 500;
+}
+
+.filter-input,
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f0f0f;
+  background: white;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  border-color: #065fd4;
+  outline: none;
+}
+
+.filter-input::placeholder {
+  color: #909090;
+}
+
+.select-container {
+  position: relative;
+}
+
+.select-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #606060;
+  pointer-events: none;
+}
+
+.filter-select {
+  appearance: none;
+  padding-right: 36px;
+}
+
+.filter-select.multiselect {
+  height: auto;
+  min-height: 120px;
+  padding: 8px;
+}
+
+.filter-select.multiselect option {
+  padding: 8px;
+  margin: 2px 0;
+  border-radius: 4px;
+}
+
+.filter-select.multiselect option:checked {
+  background: #e5e5e5;
+  color: #0f0f0f;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.filter-button-reset {
+  background-color: transparent;
+}
+
+.filter-button-reset:hover {
+  background-color: #f2f2f2;
+}
+
+.filter-button-apply {
+  background-color: #065fd4;
+  color: white;
+  border: none;
+}
+
+.filter-button-apply:hover {
+  background-color: #0056c1;
+}
+
+.filter-button-apply mat-icon {
+  color: white;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .card-body {
   border: 1px solid rgba(0, 0, 0, 0.125); 
@@ -21,7 +185,6 @@
   max-width: 230px; 
 }
 
-
 .btn.rounded-circle {
   width: 3rem; 
   height: 3rem;
@@ -30,9 +193,6 @@
   justify-content: center;
   padding: 0.4rem;
 }
-
-
-
 
 .btn-sm {
   padding: 0.6rem 1.2rem;
@@ -51,4 +211,177 @@
 .card-body.ng-leave {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Custom Select Styles */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f2f2f2;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #0f0f0f;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-height: 40px;
+}
+
+.select-trigger:hover {
+  background: #e9e9e9;
+}
+
+.select-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  margin-right: 8px;
+}
+
+.select-icon {
+  color: #606060;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.custom-select.open .select-icon {
+  transform: rotate(180deg);
+}
+
+.select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.select-options {
+  padding: 8px 0;
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  color: #0f0f0f;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 40px;
+  user-select: none;
+}
+
+.select-option:hover {
+  background: #f2f2f2;
+}
+
+.select-option.selected {
+  background-color: #e5f1ff;
+  color: #065fd4;
+}
+
+.select-option.selected:hover {
+  background-color: #d9ebff;
+}
+
+.select-option mat-icon {
+  color: #065fd4;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.select-option span {
+  margin-right: 8px;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Checkbox styles */
+::ng-deep .mat-mdc-checkbox {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox {
+  padding: 0;
+  margin-right: 8px;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__background {
+  border-color: #909090 !important;
+}
+
+::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: #065fd4 !important;
+  border-color: #065fd4 !important;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+}
+
+/* Multiselect trigger styles */
+.custom-select[ng-reflect-is-open="true"] .select-trigger {
+  border-color: #065fd4;
+  background-color: #f8f9fa;
+}
+
+.select-trigger.has-selected {
+  background-color: #e5f1ff;
+  border-color: #065fd4;
+  color: #065fd4;
+}
+
+.select-trigger.has-selected:hover {
+  background-color: #d9ebff;
+}
+
+.select-trigger.has-selected .select-icon {
+  color: #065fd4;
+}
+
+/* Scrollbar styles for the dropdown */
+.select-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.select-dropdown::-webkit-scrollbar-track {
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.select-dropdown::-webkit-scrollbar-thumb {
+  background: #dadada;
+  border-radius: 4px;
+}
+
+.select-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #c0c0c0;
 }

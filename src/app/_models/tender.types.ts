@@ -74,12 +74,12 @@ export interface TenderParams {
    title?: string | null;
    deadlineDateFrom?: Date | null;
    deadlineDateTo?: Date | null;
-   status?: TenderStatus | null;
+   statuses?: TenderStatus[];
    createdByUserId?: number | null;
    openedByUserId?: number | null;
    closedByUserId?: number | null;
    winnerSelectedByUserId?: number | null;
-   medicineId?: number | null; 
+   medicineIds?: number[]; 
    sortBy?: string;
    isDescending?: boolean;
    pageNumber?: number;

@@ -5,8 +5,8 @@ import { ReturnUserGeneralDTO } from "./user.types";
 export interface AuditParams {
   title?: string | null;
   fromPlannedDate?: Date | string | null;
-  toPlannedDate?: Date | string | null;
-  status?: AuditStatus | null;
+  toPlannedDate?: Date | string | null; 
+  statuses?: AuditStatus[]; 
   plannedByUserId?: number | null;
   closedByUserId?: number | null;
   executedByUserId?: number | null;

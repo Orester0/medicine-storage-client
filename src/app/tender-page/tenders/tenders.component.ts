@@ -54,9 +54,10 @@ export class TendersComponent implements OnInit {
       col: 3
     },
     {
-      key: 'status',
+      key: 'statuses',
       label: 'Status',
       type: 'select',
+      multiselect: true,
       options: Object.values(TenderStatus)
         .filter(status => typeof status === 'number') 
         .map(status => ({
@@ -66,9 +67,10 @@ export class TendersComponent implements OnInit {
       defaultValue: this.authService.userHasRole(['distributor']) ? TenderStatus.Published : null
     },
     {
-      key: 'medicineId',
+      key: 'medicineIds',
       label: 'Medicine',
       type: 'select',
+      multiselect: true,
       options: []
     },
     {

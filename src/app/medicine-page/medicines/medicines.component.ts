@@ -122,6 +122,7 @@ export class MedicinesComponent implements OnInit {
       key: 'category',
       label: 'Category',
       type: 'select',
+      multiselect: true,
       col: 3,
       options: []
     },

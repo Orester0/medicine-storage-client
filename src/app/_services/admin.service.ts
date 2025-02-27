@@ -34,13 +34,11 @@ export class AdminService {
     }
     
     if (params.roles?.length) {
-      const rolesArray = Array.isArray(params.roles) ? params.roles : params.roles ? [params.roles] : [];
-
-      rolesArray.forEach(role => {
-          httpParams = httpParams.append('roles', role);
+      params.roles.forEach(role => {
+          httpParams = httpParams.append('roles', role); 
       });
-      
     }
+    
     if (params.sortBy) {
         httpParams = httpParams.append('sortBy', params.sortBy);
     }

@@ -32,7 +32,7 @@ export interface CreateMedicineRequestDTO {
  export interface MedicineRequestParams {
    fromDate?: Date |  string | null;
    toDate?: Date |  string | null;
-   status?: RequestStatus | null;
+   statuses?: number[] | null;
    requestedByUserId?: number | null;
    approvedByUserId?: number | null;
    medicineId?: number | null;

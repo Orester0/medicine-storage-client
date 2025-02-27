@@ -164,9 +164,10 @@ export class AuditsComponent implements OnInit {
       type: 'date',
     },
     {
-      key: 'status',
+      key: 'statuses',
       label: 'Status',
       type: 'select',
+      multiselect: true,
       options: Object.values(AuditStatus)
         .filter(status => typeof status === 'number')
         .map(status => ({

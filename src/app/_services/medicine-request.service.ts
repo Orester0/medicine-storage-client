@@ -24,9 +24,14 @@ export class MedicineRequestService {
       const toDate = params.toDate instanceof Date ? params.toDate.toISOString() : params.toDate;
       httpParams = httpParams.append('toDate', toDate);
     }
-    if (params.status !== null && params.status !== undefined){
-      httpParams = httpParams.append('status', params.status.toString());
-    } 
+
+    
+    if (params.statuses && params.statuses.length > 0) {
+      params.statuses.forEach(status => {
+        httpParams = httpParams.append('statuses', status.toString());
+      });
+    }
+    
     if (params.requestedByUserId){
       httpParams = httpParams.append('requestedByUserId', params.requestedByUserId.toString());
     } 

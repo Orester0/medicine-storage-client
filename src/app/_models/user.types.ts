@@ -73,7 +73,7 @@ export interface ReturnUserGeneralDTO {
   email?: string | null;
   position?: string | null;
   company?: string | null;
-  roles?: string[];  
+  roles?: string[]; 
   sortBy?: string;
   isDescending?: boolean;
   pageNumber: number;

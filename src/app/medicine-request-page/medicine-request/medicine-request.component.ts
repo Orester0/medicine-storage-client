@@ -148,17 +148,19 @@ export class MedicineRequestComponent implements OnInit {
       defaultValue: this.authService.userHasRole(['doctor']) ? this.authService.currentUser()?.id : null
     },
     {
-      key: 'status',
+      key: 'statuses',
       label: 'Status',
       type: 'select',
+      multiselect: true,
       options: Object.values(RequestStatus)
             .filter(status => typeof status === 'number') 
             .map(status => ({
               value: status as RequestStatus,
               label: this.requestStatusPipe.transform(status)
             })),
-      defaultValue: this.authService.userHasRole(['manager']) ? RequestStatus.Pending : null
+      defaultValue: this.authService.userHasRole(['manager']) ? [RequestStatus.Pending] : null
     },
+    
     {
       key: 'fromDate',
       label: 'Required from date',

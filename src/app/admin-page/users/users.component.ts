@@ -82,6 +82,7 @@ export class UsersComponent implements OnInit {
       key: 'roles', 
       label: 'Role', 
       type: 'select', 
+      multiselect: true,
       col: 3, 
       options: this.availableRoles.map(role => ({ value: role, label: role }))
     }

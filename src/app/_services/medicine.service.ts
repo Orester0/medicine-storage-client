@@ -20,7 +20,12 @@ export class MedicineService {
     let httpParams = new HttpParams();
 
     if (params.name) httpParams = httpParams.append('name', params.name);
-    if (params.category) httpParams = httpParams.append('category', params.category);
+    if (params.category && params.category.length > 0) {
+      params.category.forEach(cat => {
+        httpParams = httpParams.append('category', cat);
+      });
+    }
+    
 
     if (params.requiresSpecialApproval !== null && params.requiresSpecialApproval !== undefined) {
         httpParams = httpParams.append('requiresSpecialApproval', params.requiresSpecialApproval.toString());
