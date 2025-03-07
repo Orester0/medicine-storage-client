@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:medicine-storage-client": "node dist/medicine-storage-client/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -20,14 +19,11 @@
     "@angular/material": "^19.1.2",
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
-    "@angular/platform-server": "^19.0.0",
     "@angular/router": "^19.0.0",
-    "@angular/ssr": "^19.0.4",
     "@microsoft/signalr": "^8.0.7",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "browser-polyfills": "^1.5.0",
-    "express": "^4.18.2",
     "font-awesome": "^4.7.0",
     "localstorage-polyfill": "^1.0.1",
     "ngx-bootstrap": "^19.0.1",
