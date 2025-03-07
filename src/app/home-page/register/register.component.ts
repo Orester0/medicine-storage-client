@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
     if (this.userForm.valid && !this.isLoading) {
       const formData = {
         ...this.userForm.value,
-        role: this.userForm.value.roleType ? 'distributor' : 'doctor',
+        roles: this.userForm.value.roleType ? ['distributor'] : ['doctor'],
         position: this.showPositionField ? this.userForm.value.position : null,
         company: this.showCompanyField ? this.userForm.value.company : null
       };

@@ -4,6 +4,7 @@ import { AuthService } from '../../_services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { RegisterComponent } from '../register/register.component';
 import { UserRegistrationDTO } from '../../_models/user.types';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-home',
   imports: [RegisterComponent, CommonModule, MatIconModule],
@@ -12,6 +13,7 @@ import { UserRegistrationDTO } from '../../_models/user.types';
 })
 export class HomeComponent implements OnInit {
   authService = inject(AuthService);
+  toastrService = inject(ToastrService);
 
   currentUser = computed(() => this.authService.currentUser());
   currentUserToken = computed(() => this.authService.currentUserToken());
@@ -32,8 +34,8 @@ export class HomeComponent implements OnInit {
       next: () => {
         this.registerMode = false;
       },
-      error: (error) => {
-        console.error('Registration error:', error);
+      error: () => {
+        this.toastrService.error("Failed to register")
         this.isLoading = false;
       },
       complete: () => {
