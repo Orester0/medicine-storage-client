@@ -27,7 +27,7 @@ export const routes: Routes = [
       children: [
           { path: 'medicines', component: MedicinesComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Medicines - Medicine Storage' } },
           { path: 'tenders', component: TendersComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Tenders - Medicine Storage' } },
-          { path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver }, data: { title: 'Tender - Medicine Storage' } },
+          { path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver }, data: { title: 'Tender - Medicine Storage', renderMode: 'client' } },
           { path: 'audits', component: AuditsComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Audits - Medicine Storage' } },
           { path: 'requests', component: MedicineRequestComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Requests - Medicine Storage' } },
           { path: 'user-profile', component: UserProfileComponent, data: { title: 'User Profile  - Medicine Storage' } },
