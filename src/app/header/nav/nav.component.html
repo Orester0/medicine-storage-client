@@ -1,43 +1,54 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
-    <a class="navbar-brand" routerLink="/" routerLinkActive="active">
-      <mat-icon>local_hospital</mat-icon> Medicine Storage
+    <a class="navbar-brand d-flex align-items-center" routerLink="/" routerLinkActive="active">
+      <mat-icon class="brand-icon">local_hospital</mat-icon>
+      <span class="brand-text text-truncate">Medicine Storage</span>
     </a>
-    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+    <div class="d-flex align-items-center order-md-last">
       @if (authService.currentUserToken()) {
-        <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
-          <a routerLink="/medicines" routerLinkActive="active" class="nav-link">Medicines</a>
-        </li>
-        <li *appHasRole="['Admin', 'Distributor', 'Manager']" class="nav-item">
-          <a routerLink="/tenders" routerLinkActive="active" class="nav-link">Tenders</a>
-        </li>
-        <li *appHasRole="['Admin', 'Manager']" class="nav-item">
-          <a routerLink="/audits" routerLinkActive="active" class="nav-link">Audits</a>
-        </li>
-        <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
-          <a routerLink="/requests" routerLinkActive="active" class="nav-link">Requests</a>
-        </li>
-        <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
-          <a routerLink="/templates" routerLinkActive="active" class="nav-link">Templates</a>
-        </li>
-        <li *appHasRole="['Admin']" class="nav-item dropdown" 
-          (mouseenter)="showAdminDropdown = true" 
-          (mouseleave)="showAdminDropdown = false">
-        
-        <a class="nav-link dropdown-toggle" href="#" (click)="navigateToAdmin($event)">Admin Page</a>
-        
-        <ul class="dropdown-menu" [class.show]="showAdminDropdown">
-          <li><a routerLink="/admin/users" class="dropdown-item">Users</a></li>
-          <li><a routerLink="/admin/supplies" class="dropdown-item">Supplies</a></li>
-          <li><a routerLink="/admin/usages" class="dropdown-item">Usages</a></li>
-        </ul>
-      </li>
-
+        <app-notifications class="me-3 d-none d-md-block"></app-notifications>
       }
-    </ul>
-    @if (authService.currentUserToken()) {
-      <app-notifications class="me-3"></app-notifications>
-    }
-    <app-user-panel></app-user-panel>
+      <app-user-panel class="me-2 me-md-0"></app-user-panel>
+      <button class="navbar-toggler ms-2" type="button" (click)="toggleMenu()" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" [attr.aria-expanded]="isMenuOpen" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    
+    <div class="collapse navbar-collapse order-md-1" id="navbarContent" [class.show]="isMenuOpen">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        @if (authService.currentUserToken()) {
+          <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
+            <a routerLink="/medicines" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Medicines</a>
+          </li>
+          <li *appHasRole="['Admin', 'Distributor', 'Manager']" class="nav-item">
+            <a routerLink="/tenders" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Tenders</a>
+          </li>
+          <li *appHasRole="['Admin', 'Manager']" class="nav-item">
+            <a routerLink="/audits" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Audits</a>
+          </li>
+          <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
+            <a routerLink="/requests" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Requests</a>
+          </li>
+          <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
+            <a routerLink="/templates" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Templates</a>
+          </li>
+          <li *appHasRole="['Admin']" class="nav-item dropdown" 
+            (mouseenter)="onDesktop() && (showAdminDropdown = true)" 
+            (mouseleave)="onDesktop() && (showAdminDropdown = false)">
+          
+            <a class="nav-link dropdown-toggle" href="#" (click)="toggleAdminDropdown($event)">Admin Page</a>
+          
+            <ul class="dropdown-menu dropdown-menu-end" [class.show]="showAdminDropdown">
+              <li><a routerLink="/admin/users" class="dropdown-item" (click)="closeMenu()">Users</a></li>
+              <li><a routerLink="/admin/supplies" class="dropdown-item" (click)="closeMenu()">Supplies</a></li>
+              <li><a routerLink="/admin/usages" class="dropdown-item" (click)="closeMenu()">Usages</a></li>
+            </ul>
+          </li>
+        }
+      </ul>
+      @if (authService.currentUserToken()) {
+        <app-notifications class="d-block d-md-none mb-2"></app-notifications>
+      }
+    </div>
   </div>
 </nav>
