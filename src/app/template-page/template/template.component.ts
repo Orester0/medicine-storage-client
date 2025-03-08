@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { TemplateDatePickComponent } from '../template-date-pick/template-date-pick.component';
 import { ActivatedRoute } from '@angular/router';
 import { TemplateDetailsComponent } from '../template-details/template-details.component';
-import { TableComponent } from '../../table/table.component';
 import { CreateTemplateFormComponent } from '../create-template-form/create-template-form.component';
 import { ToastrService } from 'ngx-toastr';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,7 +16,16 @@ import { HasRoleDirective } from '../../_directives/has-role.directive';
 
 @Component({
   selector: 'app-template',
-  imports: [HasRoleDirective, MatTooltipModule, CommonModule, ReactiveFormsModule, MatIconModule, TemplateDatePickComponent, CreateTemplateFormComponent, TemplateDetailsComponent],
+  imports: [
+    HasRoleDirective,
+    MatTooltipModule,
+    CommonModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    TemplateDatePickComponent,
+    CreateTemplateFormComponent,
+    TemplateDetailsComponent
+  ],
   templateUrl: './template.component.html',
   styleUrl: './template.component.css'
 })

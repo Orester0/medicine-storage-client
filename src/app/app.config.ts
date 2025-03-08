@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
@@ -10,6 +10,7 @@ import { errorInterceptor } from './_interceptors/error.interceptor';
 import { jwtInterceptor as jwtInterceptor } from './_interceptors/jwt.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { cachingInterceptor } from './_interceptors/caching.interceptor';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,7 +23,10 @@ export const appConfig: ApplicationConfig = {
       timeOut: 3000,
       extendedTimeOut: 3000,
       closeButton: true
-    }), provideAnimationsAsync()
+    }), provideAnimationsAsync(), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
   ]
 };
 

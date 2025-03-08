@@ -1,0 +1,107 @@
+{
+  "configVersion": 1,
+  "timestamp": 1741429183241,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/chunk-IYYEZGL6.js",
+        "/chunk-XK5LBTIV.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main-K345O4AD.js",
+        "/manifest.webmanifest",
+        "/polyfills-FFHMD2TL.js",
+        "/styles-OUTGAEKK.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/128x128.png",
+        "/assets/icons/32x32.png",
+        "/assets/icons/48x48.png",
+        "/assets/icons/64x64.png",
+        "/assets/icons/96x96.png",
+        "/assets/local_hospital.png",
+        "/icons/icon-128x128.png",
+        "/icons/icon-144x144.png",
+        "/icons/icon-152x152.png",
+        "/icons/icon-192x192.png",
+        "/icons/icon-384x384.png",
+        "/icons/icon-512x512.png",
+        "/icons/icon-72x72.png",
+        "/icons/icon-96x96.png",
+        "/media/bootstrap-icons-OCU552PF.woff",
+        "/media/bootstrap-icons-X6UQXWUS.woff2",
+        "/media/fontawesome-webfont-3KIJVIEY.svg",
+        "/media/fontawesome-webfont-5GKVPAEF.woff2",
+        "/media/fontawesome-webfont-RJ6LE7IU.ttf",
+        "/media/fontawesome-webfont-Z4ARLA73.woff"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/icons/128x128.png": "cf634b28a75cb114b2fddca5019b67393284eff2",
+    "/assets/icons/32x32.png": "3f9ec7b1026129c19b0b12da93cb6100d66ef40b",
+    "/assets/icons/48x48.png": "941d6785ef8683ed46849ae938b4652065c71b98",
+    "/assets/icons/64x64.png": "8f29c144293d488960da02cefc6a5a784c2470df",
+    "/assets/icons/96x96.png": "82e1ba6b51068d5d588419569c070759a19c2c8b",
+    "/assets/local_hospital.png": "82e1ba6b51068d5d588419569c070759a19c2c8b",
+    "/chunk-IYYEZGL6.js": "3954b364881feed1a95d66440992d2ca15cc0fc5",
+    "/chunk-XK5LBTIV.js": "a162b9605eb96d400436bc5e6034ba79b0bc8189",
+    "/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
+    "/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
+    "/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
+    "/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
+    "/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
+    "/index.html": "a285f1b11008aff7bb50735eba293dde7eded859",
+    "/main-K345O4AD.js": "15a9602676f852eab73de21e90f9c8213dd5c91a",
+    "/manifest.webmanifest": "0dc06c32864df37590743a65b4996bd0bdebc926",
+    "/media/bootstrap-icons-OCU552PF.woff": "d5831fd39baf13aff7626e483b9a089730f18604",
+    "/media/bootstrap-icons-X6UQXWUS.woff2": "020c3c6f9280a315e8425d7f92e15bcd0cdda1b2",
+    "/media/fontawesome-webfont-3KIJVIEY.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
+    "/media/fontawesome-webfont-5GKVPAEF.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
+    "/media/fontawesome-webfont-RJ6LE7IU.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
+    "/media/fontawesome-webfont-Z4ARLA73.woff": "28b782240b3e76db824e12c02754a9731a167527",
+    "/polyfills-FFHMD2TL.js": "f49b49a155bc7d192db62a4c15d0a612b460a667",
+    "/styles-OUTGAEKK.css": "7a7baf8d5ee027906a67c3f32852b9810c925154"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

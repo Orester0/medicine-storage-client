@@ -70,3 +70,54 @@
 .sortable-header .bi {
   margin-left: 5px;
 }
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table th,
+  .table td {
+    min-width: 120px; /* Ensure minimum width for content */
+  }
+
+  .table th.id-column,
+  .table td.id-column {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .actions-container {
+    flex-wrap: wrap;
+  }
+
+  .actions-container button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .table th,
+  .table td {
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .actions-container button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actions-container button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
