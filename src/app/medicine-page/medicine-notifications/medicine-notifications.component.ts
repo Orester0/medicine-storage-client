@@ -1,13 +1,16 @@
-import { Component, HostListener, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, HostListener, inject, input, Input, signal, SimpleChanges } from '@angular/core';
 import { ReturnMedicineDTO } from '../../_models/medicine.types';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
+import { MedicineService } from '../../_services/medicine.service';
+import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-medicine-notifications',
-  imports: [CommonModule, MatIconModule, MedicineNamePipe],
+  imports: [CommonModule, MatIconModule, MedicineNamePipe, FormsModule],
   templateUrl: './medicine-notifications.component.html',
   styleUrl: './medicine-notifications.component.css',
   animations: [
@@ -24,45 +27,68 @@ import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
   ],
 })
 export class MedicineNotificationsComponent {
-  @Input() allMedicines: ReturnMedicineDTO[] = [];
-  
-  isOpen = false;
-  medicinesNeedingTender: ReturnMedicineDTO[] = [];
-  medicinesNeedingAudit: ReturnMedicineDTO[] = [];
-  hasIssues = false;
+  private medicineService = inject(MedicineService);
+  private cdr = inject(ChangeDetectorRef);
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const notificationContainer = document.querySelector('.notification-panel');
-    if (notificationContainer && !notificationContainer.contains(event.target as Node)) {
-      this.isOpen = false;
-    }
+  allMedicines = input<ReturnMedicineDTO[]>([]);
+
+  isOpen = signal(false);
+  considerRequests = signal(false);
+  considerTenders = signal(false);
+  medicinesNeedingTender = signal<ReturnMedicineDTO[]>([]);
+  medicinesNeedingAudit = signal<ReturnMedicineDTO[]>([]);
+  isLoading = signal(false);
+
+  filtersChanged = computed(() => ({
+    requests: this.considerRequests(),
+    tenders: this.considerTenders(),
+    medicines: this.allMedicines(),
+  }));
+
+  hasIssues = computed(() =>
+    this.medicinesNeedingTender().length > 0 ||
+    this.medicinesNeedingAudit().length > 0
+  );
+
+  constructor() {
+    effect(() => {
+      this.updateMedicineData();
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['allMedicines']) {
-      this.checkMedicines();
-    }
-  }
-
-  ngOnInit() {
-    this.checkMedicines();
-  }
-
-  checkMedicines() {
+  updateMedicineData() {
     const currentDate = new Date();
-  
-    this.medicinesNeedingTender = this.allMedicines.filter(m => 
-      m.stock < m.minimumStock
-    );
-  
-    this.medicinesNeedingAudit = this.allMedicines.filter(m => 
-      m.lastAuditDate != null && 
+
+    const needingAudit = this.allMedicines().filter(m =>
+      m.lastAuditDate != null &&
       this.addDaysToDate(new Date(m.lastAuditDate), m.auditFrequencyDays) <= currentDate
     );
-  
-    this.hasIssues = this.medicinesNeedingTender.length > 0 || 
-                     this.medicinesNeedingAudit.length > 0;
+    this.medicinesNeedingAudit.set(needingAudit);
+
+    this.isLoading.set(true);
+
+    this.medicineService.getMedicineStockForecast(
+      this.considerRequests(),
+      this.considerTenders()
+    ).pipe(
+      finalize(() => {
+        this.isLoading.set(false);
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (data) => {
+        const needingTender = data
+          .filter(m => m.needsRestock)
+          .map(m => m.medicine);
+    
+        this.medicinesNeedingTender.set(needingTender);
+      },
+      error: (error) => {
+        console.error('Error fetching medicine stock forecast:', error);
+        this.medicinesNeedingTender.set([]);
+      }
+    });
+    
   }
 
   addDaysToDate(date: Date, days: number): Date {
@@ -71,8 +97,15 @@ export class MedicineNotificationsComponent {
     return result;
   }
 
-  toggleNotifications() {
-    this.isOpen = !this.isOpen;
+  toggleConsiderRequests() {
+    this.considerRequests.update(value => !value);
   }
 
+  toggleConsiderTenders() {
+    this.considerTenders.update(value => !value);
+  }
+
+  toggleNotifications() {
+    this.isOpen.update(open => !open);
+  }
 }

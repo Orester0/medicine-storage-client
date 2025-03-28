@@ -1,30 +1,65 @@
 <div class="notification-container position-relative">
+  
   <button 
-    [@blink]="hasIssues.toString()" 
+    [class.blink]="hasIssues()"
     class="btn position-absolute top-0 end-0 p-2 rounded-circle d-flex justify-content-center align-items-center notification-btn"
     (click)="toggleNotifications()">
-    <mat-icon class="fs-4">notifications_active</mat-icon> 
+    <mat-icon class="fs-4">notifications_active</mat-icon>
   </button>
-
-  <div *ngIf="isOpen" [@togglePanel] class="notification-panel p-3 bg-light border rounded">
-    <div *ngIf="medicinesNeedingTender.length > 0">
-      <h3 class="mb-3"><mat-icon>local_shipping</mat-icon> Expecting Tender</h3>
-      <div *ngFor="let medicine of medicinesNeedingTender" class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-          <span class="d-block fw-medium">{{ medicine.id }} - {{ medicine | medicineName }}</span>
-          <small class="text-muted">Required Quantity: {{ medicine.minimumStock }} (has {{ medicine.stock }})</small>
-        </div>
+  
+  @if (isOpen()) {
+    <div class="notification-panel p-3 bg-light border rounded">
+      <div class="mb-3 d-flex align-items-center gap-3">
+        <label class="custom-checkbox">
+          <input type="checkbox" 
+            [checked]="considerRequests()"
+            (change)="toggleConsiderRequests()">
+          <span class="checkmark"></span>
+          Consider Requests
+        </label>
+      
+        <label class="custom-checkbox">
+          <input type="checkbox" 
+            [checked]="considerTenders()"
+            (change)="toggleConsiderTenders()">
+          <span class="checkmark"></span>
+          Consider Tenders
+        </label>
       </div>
-    </div>
-
-    <div *ngIf="medicinesNeedingAudit.length > 0">
-      <h3 class="mb-3"><mat-icon>assignment</mat-icon> Expecting Audit</h3>
-      <div *ngFor="let medicine of medicinesNeedingAudit" class="d-flex justify-content-between align-items-center mb-2">
+      
+      
+      
+      @if (medicinesNeedingTender().length > 0) {
         <div>
-          <span class="d-block fw-medium">{{ medicine.id }} - {{ medicine | medicineName }}</span>
-          <small class="text-muted">Last Audit: {{ medicine.lastAuditDate | date: 'dd/MM/yyyy' }}</small>
+          <h3 class="mb-3"><mat-icon>local_shipping</mat-icon> Expecting Tender</h3>
+          @for (medicine of medicinesNeedingTender(); track medicine.id) {
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <span class="d-block fw-medium">{{ medicine.id }} - {{ medicine | medicineName }}</span>
+                <small class="text-muted">
+                  Required Quantity: {{ medicine.minimumStock }} (has {{ medicine.stock }})
+                </small>
+              </div>
+            </div>
+          }
         </div>
-      </div>
+      }
+      
+      @if (medicinesNeedingAudit().length > 0) {
+        <div>
+          <h3 class="mb-3"><mat-icon>assignment</mat-icon> Expecting Audit</h3>
+          @for (medicine of medicinesNeedingAudit(); track medicine.id) {
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <span class="d-block fw-medium">{{ medicine.id }} - {{ medicine | medicineName }}</span>
+                <small class="text-muted">
+                  Last Audit: {{ medicine.lastAuditDate | date: 'dd/MM/yyyy' }}
+                </small>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

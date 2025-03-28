@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams} from '../_models/medicine.types';
 import { PagedList } from '../_models/service.types';
 import { environment } from '../../environments/environment';
+import { MedicineStockForecastDTO } from '../_models/medicine-forecast.types';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,14 @@ export class MedicineService {
 
   getAllMedicines(): Observable<ReturnMedicineDTO[]> {
     return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrlMedicine}/all`);
+  }
+
+  getMedicineStockForecast(considerRequests: boolean = false, considerTenders: boolean = false): Observable<MedicineStockForecastDTO[]> {
+    const params = new HttpParams()
+      .set('considerRequests', considerRequests.toString())
+      .set('considerTenders', considerTenders.toString());
+
+    return this.http.get<MedicineStockForecastDTO[]>(`${this.baseUrlMedicine}/stock-forecast`, { params });
   }
 
   getMedicinesWithFilter(params: MedicineParams): Observable<PagedList<ReturnMedicineDTO>> {
