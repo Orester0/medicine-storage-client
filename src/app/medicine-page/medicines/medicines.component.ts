@@ -43,7 +43,8 @@ export class MedicinesComponent implements OnInit {
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
 
-  medicines: ReturnMedicineDTO[] = [];
+  tableMedicines: ReturnMedicineDTO[] = [];
+  allCategories: string[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   totalItems = 0;
   
@@ -151,6 +152,7 @@ export class MedicinesComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.allCategories = this.route.snapshot.data['categories'];
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
     // this.loadMedicines();
@@ -158,7 +160,7 @@ export class MedicinesComponent implements OnInit {
 
   private initializeFilter(): void {
     this.filterConfig[1].options = Array.from(
-      new Set(this.allMedicines.map(medicine => medicine.category))
+      new Set(this.allCategories)
     ).map(category => ({
       value: category,
       label: category
@@ -168,7 +170,7 @@ export class MedicinesComponent implements OnInit {
   loadMedicines(): void {
     this.medicineService.getMedicinesWithFilter(this.medicineParams).subscribe({
       next: (response) => {
-        this.medicines = response.items;
+        this.tableMedicines = response.items;
         this.totalItems = response.totalCount;
         this.selectedMedicine = null;
       }

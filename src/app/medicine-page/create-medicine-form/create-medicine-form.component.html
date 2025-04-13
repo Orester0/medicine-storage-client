@@ -20,10 +20,15 @@
 
             <div class="col-md-6">
               <label for="category" class="form-label">Category</label>
-              <input id="category" formControlName="category" type="text" class="form-control form-control-sm"
-                     [class.is-invalid]="medicineForm.get('category')?.invalid && medicineForm.get('category')?.touched"/>
+              <input id="category" list="categoryOptions" formControlName="category"
+                     type="text" class="form-control form-control-sm"
+                     [class.is-invalid]="medicineForm.get('category')?.invalid && medicineForm.get('category')?.touched" />
+              <datalist id="categoryOptions">
+                <option *ngFor="let cat of allCategories" [value]="cat"></option>
+              </datalist>
               <app-validation-errors [control]="medicineForm.get('category')!"></app-validation-errors>
             </div>
+            
           </div>
 
           <div class="mb-2">

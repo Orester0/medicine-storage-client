@@ -18,6 +18,7 @@ export class CreateMedicineFormComponent implements OnInit{
 
   @Input() medicine: ReturnMedicineDTO | null = null;
   @Input() allMedicines!: ReturnMedicineDTO[];
+  @Input() allCategories!: string[];
   @Output() save = new EventEmitter<ReturnMedicineDTO>();
   @Output() close = new EventEmitter<void>();
 

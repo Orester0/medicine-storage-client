@@ -11,8 +11,8 @@ export class AuditStatusPipe implements PipeTransform {
     const statuses: Record<AuditStatus, string> = {
       [AuditStatus.Planned]: 'Planned',
       [AuditStatus.InProgress]: 'In Progress',
-      [AuditStatus.Completed]: 'Completed',
-      [AuditStatus.RequiresFollowUp]: 'Requires Follow-Up',
+      [AuditStatus.SuccesfullyCompleted]: 'Completed',
+      [AuditStatus.CompletedWithProblems]: 'Has Problems',
       [AuditStatus.Cancelled]: 'Cancelled'
     };
 

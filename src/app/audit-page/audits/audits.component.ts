@@ -45,7 +45,7 @@ export class AuditsComponent implements OnInit {
   private toastr = inject(ToastrService);
   private route = inject(ActivatedRoute);
 
-  audits: ReturnAuditDTO[] = [];
+  tableAudits: ReturnAuditDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   allUsers: ReturnUserGeneralDTO[] = [];
   totalItems: number = 0;
@@ -116,7 +116,7 @@ export class AuditsComponent implements OnInit {
       icon: 'play_arrow', 
       class: 'btn btn-info btn-sm',
       onClick: (row) => this.updateAudit(row.id),
-      visible: (row) => row.status === 2 || row.status === 4,
+      visible: (row) => row.status === 2,
     },
     {
       label: 'Start Audit',
@@ -130,7 +130,7 @@ export class AuditsComponent implements OnInit {
       icon: 'stop_circle',
       class: 'btn btn-danger btn-sm',
       onClick: (row) => this.closeAudit(row.id),
-      visible: (row) => row.status === 2 || row.status === 4,
+      visible: (row) => row.status === 2,
     },
     {
       label: 'Delete',
@@ -216,7 +216,7 @@ export class AuditsComponent implements OnInit {
   loadAudits(): void {
     this.auditService.getAuditsWithFilters(this.auditParams).subscribe({
       next: (response) => {
-        this.audits = response.items || [];
+        this.tableAudits = response.items || [];
         this.totalItems = response.totalCount || 0;
         this.selectedAudit = null;
       }
@@ -250,17 +250,17 @@ export class AuditsComponent implements OnInit {
   }
 
   startAudit(id: number): void {
-    const audit = this.audits.find(a => a.id === id);
+    const audit = this.tableAudits.find(a => a.id === id);
     if (audit) this.auditToStart = audit;
   }
 
   closeAudit(id: number): void {
-    const audit = this.audits.find(a => a.id === id);
+    const audit = this.tableAudits.find(a => a.id === id);
     if (audit) this.auditToClose = audit;
   }
 
   updateAudit(id: number): void {
-    const audit = this.audits.find(a => a.id === id);
+    const audit = this.tableAudits.find(a => a.id === id);
     if (audit) this.auditToUpdate = audit;
   }
 
@@ -348,8 +348,8 @@ export class AuditsComponent implements OnInit {
     const classMap: Record<AuditStatus, string> = {
       [AuditStatus.Planned]: 'bg-secondary',
       [AuditStatus.InProgress]: 'bg-primary',
-      [AuditStatus.Completed]: 'bg-success',
-      [AuditStatus.RequiresFollowUp]: 'bg-warning text-dark',
+      [AuditStatus.SuccesfullyCompleted]: 'bg-success',
+      [AuditStatus.CompletedWithProblems]: 'bg-warning text-dark',
       [AuditStatus.Cancelled]: 'bg-danger',
     };
     return classMap[status] ?? 'bg-secondary';

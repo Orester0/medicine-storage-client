@@ -41,8 +41,8 @@ export class AuditsDetailsComponent {
     const classMap: Record<AuditStatus, string> = {
       [AuditStatus.Planned]: 'bg-secondary',
       [AuditStatus.InProgress]: 'bg-primary',
-      [AuditStatus.Completed]: 'bg-success',
-      [AuditStatus.RequiresFollowUp]: 'bg-warning text-dark',
+      [AuditStatus.SuccesfullyCompleted]: 'bg-success',
+      [AuditStatus.CompletedWithProblems]: 'bg-warning text-dark',
       [AuditStatus.Cancelled]: 'bg-danger',
     };
     return classMap[status] ?? 'bg-secondary';
@@ -51,8 +51,8 @@ export class AuditsDetailsComponent {
     const iconMap: Record<AuditStatus, string> = {
       [AuditStatus.Planned]: 'event_note', 
       [AuditStatus.InProgress]: 'play_arrow', 
-      [AuditStatus.Completed]: 'check_circle', 
-      [AuditStatus.RequiresFollowUp]: 'warning',
+      [AuditStatus.SuccesfullyCompleted]: 'check_circle', 
+      [AuditStatus.CompletedWithProblems]: 'warning',
       [AuditStatus.Cancelled]: 'cancel',
     };
     return iconMap[status] ?? 'help'; 

@@ -17,6 +17,7 @@ import { AdminPanelComponent } from './admin-page/admin-panel/admin-panel.compon
 import { MedicineSuppliesComponent } from './admin-page/medicine-supplies/medicine-supplies.component';
 import { MedicineUsagesComponent } from './admin-page/medicine-usages/medicine-usages.component';
 import { tendersResolver } from './_resolvers/tenders.resolver';
+import { medicinecategoriesResolver } from './_resolvers/medicine-categories.resolver';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'Medicine Storage' } },
@@ -25,7 +26,7 @@ export const routes: Routes = [
       runGuardsAndResolvers: 'always',
       canActivate: [authGuard],
       children: [
-          { path: 'medicines', component: MedicinesComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Medicines - Medicine Storage' } },
+          { path: 'medicines', component: MedicinesComponent, resolve: { categories: medicinecategoriesResolver, medicines: medicinesResolver }, data: { title: 'Medicines - Medicine Storage' } },
           { path: 'tenders', component: TendersComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Tenders - Medicine Storage' } },
           { path: 'tenders/:id', component: TendersDetailsComponent, resolve: { tender: tenderInfoResolver, medicines: medicinesResolver }, data: { title: 'Tender - Medicine Storage', renderMode: 'client' } },
           { path: 'audits', component: AuditsComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Audits - Medicine Storage' } },

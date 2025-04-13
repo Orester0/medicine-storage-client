@@ -18,7 +18,7 @@
   <div class="table-responsive">
     <app-table
     [columns]="medicineColumns"
-    [data]="medicines"
+    [data]="tableMedicines"
     [actions]="tableActions"
     (sort)="onSortChange($event)"
     ></app-table>
@@ -45,6 +45,7 @@
   *ngIf="isCreateMedicineOpen"
   [medicine]="selectedMedicine"
   [allMedicines]="allMedicines"
+  [allCategories]="allCategories"
   (save)="selectedMedicine ? updateMedicine($event) : createMedicine($event)"
   (close)="closeModal()">
 </app-create-medicine-form>

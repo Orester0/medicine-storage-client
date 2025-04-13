@@ -43,7 +43,7 @@ export class MedicineRequestComponent implements OnInit {
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
 
-  requests: ReturnMedicineRequestDTO[] = [];
+  tableRequests: ReturnMedicineRequestDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   users: ReturnUserGeneralDTO[] = [];
   totalItems = 0;
@@ -199,7 +199,7 @@ export class MedicineRequestComponent implements OnInit {
   loadRequests(): void {
     this.requestService.getRequestsWithFilters(this.requestParams).subscribe({
       next: (response) => {
-        this.requests = response.items;
+        this.tableRequests = response.items;
         this.totalItems = response.totalCount;
         this.selectedRequest = null;
       }

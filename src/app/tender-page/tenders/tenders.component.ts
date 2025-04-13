@@ -32,7 +32,7 @@ export class TendersComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
   
-  tenders: ReturnTenderDTO[] = [];
+  tableTenders: ReturnTenderDTO[] = [];
   allMedicines: ReturnMedicineDTO[] = [];
   totalItems = 0;
   
@@ -154,7 +154,7 @@ export class TendersComponent implements OnInit {
   private loadTenders(): void {
     this.tenderService.getTendersWithFilter(this.tenderParams).subscribe({
       next: (response) => {
-        this.tenders = response.items || [];
+        this.tableTenders = response.items || [];
         this.totalItems = response.totalCount || 0;
         this.selectedTender = null;
       }

@@ -17,6 +17,10 @@ export class MedicineService {
     return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrlMedicine}/all`);
   }
 
+  getAllCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrlMedicine}/categories`);
+  }
+
   getMedicineStockForecast(considerRequests: boolean = false, considerTenders: boolean = false): Observable<MedicineStockForecastDTO[]> {
     const params = new HttpParams()
       .set('considerRequests', considerRequests.toString())

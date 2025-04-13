@@ -29,9 +29,9 @@
           <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
             <a routerLink="/requests" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Requests</a>
           </li>
-          <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
+          <!-- <li *appHasRole="['Admin', 'Doctor', 'Manager']" class="nav-item">
             <a routerLink="/templates" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Templates</a>
-          </li>
+          </li> -->
           <li *appHasRole="['Admin']" class="nav-item dropdown" 
             (mouseenter)="onDesktop() && (showAdminDropdown = true)" 
             (mouseleave)="onDesktop() && (showAdminDropdown = false)">
