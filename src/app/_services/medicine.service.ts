@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams} from '../_models/medicine.types';
+import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams, BulkCreateMedicineDTO} from '../_models/medicine.types';
 import { PagedList } from '../_models/service.types';
 import { environment } from '../../environments/environment';
 import { MedicineStockForecastDTO } from '../_models/medicine-forecast.types';
@@ -12,6 +12,24 @@ import { MedicineStockForecastDTO } from '../_models/medicine-forecast.types';
 export class MedicineService {
   private http = inject(HttpClient);
   private baseUrlMedicine = `${environment.apiUrl}medicine`;
+
+  bulkCreateMedicines(dtoList: BulkCreateMedicineDTO[]): Observable<any> {
+    return this.http.post(`${this.baseUrlMedicine}/bulk-upload`, dtoList);
+  }
+  
+
+
+  downloadMedicineReport(medicineId: number, startDate: Date, endDate: Date): Observable<Blob> {
+    const params = new HttpParams()
+      .set('startDate', startDate.toISOString())
+      .set('endDate', endDate.toISOString());
+  
+    return this.http.get(`${this.baseUrlMedicine}/${medicineId}/report/download`, {
+      params,
+      responseType: 'blob'
+    });
+  }
+  
 
   getAllMedicines(): Observable<ReturnMedicineDTO[]> {
     return this.http.get<ReturnMedicineDTO[]>(`${this.baseUrlMedicine}/all`);

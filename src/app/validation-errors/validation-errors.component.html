@@ -8,6 +8,7 @@
   <div *ngIf="errors['invalidDate']" class="mb-1 fw-medium">Invalid date format.</div>
   <div *ngIf="errors['pastDate']" class="mb-1 fw-medium">Date cannot be in the past.</div>
   <div *ngIf="errors['futureDate']" class="mb-1 fw-medium">Date cannot be in the future.</div>
+  <div *ngIf="errors['invalidRange']" class="mb-1 fw-medium">End date must be after start date.</div>
 
   <div *ngIf="errors['unique']" class="mb-1 fw-medium">This value must be unique.</div>
   

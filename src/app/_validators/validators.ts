@@ -38,3 +38,13 @@ export function uniqueValidator(existingValues: any[]): ValidatorFn {
     return existingValues.includes(control.value) ? { unique: true } : null;
   };
 }
+
+
+export function dateRangeValidator(group: AbstractControl) {
+  const start = new Date(group.get('startDate')?.value);
+  const end = new Date(group.get('endDate')?.value);
+  if (!isNaN(start.getTime()) && !isNaN(end.getTime()) && end < start) {
+    return { invalidRange: true };
+  }
+  return null;
+}

@@ -2,13 +2,25 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-3">
 
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h5 class="modal-title d-flex align-items-center">
           <mat-icon class="me-2">medical_services</mat-icon>
           Medicine Details
         </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="onCloseDetails()" aria-label="Close"></button>
+      
+        <div class="d-flex gap-2 align-items-center">
+          <button class="btn btn-sm btn-outline-light d-flex align-items-center"
+            (click)="openDateRangePicker()"
+            matTooltip="Download report as JSON">
+            <mat-icon class="me-1">file_download</mat-icon>
+            Report
+          </button>
+      
+          <button type="button" class="btn-close btn-close-white" (click)="onCloseDetails()" aria-label="Close"></button>
+        </div>
       </div>
+      
+
 
       <div class="modal-body p-4">
         <div class="row g-3">
@@ -89,6 +101,50 @@
         </div>
       </div>
 
+
+
+      <div *ngIf="showDateRangePicker" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+     style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
+    <form [formGroup]="dateRangeForm" class="bg-white p-4 rounded shadow" style="width: 500px;">
+    <h5 class="mb-3 d-flex align-items-center">
+      <mat-icon class="me-2 text-primary">calendar_month</mat-icon>
+      Select Report Date Range
+    </h5>
+
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" id="startDate" formControlName="startDate" class="form-control form-control-sm" />
+        <app-validation-errors [control]="dateRangeForm.get('startDate')!"></app-validation-errors>
+        </div>
+
+        <div class="col-6">
+          <label for="endDate" class="form-label">End Date</label>
+          <input type="date" id="endDate" formControlName="endDate" class="form-control form-control-sm" />
+          <app-validation-errors [control]="dateRangeForm.get('endDate')!"></app-validation-errors>
+        </div>
+      </div>
+
+      <app-validation-errors [control]="dateRangeForm"></app-validation-errors>
+
+      
+
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-outline-secondary" type="button" (click)="showDateRangePicker = false">
+          Cancel
+        </button>
+        <button class="btn btn-primary d-flex align-items-center" type="button" (click)="onDownloadReport()">
+          <mat-icon class="me-1">download</mat-icon>
+          Download
+        </button>
+      </div>
+    </form>
+  </div>
+
+
+      
+
     </div>
   </div>
 </div>
+

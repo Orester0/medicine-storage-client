@@ -9,6 +9,19 @@
     <i class="bi bi-plus-circle"></i> New Medicine
   </button>
 
+  <button *ngIf="allMedicines.length === 0"
+        class="btn btn-warning mb-3"
+        (click)="triggerFileInput()">
+  <i class="bi bi-upload"></i> Bulk Upload
+</button>
+
+<input type="file"
+       #fileInput
+       style="display: none"
+       (change)="onBulkUploadFileSelected($event)"
+       accept=".json" />
+  
+
   <app-filter 
   [config]="filterConfig"
   [title]="'Filters'"

@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { MedicineParams, ReturnMedicineDTO } from '../../_models/medicine.types';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { BulkCreateMedicineDTO, MedicineParams, ReturnMedicineDTO } from '../../_models/medicine.types';
 import { MedicineService } from '../../_services/medicine.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -166,6 +166,49 @@ export class MedicinesComponent implements OnInit {
       label: category
     }));
   }
+
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  bulkUploadData: BulkCreateMedicineDTO[] | null = null;
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+  
+  onBulkUploadFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const json = JSON.parse(reader.result as string);
+        this.bulkUploadMedicines(json);
+      } catch (e) {
+        this.toastr.error('Invalid JSON format');
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  bulkUploadMedicines(data: BulkCreateMedicineDTO[]): void {
+    this.medicineService.bulkCreateMedicines(data).subscribe({
+      next: () => {
+        this.toastr.success('Medicines uploaded successfully');
+        this.loadMedicines();
+        
+      },
+      error: () => {
+        this.toastr.error('Failed to upload medicines');
+      }
+    });
+  }
+
+
+
 
   loadMedicines(): void {
     this.medicineService.getMedicinesWithFilter(this.medicineParams).subscribe({

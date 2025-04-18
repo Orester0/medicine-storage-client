@@ -30,3 +30,8 @@ export interface MedicineParams {
   pageNumber: number;
   pageSize: number;
 }
+
+export interface BulkCreateMedicineDTO {
+  medicine: CreateMedicineDTO;
+  initialStock: number;
+}
