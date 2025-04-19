@@ -1,10 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams, BulkCreateMedicineDTO} from '../_models/medicine.types';
 import { PagedList } from '../_models/service.types';
 import { environment } from '../../environments/environment';
-import { MedicineStockForecastDTO } from '../_models/medicine-forecast.types';
 
 @Injectable({
   providedIn: 'root'
@@ -37,14 +36,6 @@ export class MedicineService {
 
   getAllCategories(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrlMedicine}/categories`);
-  }
-
-  getMedicineStockForecast(considerRequests: boolean = false, considerTenders: boolean = false): Observable<MedicineStockForecastDTO[]> {
-    const params = new HttpParams()
-      .set('considerRequests', considerRequests.toString())
-      .set('considerTenders', considerTenders.toString());
-
-    return this.http.get<MedicineStockForecastDTO[]>(`${this.baseUrlMedicine}/stock-forecast`, { params });
   }
 
   getMedicinesWithFilter(params: MedicineParams): Observable<PagedList<ReturnMedicineDTO>> {

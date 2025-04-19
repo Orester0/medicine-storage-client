@@ -9,25 +9,6 @@
   
   @if (isOpen()) {
     <div class="notification-panel p-3 bg-light border rounded">
-      <div class="mb-3 d-flex align-items-center gap-3">
-        <label class="custom-checkbox">
-          <input type="checkbox" 
-            [checked]="considerRequests()"
-            (change)="toggleConsiderRequests()">
-          <span class="checkmark"></span>
-          Consider Requests
-        </label>
-      
-        <label class="custom-checkbox">
-          <input type="checkbox" 
-            [checked]="considerTenders()"
-            (change)="toggleConsiderTenders()">
-          <span class="checkmark"></span>
-          Consider Tenders
-        </label>
-      </div>
-      
-      
       
       @if (medicinesNeedingTender().length > 0) {
         <div>
