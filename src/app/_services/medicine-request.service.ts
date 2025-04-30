@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PagedList } from '../_models/service.types';
-import { MedicineRequestParams, ReturnMedicineRequestDTO } from '../_models/medicine-request.types';
+import { MedicineRequestAnalysisDto, MedicineRequestAnalysisParams, MedicineRequestParams, ReturnMedicineRequestDTO } from '../_models/medicine-request.types';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,45 @@ import { MedicineRequestParams, ReturnMedicineRequestDTO } from '../_models/medi
 export class MedicineRequestService {
   private http = inject(HttpClient);
   private baseUrlMedicineRequest = `${environment.apiUrl}medicine-request`;
+  
+  getMedicineRequestAnalysis(params: MedicineRequestAnalysisParams): Observable<PagedList<MedicineRequestAnalysisDto>> {
+    let httpParams = new HttpParams();
+  
+    if (params.medicineId){
+      httpParams = httpParams.append('medicineId', params.medicineId.toString());
+    }
+  
+    if (params.statuses && params.statuses.length > 0) {
+      params.statuses.forEach(status => {
+        httpParams = httpParams.append('statuses', status);
+      });
+    }
+  
+    
+    if (params.startDate) {
+      const fromDate = params.startDate instanceof Date ? params.startDate.toISOString() : params.startDate;
+      httpParams = httpParams.append('startDate', fromDate);
+    }
+    if (params.endDate) {
+      const toDate = params.endDate instanceof Date ? params.endDate.toISOString() : params.endDate;
+      httpParams = httpParams.append('endDate', toDate);
+    }
 
+  
+    if (params.sortBy) {
+      httpParams = httpParams.append('sortBy', params.sortBy);
+    }
+  
+    if (params.isDescending !== null && params.isDescending !== undefined) {
+      httpParams = httpParams.append('isDescending', params.isDescending.toString());
+    }
+  
+    httpParams = httpParams.append('pageNumber', (params.pageNumber ?? 1).toString());
+    httpParams = httpParams.append('pageSize', (params.pageSize ?? 10).toString());
+  
+    return this.http.get<PagedList<MedicineRequestAnalysisDto>>(`${this.baseUrlMedicineRequest}/analysis-by-medicine`, { params: httpParams });
+  }
+  
 
   getRequestsWithFilters(params: MedicineRequestParams): Observable<PagedList<ReturnMedicineRequestDTO>> {
     let httpParams = new HttpParams();

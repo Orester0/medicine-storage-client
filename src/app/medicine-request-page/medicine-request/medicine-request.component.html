@@ -27,7 +27,15 @@
     (pageChange)="onPageChange($event)"
   ></app-pagination>  
 
-  
+
+
+  <app-medicine-request-analysis
+    [medicines]="allMedicines">
+  </app-medicine-request-analysis>
+
+
+
+
   <app-delete-confirmation-modal
   *ngIf="requestToDelete"
   [isOpen]="!!requestToDelete"

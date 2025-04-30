@@ -60,6 +60,7 @@
               </div>
             </div>
           </ng-container>
+          <app-validation-errors *ngIf="form.get(field.key)" [control]="form.get(field.key)!"></app-validation-errors>
         </div>
       </div>
 
@@ -68,10 +69,14 @@
           <mat-icon>refresh</mat-icon>
           Reset
         </button>
-        <button type="button" class="filter-button filter-button-apply" (click)="applyFilters()">
+        <button type="button" 
+          class="filter-button filter-button-apply" 
+          (click)="applyFilters()" 
+          [disabled]="form.invalid">
           <mat-icon>check</mat-icon>
           Apply
         </button>
+
       </div>
     </form>
   </div>

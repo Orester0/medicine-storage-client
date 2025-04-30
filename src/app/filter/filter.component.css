@@ -75,7 +75,10 @@
   width: 100%;
   transition: border-color 0.2s;
 }
-
+.filter-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 .filter-input:focus,
 .filter-select:focus {
   border-color: #065fd4;

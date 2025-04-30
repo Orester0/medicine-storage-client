@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, computed, effect, input, signal } from '@angular/core';
-import { ReturnMedicineDTO } from '../../_models/medicine.types';
+import { ChangeDetectorRef, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { ReturnMedicineDTO, ReturnMedicineShortDTO } from '../../_models/medicine.types';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { FormsModule } from '@angular/forms';
+import { MedicineService } from '../../_services/medicine.service';
 
 @Component({
   selector: 'app-medicine-notifications',
@@ -25,11 +26,11 @@ import { FormsModule } from '@angular/forms';
   ],
 })
 export class MedicineNotificationsComponent {
-  allMedicines = input<ReturnMedicineDTO[]>([]);
+  private medicineService = inject(MedicineService);
 
   isOpen = signal(false);
-  medicinesNeedingTender = signal<ReturnMedicineDTO[]>([]);
-  medicinesNeedingAudit = signal<ReturnMedicineDTO[]>([]);
+  medicinesNeedingTender = signal<ReturnMedicineShortDTO[]>([]);
+  medicinesNeedingAudit = signal<ReturnMedicineShortDTO[]>([]);
   isLoading = signal(false);
 
   hasIssues = computed(() =>
@@ -44,28 +45,12 @@ export class MedicineNotificationsComponent {
   }
 
   updateMedicineData() {
-    const currentDate = new Date();
-  
-    const needingAudit = this.allMedicines().filter(m =>
-      m.lastAuditDate != null &&
-      this.addDaysToDate(new Date(m.lastAuditDate), m.auditFrequencyDays) <= currentDate
-    );
-    this.medicinesNeedingAudit.set(needingAudit);
-  
-    const needingTender = this.allMedicines().filter(m =>
-      m.stock != null && m.minimumStock != null && m.stock < m.minimumStock
-    );
-
-    this.medicinesNeedingTender.set(needingTender);
+    this.medicineService.getProblematicMedicines().subscribe(data => {
+      this.medicinesNeedingAudit.set(data.medicinesNeedingAudit);
+      this.medicinesNeedingTender.set(data.medicinesNeedingTender);
+    });
   }
   
-
-  addDaysToDate(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
   toggleNotifications() {
     this.isOpen.update(open => !open);
   }

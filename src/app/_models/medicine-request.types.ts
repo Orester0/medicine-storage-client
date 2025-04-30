@@ -1,6 +1,45 @@
 import { ReturnMedicineDTO } from "./medicine.types";
 import { ReturnUserGeneralDTO } from "./user.types";
 
+
+export interface MedicineRequestAnalysisDto {
+   medicineName: string;
+   totalRequests: number;
+   totalQuantity: number;
+   uniqueRequesters: number;
+   approvedCount: number;
+   rejectedCount: number;
+   pendingCount: number;
+ }
+ 
+export interface MedicineRequestAnalysisParams {
+   medicineId?: number | null;
+   statuses?: number[] | null;
+   startDate: Date;  
+   endDate: Date;
+   sortBy?: string;
+   isDescending?: boolean;
+   pageNumber: number;
+   pageSize: number;
+ }
+ 
+export interface MedicineRequestParams {
+   fromDate?: Date |  string | null;
+   toDate?: Date |  string | null;
+   statuses?: number[] | null;
+   requestedByUserId?: number | null;
+   approvedByUserId?: number | null;
+   medicineId?: number | null;
+   minQuantity?: number;
+   maxQuantity?: number;
+   justification?: string;
+   sortBy?: string;
+   isDescending: boolean;
+   pageNumber: number;
+   pageSize: number;
+}
+
+
 export interface ReturnMedicineRequestDTO {
    id: number;
    quantity: number;
@@ -29,21 +68,6 @@ export interface CreateMedicineRequestDTO {
  }
  
 
- export interface MedicineRequestParams {
-   fromDate?: Date |  string | null;
-   toDate?: Date |  string | null;
-   statuses?: number[] | null;
-   requestedByUserId?: number | null;
-   approvedByUserId?: number | null;
-   medicineId?: number | null;
-   minQuantity?: number;
-   maxQuantity?: number;
-   justification?: string;
-   sortBy?: string;
-   isDescending: boolean;
-   pageNumber: number;
-   pageSize: number;
-}
 
  
  

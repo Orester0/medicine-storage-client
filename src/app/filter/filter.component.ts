@@ -1,10 +1,11 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HostListener } from '@angular/core';
+import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 export interface FilterConfig {
   key: string;
@@ -16,12 +17,14 @@ export interface FilterConfig {
   multiselect?: boolean;
   isOpen?: boolean;
   value?: any;
+  required?: boolean;
+  validators?: ValidatorFn[];
 }
 
 
 @Component({
   selector: 'app-filter',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatCheckboxModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatCheckboxModule, ValidationErrorsComponent],
   animations: [
     trigger('slideInOut', [
       state('void', style({
@@ -66,7 +69,17 @@ export class FilterComponent implements OnInit {
   private initializeForm(): void {
     const group: Record<string, any> = {};
     this.config.forEach(field => {
-      group[field.key] = [field.defaultValue ?? null];
+      let validators: ValidatorFn[] = [];
+      
+      if (field.required) {
+        validators.push(Validators.required);
+      }
+      
+      if (field.validators && field.validators.length > 0) {
+        validators = [...validators, ...field.validators];
+      }
+      
+      group[field.key] = [field.defaultValue ?? null, validators];
       field.isOpen = false;
     });
     this.form = this.fb.group(group);
@@ -79,7 +92,6 @@ export class FilterComponent implements OnInit {
 
   toggleSelect(field: FilterConfig): void {
     field.isOpen = !field.isOpen;
-    // Close other select dropdowns
     this.config.forEach(f => {
       if (f !== field) f.isOpen = false;
     });
@@ -156,7 +168,6 @@ export class FilterComponent implements OnInit {
     this.filterChange.emit(this.form.value);
   }
 
-  // Close dropdowns when clicking outside
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;

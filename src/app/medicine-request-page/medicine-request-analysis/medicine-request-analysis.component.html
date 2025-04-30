@@ -1,0 +1,33 @@
+<div *appHasRole="['Manager', 'Admin']" class="filter-toggle">
+    <button class="filter-button" (click)="toggleRequestCountSection()">
+        <mat-icon>analytics</mat-icon>
+        <span>Analysis</span>
+      </button>
+    
+</div>
+
+<div class="request-wrapper" *ngIf="isRequestCountVisible">
+    <app-filter 
+    [config]="filterConfig"
+    [title]="'Filters'"
+    (filterChange)="onFilterChange($event)">
+    </app-filter>
+    
+    
+    <div class="table-responsive">
+      <app-table
+      [columns]="requestColumns"
+      [data]="tableAnalisys"
+      (sort)="onSortChange($event)"
+      ></app-table>
+    </div>
+    
+    <app-pagination
+      [totalItems]="totalItems"
+      [pageSize]="requestParams.pageSize"
+      [currentPage]="requestParams.pageNumber"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>  
+  
+  
+</div>

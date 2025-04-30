@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams, BulkCreateMedicineDTO} from '../_models/medicine.types';
+import { ReturnMedicineDTO, CreateMedicineDTO, MedicineParams, BulkCreateMedicineDTO, MedicineAuditAndTenderDTO} from '../_models/medicine.types';
 import { PagedList } from '../_models/service.types';
 import { environment } from '../../environments/environment';
 
@@ -12,11 +12,13 @@ export class MedicineService {
   private http = inject(HttpClient);
   private baseUrlMedicine = `${environment.apiUrl}medicine`;
 
+  getProblematicMedicines(): Observable<MedicineAuditAndTenderDTO> {
+    return this.http.get<MedicineAuditAndTenderDTO>(`${this.baseUrlMedicine}/problematic`);
+  }
+  
   bulkCreateMedicines(dtoList: BulkCreateMedicineDTO[]): Observable<any> {
     return this.http.post(`${this.baseUrlMedicine}/bulk-upload`, dtoList);
   }
-  
-
 
   downloadMedicineReport(medicineId: number, startDate: Date, endDate: Date): Observable<Blob> {
     const params = new HttpParams()

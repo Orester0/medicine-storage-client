@@ -1,3 +1,17 @@
+export interface ReturnMedicineShortDTO {
+  id: number;
+  name: string;
+  minimumStock: number;
+  stock: number;
+  lastAuditDate?: Date;
+}
+
+export interface MedicineAuditAndTenderDTO {
+  medicinesNeedingAudit: ReturnMedicineShortDTO[];
+  medicinesNeedingTender: ReturnMedicineShortDTO[];
+}
+
+
 export interface ReturnMedicineDTO {
   id: number;
   name: string;
@@ -35,3 +49,4 @@ export interface BulkCreateMedicineDTO {
   medicine: CreateMedicineDTO;
   initialStock: number;
 }
+

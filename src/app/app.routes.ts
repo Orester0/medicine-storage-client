@@ -7,7 +7,6 @@ import { AuditsComponent } from './audit-page/audits/audits.component';
 import { HomeComponent } from './home-page/home/home.component';
 import { MedicinesComponent } from './medicine-page/medicines/medicines.component';
 import { MedicineRequestComponent } from './medicine-request-page/medicine-request/medicine-request.component';
-import { TemplateComponent } from './template-page/template/template.component';
 import { TendersDetailsComponent } from './tender-page/tenders-details/tenders-details.component';
 import { TendersComponent } from './tender-page/tenders/tenders.component';
 import { ErrorTemplateComponent } from './error-template/error-template.component';
@@ -32,7 +31,6 @@ export const routes: Routes = [
           { path: 'audits', component: AuditsComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Audits - Medicine Storage' } },
           { path: 'requests', component: MedicineRequestComponent, resolve: { medicines: medicinesResolver, users: usersResolver }, data: { title: 'Requests - Medicine Storage' } },
           { path: 'user-profile', component: UserProfileComponent, data: { title: 'User Profile  - Medicine Storage' } },
-          { path: 'templates', component: TemplateComponent, resolve: { medicines: medicinesResolver }, data: { title: 'Templates  - Medicine Storage' } },
           {
               path: 'admin',
               component: AdminPanelComponent,

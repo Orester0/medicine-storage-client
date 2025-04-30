@@ -17,19 +17,23 @@ import { UserFullNamePipe } from '../../_pipes/user-full-name.pipe';
 import { MedicineNamePipe } from '../../_pipes/medicine-name.pipe';
 import { AuthService } from '../../_services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { MatIconModule } from '@angular/material/icon';
+import { MedicineRequestAnalysisComponent } from "../medicine-request-analysis/medicine-request-analysis.component";
 
 @Component({
   selector: 'app-medicine-operations',
   imports: [
-    DeleteConfirmationModalComponent, 
-    CreateMedicineRequestFormComponent, 
-    FilterComponent, 
-    CommonModule, 
-    TableComponent, 
-    PaginationComponent, 
-    MedicineOperationsDetailsComponent, 
-    ReactiveFormsModule
-  ],
+    DeleteConfirmationModalComponent,
+    CreateMedicineRequestFormComponent,
+    FilterComponent,
+    CommonModule,
+    TableComponent,
+    PaginationComponent,
+    MedicineOperationsDetailsComponent,
+    ReactiveFormsModule,
+    MatIconModule,
+    MedicineRequestAnalysisComponent
+],
   providers: [RequestStatusPipe, UserFullNamePipe, MedicineNamePipe],
   templateUrl: './medicine-request.component.html',
   styleUrl: './medicine-request.component.css'
@@ -38,8 +42,8 @@ export class MedicineRequestComponent implements OnInit {
   private requestService = inject(MedicineRequestService);
   private route = inject(ActivatedRoute);
   private requestStatusPipe = inject(RequestStatusPipe);
-  private userFullNamePipe = inject(UserFullNamePipe);
   private medicineNamePipe = inject(MedicineNamePipe);
+  private userFullNamePipe = inject(UserFullNamePipe);
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
 
@@ -177,6 +181,7 @@ export class MedicineRequestComponent implements OnInit {
     this.users = this.route.snapshot.data['users'];
     this.allMedicines = this.route.snapshot.data['medicines'];
     this.initializeFilter();
+    
     // this.loadRequests();
   }
 
@@ -202,6 +207,10 @@ export class MedicineRequestComponent implements OnInit {
         this.tableRequests = response.items;
         this.totalItems = response.totalCount;
         this.selectedRequest = null;
+      },
+      error: (err) => {
+        this.toastr.error('Failed to load requests');
+        console.error(err);
       }
     });
   }
